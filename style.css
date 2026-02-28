@@ -182,3 +182,12 @@ model-viewer:focus-visible{
 model-viewer::part(default-progress-bar){
   display:none;
 }
+
+.mv-status{
+  position:absolute;
+  left:0; right:0;
+  bottom:-26px;
+  text-align:center;
+  font: 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color: rgba(18,18,18,.55);
+}
