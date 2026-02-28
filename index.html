@@ -73,6 +73,18 @@ window.addEventListener('load', () => {
 });
 </script>
 
+<script>
+  (() => {
+    const mv = document.getElementById('heroModel');
+    if (!mv) return;
+
+    // Block mouse-wheel zoom on the model area only
+    mv.addEventListener('wheel', (e) => {
+      e.preventDefault();
+    }, { passive: false });
+  })();
+</script>
+  
 <!-- cursor tracking luxury rotation -->
 <script>
 (() => {
