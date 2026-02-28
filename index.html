@@ -133,6 +133,36 @@
     });
   })();
 </script>
+
+  <model-viewer
+  id="heroModel"
+  src="/assets/porcelain_girl_optimized.glb"
+  alt="Porcelain sculpture"
+  interaction-prompt="none"
+  camera-controls="false"
+  disable-pan
+  disable-zoom
+  environment-image="neutral"
+  exposure="1.1"
+  shadow-intensity="0.25"
+  camera-orbit="0deg 75deg 2.4m"
+  min-camera-orbit="0deg 75deg 2.4m"
+  max-camera-orbit="0deg 75deg 2.4m">
+</model-viewer>
+
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+<script>
+  const mv = document.getElementById('heroModel');
+
+  mv.addEventListener('load', () => {
+    const mat = mv.model?.materials?.[0];
+    if (!mat) return;
+
+    mat.pbrMetallicRoughness.setMetallicFactor(0.0);
+    mat.pbrMetallicRoughness.setRoughnessFactor(0.18);
+  });
+</script>
   
 </body>
 </html>
