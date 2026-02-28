@@ -138,8 +138,9 @@ a{ color:inherit; text-decoration:none; }
   color: rgba(18,18,18,.55);
 }
 
-.hero-bust{
+.hero-bust img{
   animation: floaty 8s ease-in-out infinite;
+  transform-origin: 50% 60%;
 }
 
 @keyframes floaty{
