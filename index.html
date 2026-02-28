@@ -116,12 +116,17 @@ window.addEventListener('load', () => {
   }
 
   function animate() {
-    yaw += (targetYaw - yaw) * ease;
-    pitch += (targetPitch - pitch) * ease;
+  yaw += (targetYaw - yaw) * ease;
+  pitch += (targetPitch - pitch) * ease;
 
-    model.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
-    requestAnimationFrame(animate);
-  }
+  const orbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
+  model.cameraOrbit = orbit;
+
+  // Hard lock: if wheel changes orbit internally, we immediately overwrite
+  if (model.cameraOrbit !== orbit) model.cameraOrbit = orbit;
+
+  requestAnimationFrame(animate);
+}
 
   // Start animation loop once model is ready
   model.addEventListener('load', () => {
