@@ -80,6 +80,59 @@
 </script>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+<script>
+  (() => {
+    const model = document.getElementById('heroModel');
+    if (!model) return;
+
+    // Luxury feel: small range + smoothing
+    const MAX_YAW = 10;    // left/right degrees
+    const MAX_PITCH = 6;   // up/down degrees
+    const BASE_PITCH = 75; // matches camera-orbit pitch
+    const RADIUS = '2.4m'; // matches camera-orbit radius
+
+    let targetYaw = 0, targetPitch = BASE_PITCH;
+    let yaw = 0, pitch = BASE_PITCH;
+
+    // Spring smoothing
+    const ease = 0.08;
+
+    function setTargetFromEvent(e) {
+      const rect = model.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;   // 0..1
+      const y = (e.clientY - rect.top) / rect.height;   // 0..1
+
+      const nx = (x - 0.5) * 2; // -1..1
+      const ny = (y - 0.5) * 2; // -1..1
+
+      targetYaw = nx * MAX_YAW;
+      targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
+    }
+
+    function animate() {
+      yaw += (targetYaw - yaw) * ease;
+      pitch += (targetPitch - pitch) * ease;
+
+      model.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
+      requestAnimationFrame(animate);
+    }
+
+    // Start centered
+    model.addEventListener('load', () => {
+      model.cameraOrbit = `0deg ${BASE_PITCH}deg ${RADIUS}`;
+      requestAnimationFrame(animate);
+    });
+
+    // Track cursor only when hovering the hero (keeps it premium)
+    model.addEventListener('pointermove', setTargetFromEvent);
+
+    model.addEventListener('pointerleave', () => {
+      targetYaw = 0;
+      targetPitch = BASE_PITCH;
+    });
+  })();
+</script>
   
 </body>
 </html>
