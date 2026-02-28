@@ -1,191 +1,185 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jon Nguyen — Creative Director</title>
-  <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
-  <link rel="stylesheet" href="./style.css" />
-</head>
+:root{
+  --bg:#f4f1ea;
+  --ink:#121212;
+  --blue:#1f57ff;
+  --max:1200px;
+}
 
-<body>
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
 
-<header class="site-header">
-  <div class="nav-wrap">
-    <a class="brand" href="#">JON NGUYEN</a>
-    <nav class="nav">
-      <a href="#work">WORK</a>
-      <a href="#about">ABOUT</a>
-      <a href="#contact">CONTACT</a>
-    </nav>
-  </div>
-</header>
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
 
-<main>
-  <section class="hero-center">
-    <div class="hero-inner">
+a{ color:inherit; text-decoration:none; }
 
-      <div class="hero-title reveal reveal-delay-1">
-        <span class="hero-word left">CREATIVE</span>
-        <span class="hero-word right">DIRECTOR</span>
-      </div>
+/* Header */
+.site-header{
+  position: fixed;
+  top:0; left:0; right:0;
+  z-index: 50;
+  padding: 22px 32px;
+}
 
-      <div class="hero-bust">
-        <model-viewer
-          id="heroModel"
-          src="/assets/porcelain_girl_2.glb"
-          alt="Porcelain sculpture"
-          loading="eager"
-          reveal="auto"
-          environment-image="neutral"
-          exposure="1.05"
-          camera-controls
-          disable-pan
-          camera-orbit="-18deg 68deg 2.4m"
-          min-camera-orbit="-18deg 68deg 2.4m"
-          max-camera-orbit="-18deg 68deg 2.4m"
-          min-field-of-view="20deg"
-          max-field-of-view="20deg"
-          style="width:100%;height:100%;background:transparent;">
-        </model-viewer>
+.nav-wrap{
+  max-width: var(--max);
+  margin: 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
 
-        <div id="mvStatus" class="mv-status"></div>
-      </div>
+.brand{
+  font-weight:700;
+  letter-spacing:.06em;
+  color:var(--blue);
+  font-size:14px;
+  text-transform:uppercase;
+}
 
-      <div class="hero-sub reveal reveal-delay-3">
-        <div class="hero-line1">BUILDING WORLDS</div>
-        <div class="hero-line2">BRAND DIGITAL EXPERIENTIAL</div>
-      </div>
+.nav{
+  display:flex;
+  gap:28px;
+}
 
-    </div>
-  </section>
+.nav a{
+  font-weight:700;
+  letter-spacing:.14em;
+  color:var(--blue);
+  font-size:11px;
+  text-transform:uppercase;
+}
 
-  <section id="work" style="height: 50vh;"></section>
-  <section id="about" style="height: 50vh;"></section>
-  <section id="contact" style="height: 50vh;"></section>
-</main>
+/* Hero */
+.hero-center{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:120px 24px 72px;
+}
 
-<!-- model-viewer -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer.min.js"></script>
-<script nomodule src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+.hero-inner{
+  width:100%;
+  max-width:1100px;
+  text-align:center;
+  position:relative;
+}
 
-<!-- reveal animation -->
-<script>
-window.addEventListener('load', () => {
-  requestAnimationFrame(() => {
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
-  });
-});
-</script>
+.hero-title{
+  position:relative;
+  z-index:1;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:min(980px,96vw);
+  margin:0 auto;
+  transform:translateY(42px);
+}
 
-<!-- cursor tracking luxury rotation + hard zoom lock (wheel) + status -->
-<script>
-(() => {
-  const mv = document.getElementById('heroModel');
-  const status = document.getElementById('mvStatus');
-  if (!mv) return;
+.hero-word{
+  font-family: ui-serif, Georgia, "Times New Roman", Times, serif;
+  font-weight:700;
+  font-size:clamp(44px,6.2vw,92px);
+  letter-spacing:.01em;
+  color:rgba(18,18,18,.82);
+}
 
-  // ---- HERO RESTING ORBIT (reference composition) ----
-  const BASE_YAW   = -18;   // theta
-  const BASE_PITCH = 68;    // phi
-  const BASE_R     = 2.4;   // meters
+.hero-word.left{ width:50%; text-align:left; padding-left:8px; }
+.hero-word.right{ width:50%; text-align:right; padding-right:8px; }
 
-  // ---- SUBTLE LUXURY DRIFT RANGE ----
-  const MAX_YAW   = 6;      // degrees left/right from base
-  const MAX_PITCH = 4;      // degrees up/down from base
-  const EASE      = 0.08;   // smoothing (smaller = smoother/slower)
+.hero-bust{
+  position:relative;
+  z-index:3;
+  width:min(560px,82vw);
+  aspect-ratio:3/4;
+  margin:-118px auto 0;
+  pointer-events:auto;
+}
 
-  let targetYawOffset = 0;
-  let targetPitchOffset = 0;
-  let yawOffset = 0;
-  let pitchOffset = 0;
+#heroModel{
+  width:100%;
+  height:100%;
+  display:block;
+  transform-origin:50% 60%;
+}
 
-  // Stop wheel zoom when the wheel originates over the model-viewer
-  window.addEventListener('wheel', (e) => {
-    const path = e.composedPath?.() || [];
-    if (path.includes(mv)) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  }, { passive: false, capture: true });
+.hero-sub{
+  margin-top:-10px;
+}
 
-  function setTargetFromPointer(e) {
-    const x = e.clientX / window.innerWidth;   // 0..1
-    const y = e.clientY / window.innerHeight;  // 0..1
-    const nx = (x - 0.5) * 2; // -1..1
-    const ny = (y - 0.5) * 2; // -1..1
+.hero-line1{
+  font-size:12px;
+  letter-spacing:.42em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:rgba(18,18,18,.75);
+}
 
-    // Invert as needed for “feels right”
-    targetYawOffset = (-nx * MAX_YAW);
-    targetPitchOffset = (-ny * MAX_PITCH);
-  }
+.hero-line2{
+  margin-top:8px;
+  font-size:9.5px;
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:rgba(18,18,18,.55);
+}
 
-  function applyOrbit() {
-    yawOffset += (targetYawOffset - yawOffset) * EASE;
-    pitchOffset += (targetPitchOffset - pitchOffset) * EASE;
+/* Reveal */
+.reveal{
+  opacity:0;
+  transform:translateY(18px);
+  filter:blur(10px);
+  transition:opacity 900ms cubic-bezier(.2,.8,.2,1),
+             transform 900ms cubic-bezier(.2,.8,.2,1),
+             filter 900ms cubic-bezier(.2,.8,.2,1);
+}
 
-    const yaw = BASE_YAW + yawOffset;
-    const pitch = BASE_PITCH + pitchOffset;
+.reveal.in{
+  opacity:1;
+  transform:translateY(0);
+  filter:blur(0);
+}
 
-    const orbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${BASE_R}m`;
-    mv.cameraOrbit = orbit;
+.reveal-delay-1{ transition-delay:120ms; }
+.reveal-delay-2{ transition-delay:240ms; }
+.reveal-delay-3{ transition-delay:360ms; }
 
-    requestAnimationFrame(applyOrbit);
-  }
+/* Status */
+.mv-status{
+  position:absolute;
+  left:0; right:0;
+  bottom:-26px;
+  font:12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color:rgba(18,18,18,.55);
+  text-align:center;
+}
 
-  // Polished return to rest
-  function resetToRest() {
-    targetYawOffset = 0;
-    targetPitchOffset = 0;
-  }
+/* Remove focus outline + hide default progress bar */
+model-viewer{
+  outline:none !important;
+  border:none !important;
+}
 
-  // Status (optional)
-  if (status) {
-    if (!customElements.get('model-viewer')) {
-      status.textContent = '❌ model-viewer did NOT load.';
-    } else {
-      status.textContent = '✅ model-viewer loaded. Waiting for GLB…';
-    }
-  }
+model-viewer::part(default-progress-bar){
+  display:none;
+}
 
-  mv.addEventListener('load', () => {
-    if (status) status.textContent = '✅ GLB loaded.';
-    mv.cameraOrbit = `${BASE_YAW}deg ${BASE_PITCH}deg ${BASE_R}m`;
-    requestAnimationFrame(applyOrbit);
-  });
+model-viewer:focus,
+model-viewer:focus-visible,
+model-viewer:-webkit-focus-ring-color{
+  outline:none !important;
+  border:none !important;
+}
 
-  mv.addEventListener('error', () => {
-    if (status) status.textContent = '❌ GLB error (path/cors/corrupt).';
-  });
-
-  // Track cursor anywhere in the browser
-  window.addEventListener('pointermove', setTargetFromPointer, { passive: true });
-
-  // When cursor leaves page or tab loses focus, return to rest
-  document.addEventListener('mouseleave', resetToRest);
-  window.addEventListener('blur', resetToRest);
-})();
-</script>
-
-<!-- porcelain material polish -->
-<script>
-(() => {
-  const mv = document.getElementById('heroModel');
-  if (!mv) return;
-
-  mv.addEventListener('load', () => {
-    const mats = mv.model?.materials;
-    if (!mats?.length) return;
-
-    mats.forEach((mat) => {
-      const pbr = mat.pbrMetallicRoughness;
-      if (!pbr) return;
-      pbr.setMetallicFactor(0.0);
-      pbr.setRoughnessFactor(0.18);
-    });
-  });
-})();
-</script>
-
-</body>
-</html>
+/* Responsive */
+@media (max-width:720px){
+  .site-header{ padding:18px 18px; }
+  .nav{ gap:18px; }
+  .hero-title{ width:min(680px,92vw); }
+  .hero-bust{ margin-top:-44px; }
+}
