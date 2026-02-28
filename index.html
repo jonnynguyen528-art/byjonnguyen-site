@@ -30,27 +30,27 @@
         <span class="hero-word right">DIRECTOR</span>
       </div>
 
-<div class="hero-bust">
-  <model-viewer
-    id="heroModel"
-    src="/assets/porcelain_girl_2.glb"
-    alt="Porcelain sculpture"
-    loading="eager"
-    reveal="auto"
-    environment-image="neutral"
-    exposure="1.05"
-    camera-controls
-    disable-pan
-    camera-orbit="-18deg 68deg 2.4m"
-    min-camera-orbit="-18deg 68deg 2.4m"
-    max-camera-orbit="-18deg 68deg 2.4m"
-    min-field-of-view="20deg"
-    max-field-of-view="20deg"
-    style="width:100%;height:100%;background:transparent;">
-  </model-viewer>
+      <div class="hero-bust">
+        <model-viewer
+          id="heroModel"
+          src="/assets/porcelain_girl_2.glb"
+          alt="Porcelain sculpture"
+          loading="eager"
+          reveal="auto"
+          environment-image="neutral"
+          exposure="1.05"
+          camera-controls
+          disable-pan
+          camera-orbit="-18deg 68deg 2.4m"
+          min-camera-orbit="-18deg 68deg 2.4m"
+          max-camera-orbit="-18deg 68deg 2.4m"
+          min-field-of-view="20deg"
+          max-field-of-view="20deg"
+          style="width:100%;height:100%;background:transparent;">
+        </model-viewer>
 
-  <div id="mvStatus" class="mv-status"></div>
-</div>
+        <div id="mvStatus" class="mv-status"></div>
+      </div>
 
       <div class="hero-sub reveal reveal-delay-3">
         <div class="hero-line1">BUILDING WORLDS</div>
@@ -65,8 +65,9 @@
   <section id="contact" style="height: 50vh;"></section>
 </main>
 
-<!-- model viewer -->
+<!-- model-viewer -->
 <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
 <!-- reveal animation -->
 <script>
@@ -77,141 +78,29 @@ window.addEventListener('load', () => {
 });
 </script>
 
-<script>
-  (() => {
-    const mv = document.getElementById('heroModel');
-    if (!mv) return;
-
-    // Block mouse-wheel zoom on the model area only
-    mv.addEventListener('wheel', (e) => {
-      e.preventDefault();
-    }, { passive: false });
-  })();
-</script>
-  
-<!-- cursor tracking luxury rotation -->
-<script>
-(() => {
-  const model = document.getElementById('heroModel');
-  if (!model) return;
-
-  // Subtle luxury range
-  const MAX_YAW = 6;        // left/right
-  const MAX_PITCH = 4;      // up/down
-  const BASE_YAW = -18
-  const BASE_PITCH = 68;    // match your camera-orbit pitch
-  const RADIUS = '2.4m';    // match your camera-orbit radius
-
-  // Smooth easing
-  const ease = 0.08;
-
-  let targetYaw = 0, targetPitch = BASE_PITCH;
-  let yaw = 0, pitch = BASE_PITCH;
-
-  function setTargetFromWindow(e) {
-    // Normalize cursor position across the whole viewport
-    const x = e.clientX / window.innerWidth;   // 0..1
-    const y = e.clientY / window.innerHeight;  // 0..1
-
-    const nx = (x - 0.5) * 2; // -1..1
-    const ny = (y - 0.5) * 2; // -1..1
-
-    targetYaw = -nx * MAX_YAW;
-    targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
-  }
-
-  function animate() {
-  yaw += (targetYaw - yaw) * ease;
-  pitch += (targetPitch - pitch) * ease;
-
-  const orbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
-  let targetYaw = BASE_YAW, targetPitch = BASE_PITCH;
-let yaw = BASE_YAW, pitch = BASE_PITCH;
-    model.cameraOrbit = orbit;
-
-  // Hard lock: if wheel changes orbit internally, we immediately overwrite
-  if (model.cameraOrbit !== orbit) model.cameraOrbit = orbit;
-
-  requestAnimationFrame(animate);
-}
-
-  // Start animation loop once model is ready
-  model.addEventListener('load', () => {
-    model.cameraOrbit = `${(BASE_YAW + yaw).toFixed(2)}deg ${(BASE_PITCH + (pitch-BASE_PITCH)).toFixed(2)}deg ${RADIUS}`;
-    requestAnimationFrame(animate);
-  });
-
-  // Track anywhere in the browser
-  window.addEventListener('pointermove', setTargetFromWindow, { passive: true });
-
-  // When cursor leaves the browser window, revert to neutral
-  document.addEventListener('mouseleave', () => {
-targetYaw = BASE_YAW + (-nx * MAX_YAW);
-targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
-  });
-
-  // Also revert if the tab loses focus (nice polish)
-  window.addEventListener('blur', () => {
-    targetYaw = 0;
-    targetPitch = BASE_PITCH;
-  });
-})();
-</script>
-
-<!-- porcelain material polish -->
-<script>
-const mv = document.getElementById('heroModel');
-if (mv) {
-  mv.addEventListener('load', () => {
-    if (!mv.model?.materials) return;
-    mv.model.materials.forEach(mat => {
-      mat.pbrMetallicRoughness.setMetallicFactor(0.0);
-      mat.pbrMetallicRoughness.setRoughnessFactor(0.18);
-    });
-  });
-}
-</script>
-
-<script>
-  const mv = document.getElementById('heroModel');
-  const status = document.getElementById('mvStatus');
-
-  if (!customElements.get('model-viewer')) {
-    status.textContent = 'model-viewer library NOT loaded (script blocked or failing).';
-  } else {
-    status.textContent = 'model-viewer loaded. waiting for model…';
-  }
-
-  mv?.addEventListener('load', () => status.textContent = 'model loaded ✅');
-  mv?.addEventListener('error', (e) => {
-    status.textContent = 'model error ❌ (usually bad path or corrupted GLB).';
-  });
-</script>
-
-<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer.min.js"></script>
-<script nomodule src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer-legacy.js"></script>
-
-<script>
-  const mv = document.getElementById('heroModel');
-  const status = document.getElementById('mvStatus');
-
-  // Tell us if the library loaded at all
-  if (!customElements.get('model-viewer')) {
-    status.textContent = '❌ model-viewer library did NOT load (script blocked/failing).';
-  } else {
-    status.textContent = '✅ model-viewer loaded. Waiting for model…';
-  }
-
-  mv?.addEventListener('load', () => status.textContent = '✅ GLB loaded and rendered.');
-  mv?.addEventListener('error', () => status.textContent = '❌ GLB error (corrupt/unsupported).');
-</script>
-
+<!-- cursor tracking luxury rotation + hard zoom lock (wheel) + status -->
 <script>
 (() => {
   const mv = document.getElementById('heroModel');
+  const status = document.getElementById('mvStatus');
   if (!mv) return;
 
-  // Capture-phase: stops wheel events before model-viewer can handle them
+  // ---- HERO RESTING ORBIT (reference composition) ----
+  const BASE_YAW   = -18;   // theta
+  const BASE_PITCH = 68;    // phi
+  const BASE_R     = 2.4;   // meters
+
+  // ---- SUBTLE LUXURY DRIFT RANGE ----
+  const MAX_YAW   = 6;      // degrees left/right from base
+  const MAX_PITCH = 4;      // degrees up/down from base
+  const EASE      = 0.08;   // smoothing (smaller = smoother/slower)
+
+  let targetYawOffset = 0;
+  let targetPitchOffset = 0;
+  let yawOffset = 0;
+  let pitchOffset = 0;
+
+  // Stop wheel zoom when the wheel originates over the model-viewer
   window.addEventListener('wheel', (e) => {
     const path = e.composedPath?.() || [];
     if (path.includes(mv)) {
@@ -219,8 +108,84 @@ if (mv) {
       e.stopPropagation();
     }
   }, { passive: false, capture: true });
+
+  function setTargetFromPointer(e) {
+    const x = e.clientX / window.innerWidth;   // 0..1
+    const y = e.clientY / window.innerHeight;  // 0..1
+    const nx = (x - 0.5) * 2; // -1..1
+    const ny = (y - 0.5) * 2; // -1..1
+
+    // Invert as needed for “feels right”
+    targetYawOffset = (-nx * MAX_YAW);
+    targetPitchOffset = (-ny * MAX_PITCH);
+  }
+
+  function applyOrbit() {
+    yawOffset += (targetYawOffset - yawOffset) * EASE;
+    pitchOffset += (targetPitchOffset - pitchOffset) * EASE;
+
+    const yaw = BASE_YAW + yawOffset;
+    const pitch = BASE_PITCH + pitchOffset;
+
+    const orbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${BASE_R}m`;
+    mv.cameraOrbit = orbit;
+
+    requestAnimationFrame(applyOrbit);
+  }
+
+  // Polished return to rest
+  function resetToRest() {
+    targetYawOffset = 0;
+    targetPitchOffset = 0;
+  }
+
+  // Status (optional)
+  if (status) {
+    if (!customElements.get('model-viewer')) {
+      status.textContent = '❌ model-viewer did NOT load.';
+    } else {
+      status.textContent = '✅ model-viewer loaded. Waiting for GLB…';
+    }
+  }
+
+  mv.addEventListener('load', () => {
+    if (status) status.textContent = '✅ GLB loaded.';
+    mv.cameraOrbit = `${BASE_YAW}deg ${BASE_PITCH}deg ${BASE_R}m`;
+    requestAnimationFrame(applyOrbit);
+  });
+
+  mv.addEventListener('error', () => {
+    if (status) status.textContent = '❌ GLB error (path/cors/corrupt).';
+  });
+
+  // Track cursor anywhere in the browser
+  window.addEventListener('pointermove', setTargetFromPointer, { passive: true });
+
+  // When cursor leaves page or tab loses focus, return to rest
+  document.addEventListener('mouseleave', resetToRest);
+  window.addEventListener('blur', resetToRest);
 })();
 </script>
-  
+
+<!-- porcelain material polish -->
+<script>
+(() => {
+  const mv = document.getElementById('heroModel');
+  if (!mv) return;
+
+  mv.addEventListener('load', () => {
+    const mats = mv.model?.materials;
+    if (!mats?.length) return;
+
+    mats.forEach((mat) => {
+      const pbr = mat.pbrMetallicRoughness;
+      if (!pbr) return;
+      pbr.setMetallicFactor(0.0);
+      pbr.setRoughnessFactor(0.18);
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
