@@ -55,6 +55,14 @@
     });
   });
 </script>
+
+<script>
+  const bust = document.querySelector('.hero-bust img');
+  window.addEventListener('scroll', () => {
+    const offset = window.scrollY * 0.08;
+    bust.style.transform = `translateY(${offset}px)`;
+  });
+</script>
   
 </body>
 </html>
