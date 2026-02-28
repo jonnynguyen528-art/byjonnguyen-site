@@ -10,159 +10,129 @@
 
 <body>
 
-  <header class="site-header">
-    <div class="nav-wrap">
-      <a class="brand" href="#">JON NGUYEN</a>
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="#">JON NGUYEN</a>
+    <nav class="nav">
+      <a href="#work">WORK</a>
+      <a href="#about">ABOUT</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+  </div>
+</header>
 
-      <nav class="nav">
-        <a href="#work">WORK</a>
-        <a href="#about">ABOUT</a>
-        <a href="#contact">CONTACT</a>
-      </nav>
-    </div>
-  </header>
+<main>
+  <section class="hero-center">
+    <div class="hero-inner">
 
-  <main>
-    <section class="hero-center">
-      <div class="hero-inner">
-
-        <div class="hero-title reveal reveal-delay-1">
-  <span class="hero-word left">CREATIVE</span>
-  <span class="hero-word right">DIRECTOR</span>
-</div>
-
-<div class="hero-bust reveal reveal-delay-2">
-  <model-viewer
-    id="heroModel"
-    src="/assets/porcelain_girl_2.glb"
-    alt="Porcelain sculpture"
-    camera-controls="false"
-    disable-pan
-    disable-zoom
-    interaction-prompt="none"
-    shadow-intensity="0.35"
-    exposure="1.05"
-    environment-image="neutral"
-    camera-orbit="0deg 75deg 2.4m"
-    min-camera-orbit="0deg 75deg 2.4m"
-    max-camera-orbit="0deg 75deg 2.4m"
-    style="width:100%; height:100%;"
-  ></model-viewer>
-</div>
-
-<div class="hero-sub reveal reveal-delay-3">
-  <div class="hero-line1">BUILDING WORLDS</div>
-  <div class="hero-line2">BRAND DIGITAL EXPERIENTIAL</div>
-</div>
-
+      <div class="hero-title reveal reveal-delay-1">
+        <span class="hero-word left">CREATIVE</span>
+        <span class="hero-word right">DIRECTOR</span>
       </div>
-    </section>
 
-    <section id="work" style="height: 50vh;"></section>
-    <section id="about" style="height: 50vh;"></section>
-    <section id="contact" style="height: 50vh;"></section>
-  </main>
+      <div class="hero-bust reveal reveal-delay-2">
+        <model-viewer
+          id="heroModel"
+          src="/assets/porcelain_girl_2.glb"
+          alt="Porcelain sculpture"
+          interaction-prompt="none"
+          camera-controls="false"
+          disable-pan
+          disable-zoom
+          environment-image="neutral"
+          exposure="1.05"
+          shadow-intensity="0.25"
+          camera-orbit="0deg 75deg 2.4m"
+          min-camera-orbit="0deg 75deg 2.4m"
+          max-camera-orbit="0deg 75deg 2.4m">
+        </model-viewer>
+      </div>
 
-<script>
-  window.addEventListener('load', () => {
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
-    });
-  });
-</script>
+      <div class="hero-sub reveal reveal-delay-3">
+        <div class="hero-line1">BUILDING WORLDS</div>
+        <div class="hero-line2">BRAND DIGITAL EXPERIENTIAL</div>
+      </div>
 
-<script>
-  const bust = document.querySelector('.hero-bust img');
-  window.addEventListener('scroll', () => {
-    const offset = window.scrollY * 0.08;
-    bust.style.transform = `translateY(${offset}px)`;
-  });
-</script>
+    </div>
+  </section>
 
+  <section id="work" style="height: 50vh;"></section>
+  <section id="about" style="height: 50vh;"></section>
+  <section id="contact" style="height: 50vh;"></section>
+</main>
+
+<!-- model viewer -->
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
+<!-- reveal animation -->
 <script>
-  (() => {
-    const model = document.getElementById('heroModel');
-    if (!model) return;
-
-    // Luxury feel: small range + smoothing
-    const MAX_YAW = 10;    // left/right degrees
-    const MAX_PITCH = 6;   // up/down degrees
-    const BASE_PITCH = 75; // matches camera-orbit pitch
-    const RADIUS = '2.4m'; // matches camera-orbit radius
-
-    let targetYaw = 0, targetPitch = BASE_PITCH;
-    let yaw = 0, pitch = BASE_PITCH;
-
-    // Spring smoothing
-    const ease = 0.08;
-
-    function setTargetFromEvent(e) {
-      const rect = model.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;   // 0..1
-      const y = (e.clientY - rect.top) / rect.height;   // 0..1
-
-      const nx = (x - 0.5) * 2; // -1..1
-      const ny = (y - 0.5) * 2; // -1..1
-
-      targetYaw = nx * MAX_YAW;
-      targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
-    }
-
-    function animate() {
-      yaw += (targetYaw - yaw) * ease;
-      pitch += (targetPitch - pitch) * ease;
-
-      model.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
-      requestAnimationFrame(animate);
-    }
-
-    // Start centered
-    model.addEventListener('load', () => {
-      model.cameraOrbit = `0deg ${BASE_PITCH}deg ${RADIUS}`;
-      requestAnimationFrame(animate);
-    });
-
-    // Track cursor only when hovering the hero (keeps it premium)
-    model.addEventListener('pointermove', setTargetFromEvent);
-
-    model.addEventListener('pointerleave', () => {
-      targetYaw = 0;
-      targetPitch = BASE_PITCH;
-    });
-  })();
-</script>
-
-  <model-viewer
-  id="heroModel"
-  src="/assets/porcelain_girl_optimized.glb"
-  alt="Porcelain sculpture"
-  interaction-prompt="none"
-  camera-controls="false"
-  disable-pan
-  disable-zoom
-  environment-image="neutral"
-  exposure="1.1"
-  shadow-intensity="0.25"
-  camera-orbit="0deg 75deg 2.4m"
-  min-camera-orbit="0deg 75deg 2.4m"
-  max-camera-orbit="0deg 75deg 2.4m">
-</model-viewer>
-
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
-<script>
-  const mv = document.getElementById('heroModel');
-
-  mv.addEventListener('load', () => {
-    const mat = mv.model?.materials?.[0];
-    if (!mat) return;
-
-    mat.pbrMetallicRoughness.setMetallicFactor(0.0);
-    mat.pbrMetallicRoughness.setRoughnessFactor(0.18);
+window.addEventListener('load', () => {
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
   });
+});
 </script>
-  
+
+<!-- cursor tracking luxury rotation -->
+<script>
+(() => {
+  const model = document.getElementById('heroModel');
+  if (!model) return;
+
+  const MAX_YAW = 8;        // subtle left/right
+  const MAX_PITCH = 5;      // subtle up/down
+  const BASE_PITCH = 75;
+  const RADIUS = '2.4m';
+  const ease = 0.08;
+
+  let targetYaw = 0, targetPitch = BASE_PITCH;
+  let yaw = 0, pitch = BASE_PITCH;
+
+  function setTarget(e) {
+    const rect = model.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+
+    const nx = (x - 0.5) * 2;
+    const ny = (y - 0.5) * 2;
+
+    targetYaw = nx * MAX_YAW;
+    targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
+  }
+
+  function animate() {
+    yaw += (targetYaw - yaw) * ease;
+    pitch += (targetPitch - pitch) * ease;
+    model.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
+    requestAnimationFrame(animate);
+  }
+
+  model.addEventListener('load', () => {
+    model.cameraOrbit = `0deg ${BASE_PITCH}deg ${RADIUS}`;
+    requestAnimationFrame(animate);
+  });
+
+  model.addEventListener('pointermove', setTarget);
+  model.addEventListener('pointerleave', () => {
+    targetYaw = 0;
+    targetPitch = BASE_PITCH;
+  });
+})();
+</script>
+
+<!-- porcelain material polish -->
+<script>
+const mv = document.getElementById('heroModel');
+if (mv) {
+  mv.addEventListener('load', () => {
+    if (!mv.model?.materials) return;
+    mv.model.materials.forEach(mat => {
+      mat.pbrMetallicRoughness.setMetallicFactor(0.0);
+      mat.pbrMetallicRoughness.setRoughnessFactor(0.18);
+    });
+  });
+}
+</script>
+
 </body>
 </html>
