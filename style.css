@@ -56,12 +56,18 @@ a{ color:inherit; text-decoration:none; }
 }
 
 /* Hero */
+:root{
+  --bg:#f4f1ea;
+  --ink:#121212;
+  --blue:#1f57ff;
+}
+
 .hero-center{
   min-height: 100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding: 120px 24px 72px; /* top padding accounts for fixed header */
+  padding: 120px 24px 72px;
 }
 
 .hero-inner{
@@ -71,7 +77,6 @@ a{ color:inherit; text-decoration:none; }
   position: relative;
 }
 
-/* Split title behind */
 .hero-title{
   position: relative;
   z-index: 1;
@@ -95,12 +100,11 @@ a{ color:inherit; text-decoration:none; }
 .hero-word.left{ text-align:left; width:50%; }
 .hero-word.right{ text-align:right; width:50%; }
 
-/* Bust overlays the title */
 .hero-bust{
   position: relative;
   z-index: 3;
   width: min(520px, 86vw);
-  margin: -56px auto 0; /* pulls bust over the title */
+  margin: -56px auto 0;
   pointer-events:none;
 }
 
@@ -111,7 +115,6 @@ a{ color:inherit; text-decoration:none; }
   filter: drop-shadow(0 30px 60px rgba(0,0,0,.10));
 }
 
-/* Bottom stack */
 .hero-sub{
   margin-top: 18px;
 }
