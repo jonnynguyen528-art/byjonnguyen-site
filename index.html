@@ -1,30 +1,133 @@
-<!-- model-viewer library -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer.min.js"></script>
+<!-- index.html — LAST KNOWN WORKING (before angle edits) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jon Nguyen — Creative Director</title>
+  <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
+  <link rel="stylesheet" href="./style.css" />
+</head>
 
-<!-- ✅ Step 3 goes RIGHT HERE -->
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="#">JON NGUYEN</a>
+    <nav class="nav">
+      <a href="#work">WORK</a>
+      <a href="#about">ABOUT</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero-center">
+    <div class="hero-inner">
+
+      <div class="hero-title reveal reveal-delay-1">
+        <span class="hero-word left">CREATIVE</span>
+        <span class="hero-word right">DIRECTOR</span>
+      </div>
+
+      <div class="hero-bust reveal reveal-delay-2">
+        <model-viewer
+          id="heroModel"
+          src="/assets/porcelain_girl_2.glb"
+          alt="Porcelain sculpture"
+          interaction-prompt="none"
+          disable-pan
+          disable-zoom
+          environment-image="neutral"
+          exposure="1.05"
+          camera-orbit="0deg 75deg 2.4m"
+          min-camera-orbit="0deg 75deg 2.4m"
+          max-camera-orbit="0deg 75deg 2.4m"
+          style="width:100%; height:100%; background:transparent;"
+        ></model-viewer>
+      </div>
+
+      <div class="hero-sub reveal reveal-delay-3">
+        <div class="hero-line1">BUILDING WORLDS</div>
+        <div class="hero-line2">BRAND DIGITAL EXPERIENTIAL</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="work" style="height: 50vh;"></section>
+  <section id="about" style="height: 50vh;"></section>
+  <section id="contact" style="height: 50vh;"></section>
+</main>
+
+<!-- Reveal -->
+<script>
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+    });
+  });
+</script>
+
+<!-- model-viewer library -->
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+
+<!-- Cursor tracking (whole browser) + recenter on leave/blur -->
 <script>
 (() => {
-  const mv = document.getElementById('heroModel');
-  const status = document.getElementById('mvStatus');
-  if (!mv || !status) return;
+  const model = document.getElementById('heroModel');
+  if (!model) return;
 
-  const set = (t) => status.textContent = t;
+  const MAX_YAW = 6;
+  const MAX_PITCH = 4;
+  const BASE_PITCH = 75;
+  const RADIUS = '2.4m';
+  const ease = 0.08;
 
-  set('Loading model…');
+  let targetYaw = 0, targetPitch = BASE_PITCH;
+  let yaw = 0, pitch = BASE_PITCH;
 
-  mv.addEventListener('load', () => set('Model loaded ✅'));
-  mv.addEventListener('error', (e) => {
-    console.error('model-viewer error:', e);
-    set('Model failed ❌ (open Console)');
+  function setTargetFromWindow(e) {
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
+
+    const nx = (x - 0.5) * 2; // -1..1
+    const ny = (y - 0.5) * 2; // -1..1
+
+    // Correct direction: cursor left => model turns left
+    targetYaw = -nx * MAX_YAW;
+    targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
+  }
+
+  function animate() {
+    yaw += (targetYaw - yaw) * ease;
+    pitch += (targetPitch - pitch) * ease;
+
+    // Radius hard-locked (prevents zoom drift)
+    model.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
+    requestAnimationFrame(animate);
+  }
+
+  model.addEventListener('load', () => {
+    model.cameraOrbit = `0deg ${BASE_PITCH}deg ${RADIUS}`;
+    requestAnimationFrame(animate);
   });
 
-  if (!customElements.get('model-viewer')) {
-    set('model-viewer script not loaded ❌');
-  }
+  window.addEventListener('pointermove', setTargetFromWindow, { passive: true });
+
+  document.addEventListener('mouseleave', () => {
+    targetYaw = 0;
+    targetPitch = BASE_PITCH;
+  });
+
+  window.addEventListener('blur', () => {
+    targetYaw = 0;
+    targetPitch = BASE_PITCH;
+  });
 })();
 </script>
 
-<!-- then your existing cursor tracking script BELOW this -->
-<script>
-  // your cursor tracking code
-</script>
+</body>
+</html>
