@@ -182,9 +182,12 @@ a{ color:inherit; text-decoration:none; }
 }
 
 model-viewer {
-  outline: none;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-model-viewer:focus {
-  outline: none;
+model-viewer:focus,
+model-viewer:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
