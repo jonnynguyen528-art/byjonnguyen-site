@@ -79,22 +79,25 @@ window.addEventListener('load', () => {
   const model = document.getElementById('heroModel');
   if (!model) return;
 
-  const MAX_YAW = 8;        // subtle left/right
-  const MAX_PITCH = 5;      // subtle up/down
-  const BASE_PITCH = 75;
-  const RADIUS = '2.4m';
+  // Subtle luxury range
+  const MAX_YAW = 6;        // left/right
+  const MAX_PITCH = 4;      // up/down
+  const BASE_PITCH = 75;    // match your camera-orbit pitch
+  const RADIUS = '2.4m';    // match your camera-orbit radius
+
+  // Smooth easing
   const ease = 0.08;
 
   let targetYaw = 0, targetPitch = BASE_PITCH;
   let yaw = 0, pitch = BASE_PITCH;
 
-  function setTarget(e) {
-    const rect = model.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
+  function setTargetFromWindow(e) {
+    // Normalize cursor position across the whole viewport
+    const x = e.clientX / window.innerWidth;   // 0..1
+    const y = e.clientY / window.innerHeight;  // 0..1
 
-    const nx = (x - 0.5) * 2;
-    const ny = (y - 0.5) * 2;
+    const nx = (x - 0.5) * 2; // -1..1
+    const ny = (y - 0.5) * 2; // -1..1
 
     targetYaw = nx * MAX_YAW;
     targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
@@ -103,17 +106,28 @@ window.addEventListener('load', () => {
   function animate() {
     yaw += (targetYaw - yaw) * ease;
     pitch += (targetPitch - pitch) * ease;
+
     model.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
     requestAnimationFrame(animate);
   }
 
+  // Start animation loop once model is ready
   model.addEventListener('load', () => {
     model.cameraOrbit = `0deg ${BASE_PITCH}deg ${RADIUS}`;
     requestAnimationFrame(animate);
   });
 
-  model.addEventListener('pointermove', setTarget);
-  model.addEventListener('pointerleave', () => {
+  // Track anywhere in the browser
+  window.addEventListener('pointermove', setTargetFromWindow, { passive: true });
+
+  // When cursor leaves the browser window, revert to neutral
+  document.addEventListener('mouseleave', () => {
+    targetYaw = 0;
+    targetPitch = BASE_PITCH;
+  });
+
+  // Also revert if the tab loses focus (nice polish)
+  window.addEventListener('blur', () => {
     targetYaw = 0;
     targetPitch = BASE_PITCH;
   });
