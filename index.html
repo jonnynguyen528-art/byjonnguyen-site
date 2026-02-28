@@ -198,6 +198,22 @@ if (mv) {
   mv?.addEventListener('load', () => status.textContent = '✅ GLB loaded and rendered.');
   mv?.addEventListener('error', () => status.textContent = '❌ GLB error (corrupt/unsupported).');
 </script>
+
+<script>
+(() => {
+  const mv = document.getElementById('heroModel');
+  if (!mv) return;
+
+  // Capture-phase: stops wheel events before model-viewer can handle them
+  window.addEventListener('wheel', (e) => {
+    const path = e.composedPath?.() || [];
+    if (path.includes(mv)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, { passive: false, capture: true });
+})();
+</script>
   
 </body>
 </html>
