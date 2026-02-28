@@ -32,9 +32,22 @@
 </div>
 
 <div class="hero-bust reveal reveal-delay-2">
-  <span class="bust-sweep">
-    <img src="/assets/hero-bust.png" alt="Porcelain sculpture with blue dragon painting" />
-  </span>
+  <model-viewer
+    id="heroModel"
+    src="/assets/porcelain_girl_2.glb"
+    alt="Porcelain sculpture"
+    camera-controls="false"
+    disable-pan
+    disable-zoom
+    interaction-prompt="none"
+    shadow-intensity="0.35"
+    exposure="1.05"
+    environment-image="neutral"
+    camera-orbit="0deg 75deg 2.4m"
+    min-camera-orbit="0deg 75deg 2.4m"
+    max-camera-orbit="0deg 75deg 2.4m"
+    style="width:100%; height:100%;"
+  ></model-viewer>
 </div>
 
 <div class="hero-sub reveal reveal-delay-3">
@@ -65,6 +78,8 @@
     bust.style.transform = `translateY(${offset}px)`;
   });
 </script>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   
 </body>
 </html>
