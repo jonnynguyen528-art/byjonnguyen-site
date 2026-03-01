@@ -85,8 +85,8 @@
     mv.removeAttribute('auto-rotate');
     mv.autoRotate = false;
 
-const MAX_YAW = 6;
-const MAX_PITCH = 4;
+const MAX_YAW = 3.5;
+const MAX_PITCH = 2.5;
 
 const BASE_YAW = -12;     // resting left/right angle (we will tweak this)
 const BASE_PITCH = 70;  // resting up/down angle
@@ -104,9 +104,19 @@ targetPitch = BASE_PITCH;
       const ny = (e.clientY / window.innerHeight - 0.5) * 2;
 
       // cursor left => turns left (you confirmed this direction)
-targetYaw = BASE_YAW + (-nx * MAX_YAW);
-targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
-    }
+function resetToBase(){
+  targetYaw = BASE_YAW;
+  targetPitch = BASE_PITCH;
+}
+
+// Fires when the cursor actually leaves the browser window (reliable)
+window.addEventListener('mouseout', (e) => {
+  // relatedTarget === null means it left the window (not just moved between elements)
+  if (!e.relatedTarget) resetToBase();
+});
+
+// Also reset if tab/app loses focus
+window.addEventListener('blur', resetToBase);
 
     function tick() {
       yaw += (targetYaw - yaw) * EASE;
