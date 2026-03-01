@@ -182,3 +182,6 @@ model-viewer:focus-visible{
 model-viewer::part(default-progress-bar){
   display:none;
 }
+
+/* DEBUG: force visible even if reveal breaks */
+.hero-bust { opacity: 1 !important; filter: none !important; transform: none !important; }
