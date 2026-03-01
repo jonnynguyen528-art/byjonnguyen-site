@@ -67,6 +67,10 @@
   <section id="contact" style="height: 50vh;"></section>
 </main>
 
+<!-- model-viewer library (use one CDN + legacy fallback) -->
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+
 <!-- Reveal -->
 <script>
   window.addEventListener('load', () => {
@@ -76,72 +80,32 @@
   });
 </script>
 
-<!-- model-viewer library -->
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-<script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
-
-<!-- ADD THIS SCRIPT RIGHT HERE -->
-<script>
-(() => {
-  const status = document.getElementById('mvStatus');
-  const mv = document.getElementById('heroModel');
-  if (!status) return;
-
-  const libLoaded = !!customElements.get('model-viewer');
-  status.textContent = libLoaded
-    ? 'model-viewer loaded ✅ (waiting for GLB…)'
-    : 'model-viewer NOT loaded ❌';
-
-  if (mv) {
-    mv.addEventListener('load', () => status.textContent = 'GLB loaded ✅');
-    mv.addEventListener('error', () => status.textContent = 'GLB failed ❌');
-  }
-})();
-</script>
-
-<!-- Cursor tracking script stays BELOW this -->
+<!-- Cursor tracking (FULL BROWSER) -->
 <script>
 (() => {
   const mv = document.getElementById('heroModel');
   if (!mv) return;
 
-  // range + feel
+  // Make sure nothing auto-moves the camera
+  mv.removeAttribute('auto-rotate');
+  mv.autoRotate = false;
+  mv.removeAttribute('camera-controls');
+  mv.cameraControls = false;
+
   const MAX_YAW = 6;
   const MAX_PITCH = 4;
   const BASE_PITCH = 75;
   const EASE = 0.08;
 
-  // We will lock a real numeric radius (no "auto")
-  let lockedRadiusM = 2.4;
-
-  let targetYaw = 0, targetPitch = BASE_PITCH;
+  let radius = 2.4; // will be replaced with the real framed radius
   let yaw = 0, pitch = BASE_PITCH;
+  let targetYaw = 0, targetPitch = BASE_PITCH;
 
-  function lockRadiusFromViewer() {
-    // Try the official API first
-    try {
-      const o = mv.getCameraOrbit?.();
-      if (o && typeof o.radius === 'number' && isFinite(o.radius) && o.radius > 0) {
-        lockedRadiusM = o.radius;
-        return;
-      }
-    } catch (e) {}
+  function setTarget(e) {
+    const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+    const ny = (e.clientY / window.innerHeight - 0.5) * 2;
 
-    // Fallback: parse mv.cameraOrbit string: "Xdeg Ydeg Zm"
-    const parts = String(mv.cameraOrbit || '').trim().split(/\s+/);
-    const last = parts[2] || '';
-    const m = parseFloat(last.replace('m',''));
-    if (isFinite(m) && m > 0) lockedRadiusM = m;
-  }
-
-  function setTargetFromWindow(e) {
-    const x = e.clientX / window.innerWidth;
-    const y = e.clientY / window.innerHeight;
-
-    const nx = (x - 0.5) * 2; // -1..1
-    const ny = (y - 0.5) * 2;
-
-    // Correct direction (you already confirmed this feels right)
+    // cursor left => model turns left
     targetYaw = -nx * MAX_YAW;
     targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
   }
@@ -150,39 +114,26 @@
     yaw += (targetYaw - yaw) * EASE;
     pitch += (targetPitch - pitch) * EASE;
 
-    // Force camera every frame so nothing else can override it
-    mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${lockedRadiusM.toFixed(3)}m`;
+    mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radius.toFixed(3)}m`;
     requestAnimationFrame(animate);
   }
 
-  // IMPORTANT: run after model-viewer is ready + model is loaded
-  const start = () => {
-    // Kill any lingering auto-rotate/camera-controls behavior (even if attributes exist)
-    mv.removeAttribute('auto-rotate');
-    mv.autoRotate = false;
+  mv.addEventListener('load', () => {
+    // Get the actual radius model-viewer used to frame the model
+    try {
+      const o = mv.getCameraOrbit();
+      if (o && isFinite(o.radius) && o.radius > 0) radius = o.radius;
+    } catch (_) {}
 
-    mv.removeAttribute('camera-controls'); // ensures wheel/drag never hijacks
-    mv.cameraControls = false;
-
-    // Lock radius from whatever framing exists right now
-    lockRadiusFromViewer();
-
-    // Start centered
-    yaw = 0;
-    pitch = BASE_PITCH;
-    targetYaw = 0;
-    targetPitch = BASE_PITCH;
+    // start centered
+    yaw = 0; pitch = BASE_PITCH;
+    targetYaw = 0; targetPitch = BASE_PITCH;
 
     requestAnimationFrame(animate);
-  };
+  }, { once: true });
 
-  // If already loaded, start immediately; otherwise wait for load
-  mv.addEventListener('load', start, { once: true });
+  window.addEventListener('pointermove', setTarget, { passive: true });
 
-  // Track anywhere in browser
-  window.addEventListener('pointermove', setTargetFromWindow, { passive: true });
-
-  // Recenter when cursor leaves browser / tab loses focus
   document.addEventListener('mouseleave', () => {
     targetYaw = 0;
     targetPitch = BASE_PITCH;
