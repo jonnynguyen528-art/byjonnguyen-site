@@ -109,8 +109,9 @@ auto-rotate="false"
   const MAX_YAW = 6;
   const MAX_PITCH = 4;
   const BASE_PITCH = 75;
-  const RADIUS = '2.4m';
   const ease = 0.08;
+
+  let RADIUS = 'auto'; // will be replaced after load
 
   let targetYaw = 0, targetPitch = BASE_PITCH;
   let yaw = 0, pitch = BASE_PITCH;
@@ -119,10 +120,9 @@ auto-rotate="false"
     const x = e.clientX / window.innerWidth;
     const y = e.clientY / window.innerHeight;
 
-    const nx = (x - 0.5) * 2; // -1..1
-    const ny = (y - 0.5) * 2; // -1..1
+    const nx = (x - 0.5) * 2;
+    const ny = (y - 0.5) * 2;
 
-    // Correct direction: cursor left => model turns left
     targetYaw = -nx * MAX_YAW;
     targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
   }
@@ -131,12 +131,21 @@ auto-rotate="false"
     yaw += (targetYaw - yaw) * ease;
     pitch += (targetPitch - pitch) * ease;
 
-    // Radius hard-locked (prevents zoom drift)
     model.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
     requestAnimationFrame(animate);
   }
 
   model.addEventListener('load', () => {
+    // model-viewer has now framed the model; read the computed orbit radius
+    const orbit = model.getCameraOrbit(); // {theta, phi, radius}
+    RADIUS = `${orbit.radius.toFixed(3)}m`;
+
+    // start centered
+    yaw = 0;
+    pitch = BASE_PITCH;
+    targetYaw = 0;
+    targetPitch = BASE_PITCH;
+
     model.cameraOrbit = `0deg ${BASE_PITCH}deg ${RADIUS}`;
     requestAnimationFrame(animate);
   });
