@@ -75,73 +75,80 @@
   <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
   <!-- Cursor tracking (FULL BROWSER) -->
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const mv = document.getElementById('heroModel');
-      if (!mv) return;
+<script>
+(async () => {
+  // Wait until <model-viewer> is actually registered and upgraded
+  await customElements.whenDefined('model-viewer');
 
-      // Ensure nothing auto-moves camera
-      mv.removeAttribute('auto-rotate');
-      mv.autoRotate = false;
-      mv.removeAttribute('camera-controls');
-      mv.cameraControls = false;
+  const mv = document.getElementById('heroModel');
+  if (!mv) return;
 
-      const MAX_YAW = 6;
-      const MAX_PITCH = 4;
-      const BASE_PITCH = 75;
-      const EASE = 0.08;
+  // Hard-disable any internal motion/controls
+  mv.removeAttribute('auto-rotate');
+  mv.autoRotate = false;
+  mv.removeAttribute('camera-controls');
+  mv.cameraControls = false;
 
-      let radius = 2.4;
-      let yaw = 0, pitch = BASE_PITCH;
-      let targetYaw = 0, targetPitch = BASE_PITCH;
+  // Feel
+  const MAX_YAW = 6;
+  const MAX_PITCH = 4;
+  const BASE_PITCH = 75;
+  const EASE = 0.08;
 
-      function setTarget(e) {
-        const nx = (e.clientX / window.innerWidth - 0.5) * 2;
-        const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+  // We’ll lock a real radius once the model loads
+  let radiusM = 2.4;
 
-        // cursor left => model turns left
-        targetYaw = -nx * MAX_YAW;
-        targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
-      }
+  let yaw = 0, pitch = BASE_PITCH;
+  let targetYaw = 0, targetPitch = BASE_PITCH;
 
-      function animate() {
-        yaw += (targetYaw - yaw) * EASE;
-        pitch += (targetPitch - pitch) * EASE;
+  function setTarget(e) {
+    const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+    const ny = (e.clientY / window.innerHeight - 0.5) * 2;
 
-        mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radius.toFixed(3)}m`;
-        requestAnimationFrame(animate);
-      }
+    // cursor left => model turns left
+    targetYaw = -nx * MAX_YAW;
+    targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
+  }
 
-      function start() {
-        // Lock the framed radius (works even if already loaded)
-        try {
-          const o = mv.getCameraOrbit?.();
-          if (o && isFinite(o.radius) && o.radius > 0) radius = o.radius;
-        } catch (_) {}
+  function tick() {
+    yaw += (targetYaw - yaw) * EASE;
+    pitch += (targetPitch - pitch) * EASE;
 
-        yaw = 0; pitch = BASE_PITCH;
-        targetYaw = 0; targetPitch = BASE_PITCH;
+    // Force camera every frame
+    mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
+    requestAnimationFrame(tick);
+  }
 
-        requestAnimationFrame(animate);
-      }
+  function start() {
+    // Lock radius from the viewer once model is framed
+    try {
+      const o = mv.getCameraOrbit?.();
+      if (o && isFinite(o.radius) && o.radius > 0) radiusM = o.radius;
+    } catch (_) {}
 
-      // Start whether load already happened or not
-      if (mv.loaded) start();
-      else mv.addEventListener('load', start, { once: true });
+    // Start loop
+    requestAnimationFrame(tick);
+  }
 
-      window.addEventListener('pointermove', setTarget, { passive: true });
+  // Start whether the model already loaded or not
+  if (mv.loaded) start();
+  else mv.addEventListener('load', start, { once: true });
 
-      document.addEventListener('mouseleave', () => {
-        targetYaw = 0;
-        targetPitch = BASE_PITCH;
-      });
+  // Track cursor across whole browser
+  window.addEventListener('pointermove', setTarget, { passive: true });
 
-      window.addEventListener('blur', () => {
-        targetYaw = 0;
-        targetPitch = BASE_PITCH;
-      });
-    });
-  </script>
+  // Recenter when cursor leaves browser / tab loses focus
+  document.addEventListener('mouseleave', () => {
+    targetYaw = 0;
+    targetPitch = BASE_PITCH;
+  });
+
+  window.addEventListener('blur', () => {
+    targetYaw = 0;
+    targetPitch = BASE_PITCH;
+  });
+})();
+</script>
 
 </body>
 </html>
