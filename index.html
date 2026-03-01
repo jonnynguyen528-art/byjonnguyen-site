@@ -73,93 +73,166 @@
   <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
   <!-- Cursor tracking (FULL BROWSER) — auto-frames, then locks real radius -->
- <!-- Cursor tracking (FULL BROWSER) — auto-frames, then locks real radius -->
-<script>
-(async () => {
-  // Ensure <model-viewer> is registered before we touch it
-  await customElements.whenDefined('model-viewer');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jon Nguyen — Creative Director</title>
+  <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
+  <link rel="stylesheet" href="./style.css" />
+</head>
 
-  const mv = document.getElementById('heroModel');
-  if (!mv) return;
+<body>
 
-  // Safety: ensure no internal auto motion
-  mv.removeAttribute('auto-rotate');
-  mv.autoRotate = false;
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="#">JON NGUYEN</a>
+      <nav class="nav">
+        <a href="#work">WORK</a>
+        <a href="#about">ABOUT</a>
+        <a href="#contact">CONTACT</a>
+      </nav>
+    </div>
+  </header>
 
-  // Luxury range
-  const MAX_YAW = 3.5;
-  const MAX_PITCH = 2.5;
+  <main>
+    <section class="hero-center">
+      <div class="hero-inner">
 
-  // Your desired resting pose
-  const BASE_YAW = -12;
-  const BASE_PITCH = 70;
+        <div class="hero-title reveal reveal-delay-1">
+          <span class="hero-word left">CREATIVE</span>
+          <span class="hero-word right">DIRECTOR</span>
+        </div>
 
-  const EASE = 0.08;
+        <div class="hero-bust reveal reveal-delay-2">
+          <model-viewer
+            id="heroModel"
+            src="/assets/porcelain_girl_2.glb"
+            alt="Porcelain sculpture"
+            interaction-prompt="none"
+            disable-pan
+            disable-zoom
+            environment-image="neutral"
+            exposure="1.05"
+            camera-target="0m 0m 0m"
+            camera-orbit="0deg 75deg auto"
+            style="width:100%; height:100%; background:transparent;"
+          ></model-viewer>
+        </div>
 
-  // Will be locked after load
-  let radiusM = 2.4;
+        <div class="hero-sub reveal reveal-delay-3">
+          <div class="hero-line1">BUILDING WORLDS</div>
+          <div class="hero-line2">BRAND DIGITAL EXPERIENTIAL</div>
+        </div>
 
-  // State
-  let yaw = BASE_YAW;
-  let pitch = BASE_PITCH;
-  let targetYaw = BASE_YAW;
-  let targetPitch = BASE_PITCH;
+      </div>
+    </section>
 
-  function resetToBase() {
-    targetYaw = BASE_YAW;
-    targetPitch = BASE_PITCH;
-  }
+    <section id="work" style="height: 50vh;"></section>
+    <section id="about" style="height: 50vh;"></section>
+    <section id="contact" style="height: 50vh;"></section>
+  </main>
 
-  function setTarget(e) {
-    const nx = (e.clientX / window.innerWidth - 0.5) * 2;  // -1..1
-    const ny = (e.clientY / window.innerHeight - 0.5) * 2; // -1..1
+  <!-- Reveal -->
+  <script>
+    window.addEventListener('load', () => {
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+      });
+    });
+  </script>
 
-    const yawDesired = BASE_YAW + (-nx * MAX_YAW);
-    const pitchDesired = BASE_PITCH + (-ny * MAX_PITCH);
+  <!-- model-viewer library -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
-    // Clamp to base ± range (prevents wild swings)
-    targetYaw = Math.max(BASE_YAW - MAX_YAW, Math.min(BASE_YAW + MAX_YAW, yawDesired));
-    targetPitch = Math.max(BASE_PITCH - MAX_PITCH, Math.min(BASE_PITCH + MAX_PITCH, pitchDesired));
-  }
+  <!-- Cursor tracking (FULL BROWSER) — auto-frames, then locks real radius -->
+  <script>
+  (async () => {
+    // Wait until the custom element is actually registered (prevents "script ran too early")
+    await customElements.whenDefined('model-viewer');
 
-  function tick() {
-    yaw += (targetYaw - yaw) * EASE;
-    pitch += (targetPitch - pitch) * EASE;
+    const mv = document.getElementById('heroModel');
+    if (!mv) return;
 
-    mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
-    requestAnimationFrame(tick);
-  }
+    // Safety: ensure no internal auto motion
+    mv.removeAttribute('auto-rotate');
+    mv.autoRotate = false;
 
-  function start() {
-    // Lock the radius model-viewer framed the model with
-    try {
-      const o = mv.getCameraOrbit?.();
-      if (o && isFinite(o.radius) && o.radius > 0) radiusM = o.radius;
-    } catch (_) {}
+    const MAX_YAW = 6;
+    const MAX_PITCH = 4;
+    const BASE_PITCH = 75;
+    const EASE = 0.08;
 
-    // Start at base pose
-    yaw = BASE_YAW;
-    pitch = BASE_PITCH;
-    resetToBase();
+    let radiusM = 2.4; // will be replaced after load
+    let yaw = 0, pitch = BASE_PITCH;
+    let targetYaw = 0, targetPitch = BASE_PITCH;
 
-    requestAnimationFrame(tick);
-  }
+    function setTarget(e) {
+      const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
 
-  // Start whether already loaded or not
-  if (mv.loaded) start();
-  else mv.addEventListener('load', start, { once: true });
+      // cursor left => turns left (you confirmed this direction)
+      targetYaw = -nx * MAX_YAW;
+      targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
+    }
 
-  // Track cursor anywhere in the browser
-  window.addEventListener('pointermove', setTarget, { passive: true });
+    function tick() {
+      yaw += (targetYaw - yaw) * EASE;
+      pitch += (targetPitch - pitch) * EASE;
 
-  // Reliable reset when cursor leaves browser window
-  window.addEventListener('mouseout', (e) => {
-    if (!e.relatedTarget) resetToBase();
-  });
+      // Force orbit every frame using locked radius
+      mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
+      requestAnimationFrame(tick);
+    }
 
-  // Reset if tab/app loses focus
-  window.addEventListener('blur', resetToBase);
-})();
-</script>
+    function start() {
+      // Lock the radius model-viewer actually framed to (critical!)
+      try {
+        const o = mv.getCameraOrbit?.();
+        if (o && isFinite(o.radius) && o.radius > 0) radiusM = o.radius;
+      } catch (_) {}
+
+      // Start centered
+      yaw = 0; pitch = BASE_PITCH;
+      targetYaw = 0; targetPitch = BASE_PITCH;
+
+      requestAnimationFrame(tick);
+    }
+
+    // Start whether already loaded or not
+    if (mv.loaded) start();
+    else mv.addEventListener('load', start, { once: true });
+
+    // Track cursor anywhere in the browser
+    window.addEventListener('pointermove', setTarget, { passive: true });
+
+    // Recenter when cursor leaves browser/tab
+    document.addEventListener('mouseleave', () => {
+      targetYaw = 0;
+      targetPitch = BASE_PITCH;
+    });
+
+    window.addEventListener('blur', () => {
+      targetYaw = 0;
+      targetPitch = BASE_PITCH;
+    });
+
+    // OPTIONAL: prevent accidental wheel zoom *but keep page scroll*
+    // (Some setups still zoom even with disable-zoom)
+    window.addEventListener('wheel', (e) => {
+      const path = e.composedPath?.() || [];
+      if (path.includes(mv)) {
+        e.preventDefault();
+        window.scrollBy(0, e.deltaY);
+      }
+    }, { passive: false, capture: true });
+
+  })();
+  </script>
+
+</body>
+</html>
 </body>
 </html>
