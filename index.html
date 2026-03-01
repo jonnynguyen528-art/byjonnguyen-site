@@ -139,8 +139,13 @@ targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
     window.addEventListener('pointermove', setTarget, { passive: true });
 
     // Recenter when cursor leaves browser/tab
- document.addEventListener('mouseleave', () => {
-  targetYaw = BASE_YAW;
+document.addEventListener('mouseleave', () => {
+  targetYaw = -12;
+  targetPitch = BASE_PITCH;
+});
+
+window.addEventListener('blur', () => {
+  targetYaw = 70;
   targetPitch = BASE_PITCH;
 });
 
