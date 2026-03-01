@@ -48,6 +48,10 @@
         ></model-viewer>
       </div>
 
+      <div id="mvStatus" style="position:absolute; left:0; right:0; bottom:-26px; text-align:center; font:12px system-ui; color:rgba(18,18,18,.55);">
+  checking…
+</div>
+
       <div class="hero-sub reveal reveal-delay-3">
         <div class="hero-line1">BUILDING WORLDS</div>
         <div class="hero-line2">BRAND DIGITAL EXPERIENTIAL</div>
@@ -74,7 +78,26 @@
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
-<!-- Cursor tracking (whole browser) + recenter on leave/blur -->
+<!-- ADD THIS SCRIPT RIGHT HERE -->
+<script>
+(() => {
+  const status = document.getElementById('mvStatus');
+  const mv = document.getElementById('heroModel');
+  if (!status) return;
+
+  const libLoaded = !!customElements.get('model-viewer');
+  status.textContent = libLoaded
+    ? 'model-viewer loaded ✅ (waiting for GLB…)'
+    : 'model-viewer NOT loaded ❌';
+
+  if (mv) {
+    mv.addEventListener('load', () => status.textContent = 'GLB loaded ✅');
+    mv.addEventListener('error', () => status.textContent = 'GLB failed ❌');
+  }
+})();
+</script>
+
+<!-- Cursor tracking script stays BELOW this -->
 <script>
 (() => {
   const model = document.getElementById('heroModel');
