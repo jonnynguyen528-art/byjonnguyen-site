@@ -53,10 +53,6 @@
 
       </div>
     </section>
-
-    <section id="work" style="height: 50vh;"></section>
-    <section id="about" style="height: 50vh;"></section>
-    <section id="contact" style="height: 50vh;"></section>
   </main>
 
   <!-- Reveal -->
@@ -68,106 +64,24 @@
     });
   </script>
 
-  <!-- model-viewer library -->
+  <!-- model-viewer -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
-  <!-- Cursor tracking (FULL BROWSER) — auto-frames, then locks real radius -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jon Nguyen — Creative Director</title>
-  <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
-  <link rel="stylesheet" href="./style.css" />
-</head>
-
-<body>
-
-  <header class="site-header">
-    <div class="nav-wrap">
-      <a class="brand" href="#">JON NGUYEN</a>
-      <nav class="nav">
-        <a href="#work">WORK</a>
-        <a href="#about">ABOUT</a>
-        <a href="#contact">CONTACT</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero-center">
-      <div class="hero-inner">
-
-        <div class="hero-title reveal reveal-delay-1">
-          <span class="hero-word left">CREATIVE</span>
-          <span class="hero-word right">DIRECTOR</span>
-        </div>
-
-        <div class="hero-bust reveal reveal-delay-2">
-          <model-viewer
-            id="heroModel"
-            src="/assets/porcelain_girl_2.glb"
-            alt="Porcelain sculpture"
-            interaction-prompt="none"
-            disable-pan
-            disable-zoom
-            environment-image="neutral"
-            exposure="1.05"
-            camera-target="0m 0m 0m"
-            camera-orbit="0deg 75deg 1.55m"
-            min-camera-orbit="0deg 75deg 1.55m"
-            max-camera-orbit="0deg 75deg 1.55m"
-            style="width:100%; height:100%; background:transparent;"
-          ></model-viewer>
-        </div>
-
-        <div class="hero-sub reveal reveal-delay-3">
-          <div class="hero-line1">BUILDING WORLDS</div>
-          <div class="hero-line2">BRAND DIGITAL EXPERIENTIAL</div>
-        </div>
-
-      </div>
-    </section>
-
-    <section id="work" style="height: 50vh;"></section>
-    <section id="about" style="height: 50vh;"></section>
-    <section id="contact" style="height: 50vh;"></section>
-  </main>
-
-  <!-- Reveal -->
-  <script>
-    window.addEventListener('load', () => {
-      requestAnimationFrame(() => {
-        document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
-      });
-    });
-  </script>
-
-  <!-- model-viewer library -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
-
-  <!-- Cursor tracking (FULL BROWSER) — auto-frames, then locks real radius -->
+  <!-- Cursor tracking -->
   <script>
   (async () => {
-    // Wait until the custom element is actually registered (prevents "script ran too early")
     await customElements.whenDefined('model-viewer');
 
     const mv = document.getElementById('heroModel');
     if (!mv) return;
 
-    // Safety: ensure no internal auto motion
-    mv.removeAttribute('auto-rotate');
-    mv.autoRotate = false;
-
-    const MAX_YAW = 6;
-    const MAX_PITCH = 4;
+    const MAX_YAW = 4;
+    const MAX_PITCH = 3;
     const BASE_PITCH = 75;
     const EASE = 0.08;
 
-    let radiusM = 1.55; // will be replaced after load
+    let radiusM = 2.4;
     let yaw = 0, pitch = BASE_PITCH;
     let targetYaw = 0, targetPitch = BASE_PITCH;
 
@@ -175,7 +89,6 @@
       const nx = (e.clientX / window.innerWidth - 0.5) * 2;
       const ny = (e.clientY / window.innerHeight - 0.5) * 2;
 
-      // cursor left => turns left (you confirmed this direction)
       targetYaw = -nx * MAX_YAW;
       targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
     }
@@ -183,58 +96,36 @@
     function tick() {
       yaw += (targetYaw - yaw) * EASE;
       pitch += (targetPitch - pitch) * EASE;
-
-      // Force orbit every frame using locked radius
       mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
       requestAnimationFrame(tick);
     }
 
     function start() {
-      // Lock the radius model-viewer actually framed to (critical!)
       try {
         const o = mv.getCameraOrbit?.();
-        if (o && isFinite(o.radius) && o.radius > 0) radiusM = o.radius;
+        if (o && o.radius > 0) radiusM = o.radius;
       } catch (_) {}
-
-      // Start centered
-      yaw = 0; pitch = BASE_PITCH;
-      targetYaw = 0; targetPitch = BASE_PITCH;
-
       requestAnimationFrame(tick);
     }
 
-    // Start whether already loaded or not
     if (mv.loaded) start();
     else mv.addEventListener('load', start, { once: true });
 
-    // Track cursor anywhere in the browser
     window.addEventListener('pointermove', setTarget, { passive: true });
 
-    // Recenter when cursor leaves browser/tab
-    document.addEventListener('mouseleave', () => {
-      targetYaw = 0;
-      targetPitch = BASE_PITCH;
+    window.addEventListener('mouseout', (e) => {
+      if (!e.relatedTarget) {
+        targetYaw = 0;
+        targetPitch = BASE_PITCH;
+      }
     });
 
     window.addEventListener('blur', () => {
       targetYaw = 0;
       targetPitch = BASE_PITCH;
     });
-
-    // OPTIONAL: prevent accidental wheel zoom *but keep page scroll*
-    // (Some setups still zoom even with disable-zoom)
-    window.addEventListener('wheel', (e) => {
-      const path = e.composedPath?.() || [];
-      if (path.includes(mv)) {
-        e.preventDefault();
-        window.scrollBy(0, e.deltaY);
-      }
-    }, { passive: false, capture: true });
-
   })();
   </script>
 
-</body>
-</html>
 </body>
 </html>
