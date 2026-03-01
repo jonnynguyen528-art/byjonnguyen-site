@@ -85,22 +85,27 @@
     mv.removeAttribute('auto-rotate');
     mv.autoRotate = false;
 
-    const MAX_YAW = 6;
-    const MAX_PITCH = 4;
-    const BASE_PITCH = 75;
-    const EASE = 0.08;
+const MAX_YAW = 6;
+const MAX_PITCH = 4;
+
+const BASE_YAW = 0;     // resting left/right angle (we will tweak this)
+const BASE_PITCH = 75;  // resting up/down angle
+
+const EASE = 0.08;
 
     let radiusM = 2.4; // will be replaced after load
-    let yaw = 0, pitch = BASE_PITCH;
-    let targetYaw = 0, targetPitch = BASE_PITCH;
+yaw = BASE_YAW;
+pitch = BASE_PITCH;
+targetYaw = BASE_YAW;
+targetPitch = BASE_PITCH;
 
     function setTarget(e) {
       const nx = (e.clientX / window.innerWidth - 0.5) * 2;
       const ny = (e.clientY / window.innerHeight - 0.5) * 2;
 
       // cursor left => turns left (you confirmed this direction)
-      targetYaw = -nx * MAX_YAW;
-      targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
+targetYaw = BASE_YAW + (-nx * MAX_YAW);
+targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
     }
 
     function tick() {
