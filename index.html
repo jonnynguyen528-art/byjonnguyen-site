@@ -102,61 +102,87 @@
 <!-- Cursor tracking script stays BELOW this -->
 <script>
 (() => {
-  const model = document.getElementById('heroModel');
-  if (!model) return;
+  const mv = document.getElementById('heroModel');
+  if (!mv) return;
 
-  // Subtle luxury range
+  // range + feel
   const MAX_YAW = 6;
   const MAX_PITCH = 4;
   const BASE_PITCH = 75;
+  const EASE = 0.08;
 
-  // If you're using auto-framing, keep radius as "auto" initially,
-  // then we lock it after load by reading cameraOrbit string.
-  let RADIUS = 'auto';
-
-  const ease = 0.08;
+  // We will lock a real numeric radius (no "auto")
+  let lockedRadiusM = 2.4;
 
   let targetYaw = 0, targetPitch = BASE_PITCH;
   let yaw = 0, pitch = BASE_PITCH;
+
+  function lockRadiusFromViewer() {
+    // Try the official API first
+    try {
+      const o = mv.getCameraOrbit?.();
+      if (o && typeof o.radius === 'number' && isFinite(o.radius) && o.radius > 0) {
+        lockedRadiusM = o.radius;
+        return;
+      }
+    } catch (e) {}
+
+    // Fallback: parse mv.cameraOrbit string: "Xdeg Ydeg Zm"
+    const parts = String(mv.cameraOrbit || '').trim().split(/\s+/);
+    const last = parts[2] || '';
+    const m = parseFloat(last.replace('m',''));
+    if (isFinite(m) && m > 0) lockedRadiusM = m;
+  }
 
   function setTargetFromWindow(e) {
     const x = e.clientX / window.innerWidth;
     const y = e.clientY / window.innerHeight;
 
-    const nx = (x - 0.5) * 2;
+    const nx = (x - 0.5) * 2; // -1..1
     const ny = (y - 0.5) * 2;
 
-    // correct direction
+    // Correct direction (you already confirmed this feels right)
     targetYaw = -nx * MAX_YAW;
     targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
   }
 
   function animate() {
-    yaw += (targetYaw - yaw) * ease;
-    pitch += (targetPitch - pitch) * ease;
+    yaw += (targetYaw - yaw) * EASE;
+    pitch += (targetPitch - pitch) * EASE;
 
-    model.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
+    // Force camera every frame so nothing else can override it
+    mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${lockedRadiusM.toFixed(3)}m`;
     requestAnimationFrame(animate);
   }
 
-  model.addEventListener('load', () => {
-    // Lock radius from whatever model-viewer computed (if present)
-    // cameraOrbit string format: "Xdeg Ydeg Zm"
-    const parts = (model.cameraOrbit || '').trim().split(/\s+/);
-    const last = parts[2];
-    if (last && /m$/.test(last)) RADIUS = last; // e.g. "1.732m"
+  // IMPORTANT: run after model-viewer is ready + model is loaded
+  const start = () => {
+    // Kill any lingering auto-rotate/camera-controls behavior (even if attributes exist)
+    mv.removeAttribute('auto-rotate');
+    mv.autoRotate = false;
 
-    // start centered
+    mv.removeAttribute('camera-controls'); // ensures wheel/drag never hijacks
+    mv.cameraControls = false;
+
+    // Lock radius from whatever framing exists right now
+    lockRadiusFromViewer();
+
+    // Start centered
     yaw = 0;
     pitch = BASE_PITCH;
     targetYaw = 0;
     targetPitch = BASE_PITCH;
 
     requestAnimationFrame(animate);
-  });
+  };
 
+  // If already loaded, start immediately; otherwise wait for load
+  mv.addEventListener('load', start, { once: true });
+
+  // Track anywhere in browser
   window.addEventListener('pointermove', setTargetFromWindow, { passive: true });
 
+  // Recenter when cursor leaves browser / tab loses focus
   document.addEventListener('mouseleave', () => {
     targetYaw = 0;
     targetPitch = BASE_PITCH;
