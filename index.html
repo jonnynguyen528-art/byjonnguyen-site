@@ -144,16 +144,6 @@
       targetPitch = BASE_PITCH;
     });
 
-    // OPTIONAL: prevent accidental wheel zoom *but keep page scroll*
-    // (Some setups still zoom even with disable-zoom)
-    window.addEventListener('wheel', (e) => {
-      const path = e.composedPath?.() || [];
-      if (path.includes(mv)) {
-        e.preventDefault();
-        window.scrollBy(0, e.deltaY);
-      }
-    }, { passive: false, capture: true });
-
   })();
   </script>
 
