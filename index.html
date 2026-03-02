@@ -41,9 +41,9 @@
             environment-image="neutral"
             exposure="1.05"
             camera-target="0m 0m 0m"
-            camera-orbit="0deg 75deg 1.10m"
-            min-camera-orbit="0deg 75deg 1.10m"
-            max-camera-orbit="0deg 75deg 1.10m"
+            camera-orbit="0deg 75deg 0.60m"
+            min-camera-orbit="0deg 75deg 0.60m"
+            max-camera-orbit="0deg 75deg 0.60m"
             style="width:100%; height:100%; background:transparent;"
           ></model-viewer>
         </div>
@@ -99,12 +99,6 @@
       yaw += (targetYaw - yaw) * EASE;
       pitch += (targetPitch - pitch) * EASE;
       mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
-      requestAnimationFrame(tick);
-    }
-
-    function start() {
-      try {
-      } catch (_) {}
       requestAnimationFrame(tick);
     }
 
