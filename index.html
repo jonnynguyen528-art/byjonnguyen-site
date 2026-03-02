@@ -83,7 +83,7 @@
     const BASE_PITCH = 75;
     const EASE = 0.08;
 
-    let radiusM = 2.4;
+    let radiusM = 1.25;
     let yaw = 0, pitch = BASE_PITCH;
     let targetYaw = 0, targetPitch = BASE_PITCH;
 
@@ -104,8 +104,6 @@
 
     function start() {
       try {
-        const o = mv.getCameraOrbit?.();
-        if (o && o.radius > 0) radiusM = o.radius;
       } catch (_) {}
       requestAnimationFrame(tick);
     }
