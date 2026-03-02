@@ -71,55 +71,66 @@
   <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
   <!-- Cursor tracking -->
-  <script>
-  (async () => {
-    await customElements.whenDefined('model-viewer');
+ <script>
+(async () => {
+  await customElements.whenDefined('model-viewer');
 
-    const mv = document.getElementById('heroModel');
-    if (!mv) return;
+  const mv = document.getElementById('heroModel');
+  if (!mv) return;
 
-    const MAX_YAW = 4;
-    const MAX_PITCH = 3;
-    const BASE_PITCH = 75;
-    const EASE = 0.08;
+  const MAX_YAW = 4;
+  const MAX_PITCH = 3;
+  const BASE_YAW = 0;
+  const BASE_PITCH = 75;
+  const EASE = 0.08;
 
-    let radiusM = 0.60;
-    let yaw = 0, pitch = BASE_PITCH;
-    let targetYaw = 0, targetPitch = BASE_PITCH;
+  // IMPORTANT: this controls “zoom” (smaller = bigger model)
+  const radiusM = 0.60;
 
-    function setTarget(e) {
-      const nx = (e.clientX / window.innerWidth - 0.5) * 2;
-      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+  let yaw = BASE_YAW, pitch = BASE_PITCH;
+  let targetYaw = BASE_YAW, targetPitch = BASE_PITCH;
 
-      targetYaw = -nx * MAX_YAW;
-      targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
-    }
+  function setTarget(e) {
+    const nx = (e.clientX / window.innerWidth - 0.5) * 2; // -1..1
+    const ny = (e.clientY / window.innerHeight - 0.5) * 2; // -1..1
 
-    function tick() {
-      yaw += (targetYaw - yaw) * EASE;
-      pitch += (targetPitch - pitch) * EASE;
-      mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
-      requestAnimationFrame(tick);
-    }
+    targetYaw = BASE_YAW + (-nx * MAX_YAW);
+    targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
+  }
 
-    if (mv.loaded) start();
-    else mv.addEventListener('load', start, { once: true });
+  function tick() {
+    yaw += (targetYaw - yaw) * EASE;
+    pitch += (targetPitch - pitch) * EASE;
 
-    window.addEventListener('pointermove', setTarget, { passive: true });
+    mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
+    requestAnimationFrame(tick);
+  }
 
-    window.addEventListener('mouseout', (e) => {
-      if (!e.relatedTarget) {
-        targetYaw = 0;
-        targetPitch = BASE_PITCH;
-      }
-    });
+  function reset() {
+    targetYaw = BASE_YAW;
+    targetPitch = BASE_PITCH;
+  }
 
-    window.addEventListener('blur', () => {
-      targetYaw = 0;
-      targetPitch = BASE_PITCH;
-    });
-  })();
-  </script>
+  function start() {
+    // force initial orbit immediately on load
+    mv.cameraOrbit = `${BASE_YAW.toFixed(2)}deg ${BASE_PITCH.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
+    requestAnimationFrame(tick);
+  }
+
+  if (mv.loaded) start();
+  else mv.addEventListener('load', start, { once: true });
+
+  window.addEventListener('pointermove', setTarget, { passive: true });
+
+  // Reset when cursor truly leaves the browser window
+  window.addEventListener('mouseout', (e) => {
+    if (!e.relatedTarget) reset();
+  });
+
+  // Reset when tab/app loses focus
+  window.addEventListener('blur', reset);
+})();
+</script>
 
 </body>
 </html>
