@@ -75,17 +75,21 @@
   const mv = document.getElementById('heroModel');
   if (!mv) return;
 
+  // --- TUNING ---
+  const BASE_YAW   = -8;   // resting left/right
+  const BASE_PITCH = 68;   // resting up/down
+  const RADIUS_M   = 0.32; // SMALLER = CLOSER (try 0.28 if still small)
+
   const MAX_YAW = 4;
   const MAX_PITCH = 3;
-  const BASE_YAW = -8;
-  const BASE_PITCH = 68;
   const EASE = 0.08;
-
-  // IMPORTANT: this controls “zoom” (smaller = bigger model)
-  const radiusM = 0.05m;
 
   let yaw = BASE_YAW, pitch = BASE_PITCH;
   let targetYaw = BASE_YAW, targetPitch = BASE_PITCH;
+
+  function applyOrbit() {
+    mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS_M.toFixed(3)}m`;
+  }
 
   function setTarget(e) {
     const nx = (e.clientX / window.innerWidth - 0.5) * 2; // -1..1
@@ -99,7 +103,7 @@
     yaw += (targetYaw - yaw) * EASE;
     pitch += (targetPitch - pitch) * EASE;
 
-    mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
+    applyOrbit();
     requestAnimationFrame(tick);
   }
 
@@ -109,8 +113,14 @@
   }
 
   function start() {
-    // force initial orbit immediately on load
-    mv.cameraOrbit = `${BASE_YAW.toFixed(2)}deg ${BASE_PITCH.toFixed(2)}deg ${radiusM.toFixed(3)}m`;
+    // PROOF it's running:
+    console.log('cursor script running — forcing orbit radius:', RADIUS_M);
+
+    // Force camera immediately on load
+    yaw = BASE_YAW; pitch = BASE_PITCH;
+    targetYaw = BASE_YAW; targetPitch = BASE_PITCH;
+    applyOrbit();
+
     requestAnimationFrame(tick);
   }
 
@@ -119,13 +129,12 @@
 
   window.addEventListener('pointermove', setTarget, { passive: true });
 
-  // Reset when cursor truly leaves the browser window
   window.addEventListener('mouseout', (e) => {
     if (!e.relatedTarget) reset();
   });
 
-  // Reset when tab/app loses focus
   window.addEventListener('blur', reset);
+
 })();
 </script>
 
