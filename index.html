@@ -40,10 +40,10 @@
             disable-zoom
             environment-image="neutral"
             exposure="1.05"
-            camera-target="0m 0.05m 0m"
-            camera-orbit="0deg 75deg 0.08m"
-            min-camera-orbit="0deg 75deg 0.08m"
-            max-camera-orbit="0deg 75deg 0.08m"
+camera-target="0m 0.08m 0m"
+camera-orbit="-8deg 72deg 0.55m"
+min-camera-orbit="-8deg 72deg 0.55m"
+max-camera-orbit="-8deg 72deg 0.55m"
             style="width:100%; height:100%; background:transparent;"
           ></model-viewer>
         </div>
@@ -80,12 +80,12 @@
 
   const MAX_YAW = 4;
   const MAX_PITCH = 3;
-  const BASE_YAW = 0;
-  const BASE_PITCH = 75;
+  const BASE_YAW = -8;
+  const BASE_PITCH = 72;
   const EASE = 0.08;
 
   // IMPORTANT: this controls “zoom” (smaller = bigger model)
-  const radiusM = 0.08m;
+  const radiusM = 0.55m;
 
   let yaw = BASE_YAW, pitch = BASE_PITCH;
   let targetYaw = BASE_YAW, targetPitch = BASE_PITCH;
