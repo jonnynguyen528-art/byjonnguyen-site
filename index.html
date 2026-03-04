@@ -1,155 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jon Nguyen — Creative Director</title>
-<meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential.">
-<link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jon Nguyen — Creative Director</title>
+  <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
+  <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
 
 <header class="site-header">
-<div class="nav-wrap">
-<a class="brand" href="#">JON NGUYEN</a>
-
-<nav class="nav">
-<a href="#work">WORK</a>
-<a href="#about">ABOUT</a>
-<a href="#contact">CONTACT</a>
-</nav>
-
-</div>
+  <div class="nav-wrap">
+    <a class="brand" href="#">JON NGUYEN</a>
+    <nav class="nav">
+      <a href="#work">WORK</a>
+      <a href="#about">ABOUT</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+  </div>
 </header>
 
-
 <main>
+  <section class="hero-center">
+    <div class="hero-inner">
 
-<section class="hero-center">
+      <div class="hero-title reveal reveal-delay-1">
+        <span class="hero-word left">CREATIVE</span>
+        <span class="hero-word right">DIRECTOR</span>
+      </div>
 
-<div class="hero-inner">
+      <div class="hero-bust">
+        <div class="hero-sculpture" id="heroStage">
+          <img id="heroImage" src="/assets/hero-bust.png" alt="Porcelain sculpture" />
+          <span class="specular" aria-hidden="true"></span>
+          <span class="glaze" aria-hidden="true"></span>
+          <span class="shadow" aria-hidden="true"></span>
+        </div>
+      </div>
 
+      <div class="hero-sub reveal reveal-delay-3">
+        <div class="hero-line1">BUILDING WORLDS</div>
+        <div class="hero-line2">BRAND DIGITAL EXPERIENTIAL</div>
+      </div>
 
-<div class="hero-title reveal reveal-delay-1">
+    </div>
+  </section>
 
-<span class="hero-word left">CREATIVE</span>
-<span class="hero-word right">DIRECTOR</span>
-
-</div>
-
-
-<div class="hero-bust">
-
-<div class="hero-sculpture">
-
-<img
-id="heroImage"
-src="/assets/hero-bust.png"
-alt="Porcelain sculpture"
-/>
-
-</div>
-
-</div>
-
-
-
-<div class="hero-sub reveal reveal-delay-3">
-
-<div class="hero-line1">
-BUILDING WORLDS
-</div>
-
-<div class="hero-line2">
-BRAND DIGITAL EXPERIENTIAL
-</div>
-
-</div>
-
-
-</div>
-
-</section>
-
-
-<section id="work" style="height:50vh;"></section>
-<section id="about" style="height:50vh;"></section>
-<section id="contact" style="height:50vh;"></section>
-
-
+  <section id="work" style="height: 50vh;"></section>
+  <section id="about" style="height: 50vh;"></section>
+  <section id="contact" style="height: 50vh;"></section>
 </main>
 
-
-
 <script>
-
 window.addEventListener('load', () => {
-
-requestAnimationFrame(() => {
-
-document
-.querySelectorAll('.reveal')
-.forEach(el => el.classList.add('in'))
-
-})
-
-})
-
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  });
+});
 </script>
-
-
 
 <script>
+(() => {
+  const stage = document.getElementById('heroStage');
+  const img = document.getElementById('heroImage');
+  if (!stage || !img) return;
 
-const img = document.getElementById("heroImage")
+  const MAX_TILT_X = 10;   // up/down
+  const MAX_TILT_Y = 14;   // left/right
+  const ease = 0.10;
 
-let targetX = 0
-let targetY = 0
+  let tx = 0, ty = 0;
+  let targetTx = 0, targetTy = 0;
 
-let currentX = 0
-let currentY = 0
+  function setFromPointer(e){
+    const r = stage.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;  // 0..1
+    const y = (e.clientY - r.top) / r.height;  // 0..1
 
-const ease = .08
+    const nx = (x - 0.5) * 2; // -1..1
+    const ny = (y - 0.5) * 2; // -1..1
 
-window.addEventListener("pointermove", e => {
+    targetTy = nx * MAX_TILT_Y;
+    targetTx = -ny * MAX_TILT_X;
 
-const x = e.clientX / window.innerWidth
-const y = e.clientY / window.innerHeight
+    // drive highlight + shadow positions
+    stage.style.setProperty('--lx', `${(x*100).toFixed(2)}%`);
+    stage.style.setProperty('--ly', `${(y*100).toFixed(2)}%`);
+  }
 
-targetX = (y - .5) * -12
-targetY = (x - .5) * 14
+  function tick(){
+    tx += (targetTx - tx) * ease;
+    ty += (targetTy - ty) * ease;
 
+    stage.style.setProperty('--rx', `${tx.toFixed(2)}deg`);
+    stage.style.setProperty('--ry', `${ty.toFixed(2)}deg`);
 
-document.documentElement.style.setProperty(
-"--lightX",
-e.clientX + "px"
-)
+    requestAnimationFrame(tick);
+  }
 
-document.documentElement.style.setProperty(
-"--lightY",
-e.clientY + "px"
-)
+  tick();
 
-})
+  stage.addEventListener('pointermove', setFromPointer, { passive: true });
 
+  stage.addEventListener('pointerleave', () => {
+    targetTx = 0;
+    targetTy = 0;
+    stage.style.setProperty('--lx', `50%`);
+    stage.style.setProperty('--ly', `35%`);
+  });
 
-function animate(){
-
-currentX += (targetX - currentX) * ease
-currentY += (targetY - currentY) * ease
-
-img.style.transform =
-`rotateX(${currentX}deg) rotateY(${currentY}deg) translateY(-8px)`
-
-requestAnimationFrame(animate)
-
-}
-
-animate()
-
+  window.addEventListener('blur', () => {
+    targetTx = 0;
+    targetTy = 0;
+    stage.style.setProperty('--lx', `50%`);
+    stage.style.setProperty('--ly', `35%`);
+  });
+})();
 </script>
-
 
 </body>
 </html>
