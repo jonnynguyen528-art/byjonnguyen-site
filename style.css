@@ -1,7 +1,7 @@
 :root{
   --bg:#f4f1ea;
   --ink:#121212;
-  --blue:#1f57ff;
+  --blue:#1f57ff; 
   --max:1200px;
 }
 
@@ -71,14 +71,16 @@ a{ color:inherit; text-decoration:none; }
 }
 
 .hero-title{
-  position:relative;
-  z-index:1;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  z-index:10;
   display:flex;
   justify-content:space-between;
   align-items:center;
   width:min(980px,96vw);
-  margin:0 auto;
-  transform:translateY(42px);
+  pointer-events:none;
 }
 
 .hero-word{
@@ -97,7 +99,7 @@ a{ color:inherit; text-decoration:none; }
   z-index:3;
   width:min(560px,82vw);
   aspect-ratio:3/4;
-  margin:-118px auto 0;
+  margin:0 auto;
   pointer-events:auto;
 }
 
