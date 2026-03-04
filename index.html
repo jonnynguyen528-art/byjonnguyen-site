@@ -48,8 +48,7 @@
   <script type="module">
     import * as THREE from 'three';
     import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { DRACOLoader }   from 'three/addons/loaders/DRACOLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
     const wrap   = document.getElementById('canvasWrap');
     const canvas = document.getElementById('heroCanvas');
@@ -103,16 +102,12 @@
     const hemi = new THREE.HemisphereLight(0xfff8f0, 0xe8f0ff, 0.8);
     scene.add(hemi);
 
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
-
     const loader = new GLTFLoader();
-    loader.setDRACOLoader(dracoLoader);
 
     let model;
 
     loader.load(
-      'assets/porcelain_girl_2_opt.glb',
+      'assets/porcelain_girl_2.glb',
       (gltf) => {
         model = gltf.scene;
 
