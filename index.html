@@ -30,23 +30,24 @@
         <span class="hero-word right">DIRECTOR</span>
       </div>
 
-      <div class="hero-bust reveal reveal-delay-2">
-        <model-viewer
-          id="heroModel"
-          src="/assets/porcelain_girl_2.glb"
-          alt="Porcelain sculpture"
-          interaction-prompt="none"
-          camera-controls="false"
-          disable-pan
-          disable-zoom
-          environment-image="neutral"
-          exposure="1.05"
-          shadow-intensity="0.25"
-          camera-orbit="0deg 75deg 2.4m"
-          min-camera-orbit="0deg 75deg 2.4m"
-          max-camera-orbit="0deg 75deg 2.4m">
-        </model-viewer>
-      </div>
+<div class="hero-bust">
+  <model-viewer
+    id="heroModel"
+    src="/assets/porcelain_girl_2.glb"
+    alt="Porcelain sculpture"
+    loading="eager"
+    reveal="auto"
+    environment-image="neutral"
+    exposure="1.05"
+    shadow-intensity="0.35"
+    camera-controls
+    interaction-prompt="none"
+    camera-orbit="0deg 75deg 2.4m"
+    style="width:100%;height:100%;background:transparent;">
+  </model-viewer>
+
+  <div id="mvStatus" class="mv-status">loading…</div>
+</div>
 
       <div class="hero-sub reveal reveal-delay-3">
         <div class="hero-line1">BUILDING WORLDS</div>
@@ -134,5 +135,23 @@ if (mv) {
 }
 </script>
 
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+
+<script>
+  const mv = document.getElementById('heroModel');
+  const status = document.getElementById('mvStatus');
+
+  // Tell us if the library loaded at all
+  if (!customElements.get('model-viewer')) {
+    status.textContent = '❌ model-viewer library did NOT load (script blocked/failing).';
+  } else {
+    status.textContent = '✅ model-viewer loaded. Waiting for model…';
+  }
+
+  mv?.addEventListener('load', () => status.textContent = '✅ GLB loaded and rendered.');
+  mv?.addEventListener('error', () => status.textContent = '❌ GLB error (corrupt/unsupported).');
+</script>
+  
 </body>
 </html>
