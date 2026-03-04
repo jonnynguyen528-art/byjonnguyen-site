@@ -4,160 +4,160 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jon Nguyen — Creative Director</title>
-  <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
-  <link rel="stylesheet" href="./style.css" />
-</head>
+  <link rel="stylesheet" href="style.css" />
 
+  <script async src="https://unpkg.com/es-module-shims@1.8.3/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
 <body>
 
-  <header class="site-header">
-    <div class="nav-wrap">
-      <a class="brand" href="#">JON NGUYEN</a>
-      <nav class="nav">
-        <a href="#work">WORK</a>
-        <a href="#about">ABOUT</a>
-        <a href="#contact">CONTACT</a>
-      </nav>
+  <nav class="nav">
+    <a href="/" class="nav__logo">Jon Nguyen</a>
+    <ul class="nav__links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+
+    <div class="hero__title" aria-label="Creative Director">
+      <span class="hero__title-left">Creative</span>
+      <span class="hero__title-right">Director</span>
     </div>
-  </header>
 
-  <main>
-    <section class="hero-center">
+    <div class="hero__canvas-wrap" id="canvasWrap">
+      <canvas id="heroCanvas"></canvas>
+    </div>
 
-      <div class="hero-title reveal reveal-delay-1" aria-hidden="true">
-        <span class="hero-word left">CREATIVE</span>
-        <span class="hero-word right">DIRECTOR</span>
-      </div>
+    <div class="hero__sub">
+      <p class="hero__sub-main">Building Worlds</p>
+      <p class="hero__sub-tagline">Brand &nbsp;·&nbsp; Digital &nbsp;·&nbsp; Experiential</p>
+    </div>
 
-      <div class="hero-bust">
-        <model-viewer
-          id="heroModel"
-          src="/assets/porcelain_girl_2.glb"
-          alt="Porcelain sculpture"
-          interaction-prompt="none"
+  </section>
 
-          environment-image="neutral"
-          exposure="1.1"
-          shadow-intensity="0"
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { DRACOLoader }   from 'three/addons/loaders/DRACOLoader.js';
 
-          disable-pan
-          disable-zoom
+    const wrap   = document.getElementById('canvasWrap');
+    const canvas = document.getElementById('heroCanvas');
 
-          camera-target="0m 0.13m 0m"
-          camera-orbit="0deg 80deg auto"
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
 
-          style="width:100%; height:100%; display:block;"
-        ></model-viewer>
-      </div>
+    function resize() {
+      const w = wrap.clientWidth;
+      const h = wrap.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
 
-      <div class="hero-sub reveal reveal-delay-2">
-        <div class="hero-line1">BUILDING WORLDS</div>
-        <div class="hero-line2">BRAND&nbsp;&nbsp;DIGITAL&nbsp;&nbsp;EXPERIENTIAL</div>
-      </div>
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+    camera.position.set(0, 0.05, 2.6);
 
-    </section>
-  </main>
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping   = true;
+    controls.dampingFactor   = 0.06;
+    controls.enableZoom      = false;
+    controls.enablePan       = false;
+    controls.autoRotate      = true;
+    controls.autoRotateSpeed = 0.55;
+    controls.minPolarAngle   = Math.PI / 2.4;
+    controls.maxPolarAngle   = Math.PI / 1.8;
 
-  <!-- Reveal -->
-  <script>
-    window.addEventListener('load', () => {
-      requestAnimationFrame(() => {
-        document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
-      });
+    const ambient = new THREE.AmbientLight(0xffffff, 1.4);
+    scene.add(ambient);
+
+    const key = new THREE.DirectionalLight(0xfff5e8, 3.5);
+    key.position.set(1.5, 3, 2.5);
+    key.castShadow = true;
+    scene.add(key);
+
+    const fill = new THREE.DirectionalLight(0xddeeff, 1.2);
+    fill.position.set(-2, 1, 1);
+    scene.add(fill);
+
+    const rim = new THREE.DirectionalLight(0xffffff, 1.0);
+    rim.position.set(0, 2, -3);
+    scene.add(rim);
+
+    const hemi = new THREE.HemisphereLight(0xfff8f0, 0xe8f0ff, 0.8);
+    scene.add(hemi);
+
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
+
+    const loader = new GLTFLoader();
+    loader.setDRACOLoader(dracoLoader);
+
+    let model;
+
+    loader.load(
+      'assets/porcelain_girl_2_opt.glb',
+      (gltf) => {
+        model = gltf.scene;
+
+        const box    = new THREE.Box3().setFromObject(model);
+        const centre = new THREE.Vector3();
+        box.getCenter(centre);
+        const size   = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale  = 1.6 / maxDim;
+
+        model.scale.setScalar(scale);
+        model.position.sub(centre.multiplyScalar(scale));
+        model.position.y -= 0.08;
+
+        scene.add(model);
+        document.getElementById('canvasWrap').classList.add('loaded');
+      },
+      undefined,
+      (err) => console.error('GLB load error:', err)
+    );
+
+    let mouseX = 0, mouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
     });
-  </script>
 
-  <!-- model-viewer -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+    resize();
+    window.addEventListener('resize', resize);
 
-  <!-- Mouse parallax + radius lock -->
-  <script>
-  (async () => {
-    await customElements.whenDefined('model-viewer');
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
 
-    const mv = document.getElementById('heroModel');
-    if (!mv) return;
+      if (model) {
+        model.position.y += Math.sin(t * 0.8) * 0.0003;
+        model.rotation.x += (mouseY * 0.04 - model.rotation.x) * 0.04;
+        model.rotation.y += (mouseX * 0.06 - model.rotation.y) * 0.04;
+      }
 
-    // Base look
-    const BASE_YAW = 0;
-    const BASE_PITCH = 80;
-
-    // Motion
-    const MAX_YAW = 6;
-    const MAX_PITCH = 5;
-    const EASE = 0.07;
-
-    // This is the key to matching the reference without breaking:
-    // - let model-viewer auto-frame first
-    // - read the actual radius (your debug showed ~0.5275m)
-    // - tighten it by a multiplier
-    const TIGHTEN = 0.82; // lower = bigger model (0.78 bigger, 0.86 smaller)
-
-    let lockedRadius = null;
-
-    let yaw = BASE_YAW, pitch = BASE_PITCH;
-    let targetYaw = BASE_YAW, targetPitch = BASE_PITCH;
-
-    function applyOrbit() {
-      const r = (lockedRadius ?? 0.5275).toFixed(4) + 'm';
-      mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${r}`;
+      controls.update();
+      renderer.render(scene, camera);
     }
-
-    function setTarget(e) {
-      const nx = (e.clientX / window.innerWidth  - 0.5) * 2;
-      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
-      targetYaw   = BASE_YAW   + (-nx * MAX_YAW);
-      targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
-    }
-
-    function tick() {
-      yaw   += (targetYaw - yaw) * EASE;
-      pitch += (targetPitch - pitch) * EASE;
-      applyOrbit();
-      requestAnimationFrame(tick);
-    }
-
-    function reset() {
-      targetYaw = BASE_YAW;
-      targetPitch = BASE_PITCH;
-    }
-
-    function lockRadiusThenStart() {
-      // Wait a frame so auto-framing has settled
-      requestAnimationFrame(() => {
-        let autoR = null;
-
-        try {
-          const orbit = mv.getCameraOrbit();
-          if (orbit && typeof orbit.radius === 'number' && isFinite(orbit.radius)) {
-            autoR = orbit.radius;
-          }
-        } catch (e) {}
-
-        // Fallback to your measured radius from debug page
-        if (!autoR) autoR = 0.5275;
-
-        lockedRadius = autoR * TIGHTEN;
-
-        // snap and start loop
-        yaw = BASE_YAW;
-        pitch = BASE_PITCH;
-        targetYaw = BASE_YAW;
-        targetPitch = BASE_PITCH;
-
-        applyOrbit();
-        requestAnimationFrame(tick);
-      });
-    }
-
-    if (mv.loaded) lockRadiusThenStart();
-    else mv.addEventListener('load', lockRadiusThenStart, { once: true });
-
-    window.addEventListener('pointermove', setTarget, { passive: true });
-    window.addEventListener('mouseout', (e) => { if (!e.relatedTarget) reset(); });
-    window.addEventListener('blur', reset);
-  })();
+    animate();
   </script>
 
 </body>
