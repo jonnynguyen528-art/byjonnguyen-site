@@ -37,11 +37,11 @@
     alt="Porcelain sculpture"
     loading="eager"
     reveal="auto"
-environment-image="/assets/hdr/soft_studio_1k.hdr"
-tone-mapping="aces"
-exposure="1.15"
-shadow-softness="1"
+    environment-image="neutral"
     tone-mapping="aces"
+    exposure="1.15"
+    shadow-intensity="0.10"
+    shadow-softness="1"
     interaction-prompt="none"
     camera-orbit="0deg 75deg 2.4m"
     style="width:100%;height:100%;background:transparent;">
@@ -78,22 +78,25 @@ window.addEventListener('load', () => {
   const model = document.getElementById('heroModel');
   if (!model) return;
 
-  const MAX_YAW = 6;
-  const MAX_PITCH = 4;
-  const BASE_PITCH = 75;
-  const RADIUS = '2.4m';
+  // Subtle luxury range
+  const MAX_YAW = 6;        // left/right
+  const MAX_PITCH = 4;      // up/down
+  const BASE_PITCH = 75;    // match your camera-orbit pitch
+  const RADIUS = '2.4m';    // match your camera-orbit radius
 
+  // Smooth easing
   const ease = 0.08;
 
   let targetYaw = 0, targetPitch = BASE_PITCH;
   let yaw = 0, pitch = BASE_PITCH;
 
   function setTargetFromWindow(e) {
-    const x = e.clientX / window.innerWidth;
-    const y = e.clientY / window.innerHeight;
+    // Normalize cursor position across the whole viewport
+    const x = e.clientX / window.innerWidth;   // 0..1
+    const y = e.clientY / window.innerHeight;  // 0..1
 
-    const nx = (x - 0.5) * 2;
-    const ny = (y - 0.5) * 2;
+    const nx = (x - 0.5) * 2; // -1..1
+    const ny = (y - 0.5) * 2; // -1..1
 
     targetYaw = -nx * MAX_YAW;
     targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
@@ -107,18 +110,22 @@ window.addEventListener('load', () => {
     requestAnimationFrame(animate);
   }
 
+  // Start animation loop once model is ready
   model.addEventListener('load', () => {
     model.cameraOrbit = `0deg ${BASE_PITCH}deg ${RADIUS}`;
     requestAnimationFrame(animate);
   });
 
+  // Track anywhere in the browser
   window.addEventListener('pointermove', setTargetFromWindow, { passive: true });
 
+  // When cursor leaves the browser window, revert to neutral
   document.addEventListener('mouseleave', () => {
     targetYaw = 0;
     targetPitch = BASE_PITCH;
   });
 
+  // Also revert if the tab loses focus (nice polish)
   window.addEventListener('blur', () => {
     targetYaw = 0;
     targetPitch = BASE_PITCH;
@@ -129,31 +136,18 @@ window.addEventListener('load', () => {
 <!-- porcelain material polish -->
 <script>
 const mv = document.getElementById('heroModel');
-
 if (mv) {
   mv.addEventListener('load', () => {
-    const mats = mv.model?.materials;
-    if (!mats?.length) return;
+    if (!mv.model?.materials) return;
 
-    mats.forEach(mat => {
+    mv.model.materials.forEach(mat => {
       const pbr = mat.pbrMetallicRoughness;
+      if (!pbr) return;
 
-      // Core porcelain (kills "plastic CG" shine)
+      // Porcelain = non-metal + broader softer highlight + slightly warm base
       pbr.setMetallicFactor(0.0);
-      pbr.setRoughnessFactor(0.62); // <- broader, softer highlights
-      pbr.setBaseColorFactor([1.0, 0.985, 0.97, 1.0]); // warm porcelain
-
-      // If supported by the model/extensions, add subtle glaze + softness
-      if (mat.ior?.setIor) mat.ior.setIor(1.45);
-
-      if (mat.specular?.setSpecularFactor) mat.specular.setSpecularFactor(0.25);
-      if (mat.specular?.setSpecularColorFactor) mat.specular.setSpecularColorFactor([1, 1, 1]);
-
-      if (mat.clearcoat?.setClearcoatFactor) mat.clearcoat.setClearcoatFactor(0.12);
-      if (mat.clearcoat?.setClearcoatRoughnessFactor) mat.clearcoat.setClearcoatRoughnessFactor(0.35);
-
-      if (mat.sheen?.setSheenColorFactor) mat.sheen.setSheenColorFactor([1.0, 0.98, 0.96]);
-      if (mat.sheen?.setSheenRoughnessFactor) mat.sheen.setSheenRoughnessFactor(0.85);
+      pbr.setRoughnessFactor(0.62);
+      pbr.setBaseColorFactor([1.0, 0.985, 0.97, 1.0]);
     });
   });
 }
@@ -166,14 +160,17 @@ if (mv) {
   const mv = document.getElementById('heroModel');
   const status = document.getElementById('mvStatus');
 
-  if (!customElements.get('model-viewer')) {
-    status.textContent = '❌ model-viewer library did NOT load (script blocked/failing).';
-  } else {
-    status.textContent = '✅ model-viewer loaded. Waiting for model…';
-  }
+  // Tell us if the library loaded at all
+  if (status) {
+    if (!customElements.get('model-viewer')) {
+      status.textContent = '❌ model-viewer library did NOT load (script blocked/failing).';
+    } else {
+      status.textContent = '✅ model-viewer loaded. Waiting for model…';
+    }
 
-  mv?.addEventListener('load', () => status.textContent = '✅ GLB loaded and rendered.');
-  mv?.addEventListener('error', () => status.textContent = '❌ GLB error (corrupt/unsupported).');
+    mv?.addEventListener('load', () => status.textContent = '✅ GLB loaded and rendered.');
+    mv?.addEventListener('error', () => status.textContent = '❌ GLB error (corrupt/unsupported).');
+  }
 </script>
   
 </body>
