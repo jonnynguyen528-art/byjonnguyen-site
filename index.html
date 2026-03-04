@@ -37,7 +37,6 @@
             exposure="1.05"
             camera-target="0m 0.04m 0m"
             camera-orbit="-8deg 72deg 0.30m"
-            meshopt-decoder-src="https://unpkg.com/meshoptimizer/meshopt_decoder.js"
             style="width:100%; height:100%; background:transparent;"
           ></model-viewer>
         </div>
@@ -56,6 +55,7 @@
     </section>
   </main>
 
+  <!-- Reveal on load -->
   <script>
     window.addEventListener('load', () => {
       requestAnimationFrame(() => {
@@ -64,9 +64,19 @@
     });
   </script>
 
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <!-- Meshopt decoder FIRST, before model-viewer -->
+  <script src="https://unpkg.com/meshoptimizer@0.20.0/meshopt_decoder.js"></script>
+
+  <!-- model-viewer -->
+  <script type="module">
+    import { ModelViewerElement } from 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
+    import { MeshoptDecoder } from 'https://unpkg.com/meshoptimizer@0.20.0/meshopt_decoder.module.js';
+    await MeshoptDecoder.ready;
+    ModelViewerElement.meshoptDecoderLocation = 'https://unpkg.com/meshoptimizer@0.20.0/meshopt_decoder.js';
+  </script>
   <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
+  <!-- Cursor tracking -->
   <script>
   (async () => {
     await customElements.whenDefined('model-viewer');
