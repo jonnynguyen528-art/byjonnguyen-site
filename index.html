@@ -37,9 +37,11 @@
     alt="Porcelain sculpture"
     loading="eager"
     reveal="auto"
-environment-image="neutral"
-exposure="0.6"
-shadow-softness="1"
+    environment-image="neutral"
+    exposure="1.05"
+    shadow-intensity="0.18"
+    shadow-softness="1"
+    tone-mapping="aces"
     interaction-prompt="none"
     camera-orbit="0deg 75deg 2.4m"
     style="width:100%;height:100%;background:transparent;">
@@ -76,25 +78,22 @@ window.addEventListener('load', () => {
   const model = document.getElementById('heroModel');
   if (!model) return;
 
-  // Subtle luxury range
-  const MAX_YAW = 6;        // left/right
-  const MAX_PITCH = 4;      // up/down
-  const BASE_PITCH = 75;    // match your camera-orbit pitch
-  const RADIUS = '2.4m';    // match your camera-orbit radius
+  const MAX_YAW = 6;
+  const MAX_PITCH = 4;
+  const BASE_PITCH = 75;
+  const RADIUS = '2.4m';
 
-  // Smooth easing
   const ease = 0.08;
 
   let targetYaw = 0, targetPitch = BASE_PITCH;
   let yaw = 0, pitch = BASE_PITCH;
 
   function setTargetFromWindow(e) {
-    // Normalize cursor position across the whole viewport
-    const x = e.clientX / window.innerWidth;   // 0..1
-    const y = e.clientY / window.innerHeight;  // 0..1
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
 
-    const nx = (x - 0.5) * 2; // -1..1
-    const ny = (y - 0.5) * 2; // -1..1
+    const nx = (x - 0.5) * 2;
+    const ny = (y - 0.5) * 2;
 
     targetYaw = -nx * MAX_YAW;
     targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
@@ -108,22 +107,18 @@ window.addEventListener('load', () => {
     requestAnimationFrame(animate);
   }
 
-  // Start animation loop once model is ready
   model.addEventListener('load', () => {
     model.cameraOrbit = `0deg ${BASE_PITCH}deg ${RADIUS}`;
     requestAnimationFrame(animate);
   });
 
-  // Track anywhere in the browser
   window.addEventListener('pointermove', setTargetFromWindow, { passive: true });
 
-  // When cursor leaves the browser window, revert to neutral
   document.addEventListener('mouseleave', () => {
     targetYaw = 0;
     targetPitch = BASE_PITCH;
   });
 
-  // Also revert if the tab loses focus (nice polish)
   window.addEventListener('blur', () => {
     targetYaw = 0;
     targetPitch = BASE_PITCH;
@@ -137,10 +132,17 @@ const mv = document.getElementById('heroModel');
 if (mv) {
   mv.addEventListener('load', () => {
     if (!mv.model?.materials) return;
+
     mv.model.materials.forEach(mat => {
-mat.pbrMetallicRoughness.setMetallicFactor(0.0);
-mat.pbrMetallicRoughness.setRoughnessFactor(0.28);
-mat.pbrMetallicRoughness.setBaseColorFactor([1.0, 0.97, 0.93, 1.0]);
+
+      mat.pbrMetallicRoughness.setMetallicFactor(0.0);
+
+      /* softer porcelain reflections */
+      mat.pbrMetallicRoughness.setRoughnessFactor(0.42);
+
+      /* warmer porcelain tone like reference */
+      mat.pbrMetallicRoughness.setBaseColorFactor([1.0, 0.985, 0.965, 1.0]);
+
     });
   });
 }
@@ -153,7 +155,6 @@ mat.pbrMetallicRoughness.setBaseColorFactor([1.0, 0.97, 0.93, 1.0]);
   const mv = document.getElementById('heroModel');
   const status = document.getElementById('mvStatus');
 
-  // Tell us if the library loaded at all
   if (!customElements.get('model-viewer')) {
     status.textContent = '❌ model-viewer library did NOT load (script blocked/failing).';
   } else {
