@@ -29,7 +29,7 @@
       </div>
 
       <div class="hero-bust">
-        <div class="bust-floater reveal reveal-delay-2">
+        <div class="bust-floater">
           <model-viewer
             id="heroModel"
             src="/assets/porcelain_girl_2.glb"
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <div class="hero-sub reveal reveal-delay-3">
+      <div class="hero-sub reveal reveal-delay-2">
         <div class="hero-line1">BUILDING WORLDS</div>
         <div class="hero-line2">BRAND &nbsp;&nbsp; DIGITAL &nbsp;&nbsp; EXPERIENTIAL</div>
       </div>
@@ -56,10 +56,8 @@
   </main>
 
   <script>
-    window.addEventListener('load', () => {
-      requestAnimationFrame(() => {
-        document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
-      });
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
     });
   </script>
 
