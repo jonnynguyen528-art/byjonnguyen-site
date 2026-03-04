@@ -28,21 +28,23 @@
         <span class="hero-word right">DIRECTOR</span>
       </div>
 
-      <div class="hero-bust reveal reveal-delay-2">
-        <model-viewer
-          id="heroModel"
-          src="/assets/porcelain_girl_2.glb"
-          alt="Porcelain sculpture"
-          interaction-prompt="none"
-          disable-pan
-          disable-zoom
-          environment-image="neutral"
-          exposure="1.1"
-          shadow-intensity="0"
-          camera-target="0m 0.13m 0m"
-          camera-orbit="0deg 85deg auto"
-          style="width:100%;height:100%;background:transparent;"
-        ></model-viewer>
+      <div class="hero-bust">
+        <div class="bust-floater reveal reveal-delay-2">
+          <model-viewer
+            id="heroModel"
+            src="/assets/porcelain_girl_2.glb"
+            alt="Porcelain sculpture"
+            interaction-prompt="none"
+            disable-pan
+            disable-zoom
+            environment-image="neutral"
+            exposure="1.1"
+            shadow-intensity="0"
+            camera-target="0m 0.13m 0m"
+            camera-orbit="0deg 80deg auto"
+            style="width:100%; height:100%; background:transparent; display:block;"
+          ></model-viewer>
+        </div>
       </div>
 
       <div class="hero-sub reveal reveal-delay-3">
@@ -71,22 +73,25 @@
     if (!mv) return;
 
     const BASE_YAW   = 0;
-    const BASE_PITCH = 85;
+    const BASE_PITCH = 80;
     const MAX_YAW    = 6;
     const MAX_PITCH  = 5;
     const EASE       = 0.07;
 
     let yaw = BASE_YAW, pitch = BASE_PITCH;
     let targetYaw = BASE_YAW, targetPitch = BASE_PITCH;
-    let radius = 'auto';
+    let radius = null;
 
     function captureRadius() {
-      const orbit = mv.getCameraOrbit();
-      if (orbit) radius = orbit.radius + 'm';
+      try {
+        const orbit = mv.getCameraOrbit();
+        if (orbit && orbit.radius) radius = orbit.radius;
+      } catch(e) {}
     }
 
     function applyOrbit() {
-      mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${radius}`;
+      const r = radius ? `${radius.toFixed(4)}m` : 'auto';
+      mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${r}`;
     }
 
     function setTarget(e) {
@@ -109,10 +114,12 @@
     }
 
     function start() {
-      captureRadius();
-      yaw = BASE_YAW; pitch = BASE_PITCH;
-      targetYaw = BASE_YAW; targetPitch = BASE_PITCH;
-      requestAnimationFrame(tick);
+      requestAnimationFrame(() => {
+        captureRadius();
+        yaw = BASE_YAW; pitch = BASE_PITCH;
+        targetYaw = BASE_YAW; targetPitch = BASE_PITCH;
+        requestAnimationFrame(tick);
+      });
     }
 
     if (mv.loaded) start();
