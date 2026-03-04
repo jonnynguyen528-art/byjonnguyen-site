@@ -37,10 +37,10 @@
     alt="Porcelain sculpture"
     loading="eager"
     reveal="auto"
-    environment-image="neutral"
-    exposure="1.05"
-    shadow-intensity="0.18"
-    shadow-softness="1"
+environment-image="/assets/hdr/soft_studio_1k.hdr"
+tone-mapping="aces"
+exposure="1.15"
+shadow-softness="1"
     tone-mapping="aces"
     interaction-prompt="none"
     camera-orbit="0deg 75deg 2.4m"
@@ -129,20 +129,31 @@ window.addEventListener('load', () => {
 <!-- porcelain material polish -->
 <script>
 const mv = document.getElementById('heroModel');
+
 if (mv) {
   mv.addEventListener('load', () => {
-    if (!mv.model?.materials) return;
+    const mats = mv.model?.materials;
+    if (!mats?.length) return;
 
-    mv.model.materials.forEach(mat => {
+    mats.forEach(mat => {
+      const pbr = mat.pbrMetallicRoughness;
 
-      mat.pbrMetallicRoughness.setMetallicFactor(0.0);
+      // Core porcelain (kills "plastic CG" shine)
+      pbr.setMetallicFactor(0.0);
+      pbr.setRoughnessFactor(0.62); // <- broader, softer highlights
+      pbr.setBaseColorFactor([1.0, 0.985, 0.97, 1.0]); // warm porcelain
 
-      /* softer porcelain reflections */
-      mat.pbrMetallicRoughness.setRoughnessFactor(0.42);
+      // If supported by the model/extensions, add subtle glaze + softness
+      if (mat.ior?.setIor) mat.ior.setIor(1.45);
 
-      /* warmer porcelain tone like reference */
-      mat.pbrMetallicRoughness.setBaseColorFactor([1.0, 0.985, 0.965, 1.0]);
+      if (mat.specular?.setSpecularFactor) mat.specular.setSpecularFactor(0.25);
+      if (mat.specular?.setSpecularColorFactor) mat.specular.setSpecularColorFactor([1, 1, 1]);
 
+      if (mat.clearcoat?.setClearcoatFactor) mat.clearcoat.setClearcoatFactor(0.12);
+      if (mat.clearcoat?.setClearcoatRoughnessFactor) mat.clearcoat.setClearcoatRoughnessFactor(0.35);
+
+      if (mat.sheen?.setSheenColorFactor) mat.sheen.setSheenColorFactor([1.0, 0.98, 0.96]);
+      if (mat.sheen?.setSheenRoughnessFactor) mat.sheen.setSheenRoughnessFactor(0.85);
     });
   });
 }
