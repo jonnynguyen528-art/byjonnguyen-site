@@ -4,156 +4,135 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jon Nguyen — Creative Director</title>
-  <link rel="stylesheet" href="style.css" />
-
-  <script async src="https://unpkg.com/es-module-shims@1.8.3/dist/es-module-shims.js"></script>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-      }
-    }
-  </script>
+  <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
+  <link rel="stylesheet" href="./style.css" />
 </head>
+
 <body>
 
-  <nav class="nav">
-    <a href="/" class="nav__logo">Jon Nguyen</a>
-    <ul class="nav__links">
-      <li><a href="#work">Work</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="#">JON NGUYEN</a>
+    <nav class="nav">
+      <a href="#work">WORK</a>
+      <a href="#about">ABOUT</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+  </div>
+</header>
 
-  <section class="hero">
+<main>
+  <section class="hero-center">
+    <div class="hero-inner">
 
-    <div class="hero__title" aria-label="Creative Director">
-      <span class="hero__title-left">Creative</span>
-      <span class="hero__title-right">Director</span>
+      <div class="hero-title reveal reveal-delay-1">
+        <span class="hero-word left">CREATIVE</span>
+        <span class="hero-word right">DIRECTOR</span>
+      </div>
+
+      <div class="hero-bust reveal reveal-delay-2">
+        <model-viewer
+          id="heroModel"
+          src="/assets/porcelain_girl_2.glb"
+          alt="Porcelain sculpture"
+          interaction-prompt="none"
+          camera-controls="false"
+          disable-pan
+          disable-zoom
+          environment-image="neutral"
+          exposure="1.05"
+          shadow-intensity="0.25"
+          camera-orbit="0deg 75deg 2.4m"
+          min-camera-orbit="0deg 75deg 2.4m"
+          max-camera-orbit="0deg 75deg 2.4m">
+        </model-viewer>
+      </div>
+
+      <div class="hero-sub reveal reveal-delay-3">
+        <div class="hero-line1">BUILDING WORLDS</div>
+        <div class="hero-line2">BRAND DIGITAL EXPERIENTIAL</div>
+      </div>
+
     </div>
-
-    <div class="hero__canvas-wrap" id="canvasWrap">
-      <canvas id="heroCanvas"></canvas>
-    </div>
-
-    <div class="hero__sub">
-      <p class="hero__sub-main">Building Worlds</p>
-      <p class="hero__sub-tagline">Brand &nbsp;·&nbsp; Digital &nbsp;·&nbsp; Experiential</p>
-    </div>
-
   </section>
 
-  <script type="module">
-    import * as THREE from 'three';
-    import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+  <section id="work" style="height: 50vh;"></section>
+  <section id="about" style="height: 50vh;"></section>
+  <section id="contact" style="height: 50vh;"></section>
+</main>
 
-    const wrap   = document.getElementById('canvasWrap');
-    const canvas = document.getElementById('heroCanvas');
+<!-- model viewer -->
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+<!-- reveal animation -->
+<script>
+window.addEventListener('load', () => {
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  });
+});
+</script>
 
-    function resize() {
-      const w = wrap.clientWidth;
-      const h = wrap.clientHeight;
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
+<!-- cursor tracking luxury rotation -->
+<script>
+(() => {
+  const model = document.getElementById('heroModel');
+  if (!model) return;
 
-    const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    camera.position.set(0, 0.05, 2.6);
+  const MAX_YAW = 8;        // subtle left/right
+  const MAX_PITCH = 5;      // subtle up/down
+  const BASE_PITCH = 75;
+  const RADIUS = '2.4m';
+  const ease = 0.08;
 
-    const controls = new OrbitControls(camera, canvas);
-    controls.enableDamping   = true;
-    controls.dampingFactor   = 0.06;
-    controls.enableZoom      = false;
-    controls.enablePan       = false;
-    controls.autoRotate      = true;
-    controls.autoRotateSpeed = 0.55;
-    controls.minPolarAngle   = Math.PI / 2.4;
-    controls.maxPolarAngle   = Math.PI / 1.8;
+  let targetYaw = 0, targetPitch = BASE_PITCH;
+  let yaw = 0, pitch = BASE_PITCH;
 
-    const ambient = new THREE.AmbientLight(0xffffff, 1.4);
-    scene.add(ambient);
+  function setTarget(e) {
+    const rect = model.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
 
-    const key = new THREE.DirectionalLight(0xfff5e8, 3.5);
-    key.position.set(1.5, 3, 2.5);
-    key.castShadow = true;
-    scene.add(key);
+    const nx = (x - 0.5) * 2;
+    const ny = (y - 0.5) * 2;
 
-    const fill = new THREE.DirectionalLight(0xddeeff, 1.2);
-    fill.position.set(-2, 1, 1);
-    scene.add(fill);
+    targetYaw = nx * MAX_YAW;
+    targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
+  }
 
-    const rim = new THREE.DirectionalLight(0xffffff, 1.0);
-    rim.position.set(0, 2, -3);
-    scene.add(rim);
+  function animate() {
+    yaw += (targetYaw - yaw) * ease;
+    pitch += (targetPitch - pitch) * ease;
+    model.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS}`;
+    requestAnimationFrame(animate);
+  }
 
-    const hemi = new THREE.HemisphereLight(0xfff8f0, 0xe8f0ff, 0.8);
-    scene.add(hemi);
+  model.addEventListener('load', () => {
+    model.cameraOrbit = `0deg ${BASE_PITCH}deg ${RADIUS}`;
+    requestAnimationFrame(animate);
+  });
 
-    const loader = new GLTFLoader();
+  model.addEventListener('pointermove', setTarget);
+  model.addEventListener('pointerleave', () => {
+    targetYaw = 0;
+    targetPitch = BASE_PITCH;
+  });
+})();
+</script>
 
-    let model;
-
-    loader.load(
-      'assets/porcelain_girl_2.glb',
-      (gltf) => {
-        model = gltf.scene;
-
-        const box    = new THREE.Box3().setFromObject(model);
-        const centre = new THREE.Vector3();
-        box.getCenter(centre);
-        const size   = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale  = 1.6 / maxDim;
-
-        model.scale.setScalar(scale);
-        model.position.sub(centre.multiplyScalar(scale));
-        model.position.y -= 0.08;
-
-        scene.add(model);
-        document.getElementById('canvasWrap').classList.add('loaded');
-      },
-      undefined,
-      (err) => console.error('GLB load error:', err)
-    );
-
-    let mouseX = 0, mouseY = 0;
-    document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
-      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+<!-- porcelain material polish -->
+<script>
+const mv = document.getElementById('heroModel');
+if (mv) {
+  mv.addEventListener('load', () => {
+    if (!mv.model?.materials) return;
+    mv.model.materials.forEach(mat => {
+      mat.pbrMetallicRoughness.setMetallicFactor(0.0);
+      mat.pbrMetallicRoughness.setRoughnessFactor(0.18);
     });
-
-    resize();
-    window.addEventListener('resize', resize);
-
-    const clock = new THREE.Clock();
-    function animate() {
-      requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
-
-      if (model) {
-        model.position.y += Math.sin(t * 0.8) * 0.0003;
-        model.rotation.x += (mouseY * 0.04 - model.rotation.x) * 0.04;
-        model.rotation.y += (mouseX * 0.06 - model.rotation.y) * 0.04;
-      }
-
-      controls.update();
-      renderer.render(scene, camera);
-    }
-    animate();
-  </script>
+  });
+}
+</script>
 
 </body>
 </html>
