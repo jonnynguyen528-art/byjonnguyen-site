@@ -100,7 +100,7 @@ window.addEventListener('load', () => {
     const nx = (x - 0.5) * 2; // -1..1
     const ny = (y - 0.5) * 2; // -1..1
 
-    targetYaw = nx * MAX_YAW;
+    targetYaw = -nx * MAX_YAW;
     targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
   }
 
