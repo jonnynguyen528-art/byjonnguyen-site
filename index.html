@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jon Nguyen — Creative Director</title>
-  <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
+
+  <title>Jon Nguyen — Portfolio</title>
+  <meta name="description" content="Building worlds across brand, digital, and experiential." />
+
   <link rel="stylesheet" href="./style.css" />
 </head>
 
@@ -13,6 +15,7 @@
   <header class="site-header">
     <div class="nav-wrap">
       <a class="brand" href="#">JON NGUYEN</a>
+
       <nav class="nav">
         <a href="#work">WORK</a>
         <a href="#about">ABOUT</a>
@@ -22,106 +25,125 @@
   </header>
 
   <main>
-    <section class="hero-center">
-
-      <div class="hero-title reveal reveal-delay-1">
+    <section class="hero" aria-label="Hero">
+      <!-- Title -->
+      <div class="hero-title reveal r1" aria-hidden="true">
         <span class="hero-word left">CREATIVE</span>
         <span class="hero-word right">DIRECTOR</span>
       </div>
 
-      <div class="hero-bust">
-        <div class="bust-floater reveal reveal-delay-2">
+      <!-- Model -->
+      <div class="hero-model-wrap reveal r2" aria-label="3D model">
+        <div class="hero-model-float">
           <model-viewer
             id="heroModel"
             src="/assets/porcelain_girl_2.glb"
             alt="Porcelain sculpture"
+
             interaction-prompt="none"
-            disable-pan
-            disable-zoom
             environment-image="neutral"
             exposure="1.1"
             shadow-intensity="0"
+
+            disable-pan
+            disable-zoom
+
             camera-target="0m 0.13m 0m"
             camera-orbit="0deg 80deg 0.44m"
+
             style="width:100%; height:100%; background:transparent; display:block;"
           ></model-viewer>
         </div>
       </div>
 
-      <div class="hero-sub reveal reveal-delay-3">
+      <!-- Subcopy -->
+      <div class="hero-sub reveal r3">
         <div class="hero-line1">BUILDING WORLDS</div>
-        <div class="hero-line2">BRAND &nbsp;&nbsp; DIGITAL &nbsp;&nbsp; EXPERIENTIAL</div>
+        <div class="hero-line2">BRAND&nbsp;&nbsp;DIGITAL&nbsp;&nbsp;EXPERIENTIAL</div>
       </div>
-
     </section>
   </main>
 
+  <!-- model-viewer -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+
   <script>
+    // Reveal
     window.addEventListener('load', () => {
       requestAnimationFrame(() => {
         document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
       });
     });
-  </script>
 
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+    // Mouse-parallax camera orbit (locks radius so the model never "loads tiny")
+    (async () => {
+      await customElements.whenDefined('model-viewer');
+      const mv = document.getElementById('heroModel');
+      if (!mv) return;
 
-  <script>
-  (async () => {
-    await customElements.whenDefined('model-viewer');
-    const mv = document.getElementById('heroModel');
-    if (!mv) return;
+      // Base framing (this is the "correct" look anchor)
+      const BASE_YAW = 0;
+      const BASE_PITCH = 80;
 
-    const BASE_YAW   = 0;
-    const BASE_PITCH = 80;
-    const MAX_YAW    = 6;
-    const MAX_PITCH  = 5;
-    const EASE       = 0.07;
+      // Subtle movement
+      const MAX_YAW = 6;
+      const MAX_PITCH = 4.5;
+      const EASE = 0.07;
 
-    // ✅ hard-lock radius so it cannot revert to "auto"
-    const RADIUS_M = 0.44;
+      // IMPORTANT: hard-lock the radius (no "auto", no captured radius)
+      // If you want the bust bigger: 0.42m or 0.40m
+      // If it clips/vanishes: 0.46m or 0.48m
+      const RADIUS_M = 0.44;
 
-    let yaw = BASE_YAW, pitch = BASE_PITCH;
-    let targetYaw = BASE_YAW, targetPitch = BASE_PITCH;
+      let yaw = BASE_YAW;
+      let pitch = BASE_PITCH;
 
-    function applyOrbit() {
-      mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS_M.toFixed(3)}m`;
-    }
+      let targetYaw = BASE_YAW;
+      let targetPitch = BASE_PITCH;
 
-    function setTarget(e) {
-      const nx = (e.clientX / window.innerWidth  - 0.5) * 2;
-      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
-      targetYaw   = BASE_YAW   + (-nx * MAX_YAW);
-      targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
-    }
+      function applyOrbit() {
+        mv.cameraOrbit = `${yaw.toFixed(2)}deg ${pitch.toFixed(2)}deg ${RADIUS_M.toFixed(3)}m`;
+      }
 
-    function tick() {
-      yaw   += (targetYaw - yaw)   * EASE;
-      pitch += (targetPitch - pitch) * EASE;
-      applyOrbit();
-      requestAnimationFrame(tick);
-    }
+      function setTarget(e) {
+        const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+        const ny = (e.clientY / window.innerHeight - 0.5) * 2;
 
-    function reset() {
-      targetYaw   = BASE_YAW;
-      targetPitch = BASE_PITCH;
-    }
+        targetYaw = BASE_YAW + (-nx * MAX_YAW);
+        targetPitch = BASE_PITCH + (-ny * MAX_PITCH);
+      }
 
-    function start() {
-      yaw = BASE_YAW; pitch = BASE_PITCH;
-      targetYaw = BASE_YAW; targetPitch = BASE_PITCH;
-      applyOrbit();
-      requestAnimationFrame(tick);
-    }
+      function tick() {
+        yaw += (targetYaw - yaw) * EASE;
+        pitch += (targetPitch - pitch) * EASE;
 
-    if (mv.loaded) start();
-    else mv.addEventListener('load', start, { once: true });
+        applyOrbit();
+        requestAnimationFrame(tick);
+      }
 
-    window.addEventListener('pointermove', setTarget, { passive: true });
-    window.addEventListener('mouseout', (e) => { if (!e.relatedTarget) reset(); });
-    window.addEventListener('blur', reset);
-  })();
+      function reset() {
+        targetYaw = BASE_YAW;
+        targetPitch = BASE_PITCH;
+      }
+
+      function start() {
+        yaw = BASE_YAW;
+        pitch = BASE_PITCH;
+        targetYaw = BASE_YAW;
+        targetPitch = BASE_PITCH;
+
+        applyOrbit();
+        requestAnimationFrame(tick);
+      }
+
+      if (mv.loaded) start();
+      else mv.addEventListener('load', start, { once: true });
+
+      window.addEventListener('pointermove', setTarget, { passive: true });
+      window.addEventListener('mouseout', (ev) => { if (!ev.relatedTarget) reset(); });
+      window.addEventListener('blur', reset);
+    })();
   </script>
 
 </body>
