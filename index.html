@@ -60,11 +60,13 @@
       display: flex;
       align-items: flex-end; /* align word to bottom of its column */
       /* push word down to ~52% of bust height (neck) */
-      padding-top: calc(min(560px, 82vw) * 0.50);
+      padding-top: calc(min(560px, 82vw) * 0.46);
+      position: relative;
+      z-index: 1; /* bust (z-index:3) renders on top for overlap effect */
     }
 
-    .hero-word-col.left  { justify-content: flex-end;  padding-right: 12px; }
-    .hero-word-col.right { justify-content: flex-start; padding-left:  12px; }
+    .hero-word-col.left  { justify-content: flex-end;  padding-right: 16px; }
+    .hero-word-col.right { justify-content: flex-start; padding-left:  16px; }
 
     /* Hero headline — Cinema Sunday */
     .hero-word {
