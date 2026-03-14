@@ -87,7 +87,7 @@ window.addEventListener('load', () => {
   const LIGHT_Z         = 0.40;  // Virtual light depth
   const NORMAL_ROT_Y    = 0.28;  // How much left/right tilt rotates the normals (radians at full tilt)
   const NORMAL_ROT_X    = 0.20;  // How much up/down tilt rotates the normals
-  const PARALLAX_SCALE  = 0.055; // Max UV shift at face center (try 0.04–0.09)
+  const PARALLAX_SCALE  = 0.040; // Max UV shift at face center — 4% ≈ 36px on 900px image
   const MAX_TILT_X      = 5;     // CSS tilt kept subtle — parallax carries the rotation feel
   const MAX_TILT_Y      = 7;
   const EASE            = 0.07;
@@ -201,24 +201,24 @@ window.addEventListener('load', () => {
     varying vec2 v_uv;
 
     void main() {
-      // ── Smooth radial depth parallax ─────────────────────────────────────
+      // ── Anatomical depth field (Gaussian ellipse) ─────────────────────────
       //
-      //  Model the bust as a convex object: the face/nose is the point
-      //  closest to the camera, depth falls off smoothly toward the edges.
-      //  Using a radial field means all neighbouring pixels shift by nearly
-      //  the same amount — no tearing, no tiles, just clean coherent motion.
+      //  Research baseline (Codrops / Facebook 3D Photos / Alan Zucconi):
+      //    parallaxUV = texCoord + mouseOffset * (depth - 0.5)
+      //    sweet-spot scale: 0.05–0.10 UV units max shift
       //
-      //  bustCenter: face center in UV (x=0..1, y=0 bottom / y=1 top)
-      //  Ellipse aspect is stretched vertically because the bust is taller
-      //  than it is wide, so the radial falloff matches the silhouette better.
+      //  Depth model: Gaussian centered on the face, scaled by the bust's
+      //  aspect ratio. exp(-r²) is C-infinity smooth — zero discontinuities,
+      //  zero tearing. Face center ≈ UV (0.50, 0.72) after UNPACK_FLIP_Y.
       //
-      //  u_tilt.x > 0 = tilted right → front features lead rightward (+U)
-      //  u_tilt.y > 0 = tilted up    → front features lead upward    (+V)
+      //  Sign: face moves TOWARD the cursor (negate tilt).
+      //  When cursor moves right → face shifts right → looks like rotation.
 
-      vec2  bustCenter = vec2(0.50, 0.60);
-      vec2  delta      = (v_uv - bustCenter) * vec2(0.80, 1.10);
-      float depth      = smoothstep(0.55, 0.02, length(delta));
-      vec2  pUV        = clamp(v_uv + vec2(u_tilt.x, u_tilt.y) * depth * u_parallax,
+      vec2  faceCenter = vec2(0.50, 0.72);          // face in UV space (y=1 at top)
+      vec2  d          = (v_uv - faceCenter) / vec2(0.36, 0.52); // bust half-extents
+      float depth      = exp(-dot(d, d) * 2.2);     // Gaussian: 1.0 at face, ~0.1 at bust rim
+      // Subtract 0.3 so mid-depth barely moves, face leads, base lags back
+      vec2  pUV        = clamp(v_uv - u_tilt * (depth - 0.30) * u_parallax,
                                0.001, 0.999);
 
       // ── All sampling uses the depth-offset UV ─────────────────────────────
