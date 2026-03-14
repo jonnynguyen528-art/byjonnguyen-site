@@ -52,6 +52,7 @@
       align-items: flex-start;
       justify-content: center;
       width: 100%;
+      overflow: visible;
     }
 
     /* Each word column takes equal flex space, bust is fixed */
@@ -65,8 +66,9 @@
       z-index: 1; /* bust (z-index:3) renders on top for overlap effect */
     }
 
-    .hero-word-col.left  { justify-content: flex-end;  padding-right: 16px; }
-    .hero-word-col.right { justify-content: flex-start; padding-left:  16px; }
+    /* Negative margin pulls words INTO the bust — bust z-index:3 sits on top */
+    .hero-word-col.left  { justify-content: flex-end;  margin-right: -60px; }
+    .hero-word-col.right { justify-content: flex-start; margin-left:  -60px; }
 
     /* Hero headline — Cinema Sunday */
     .hero-word {
