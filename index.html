@@ -77,16 +77,18 @@ window.addEventListener('load', () => {
 (async () => {
 
   // ─── Tuneable parameters ──────────────────────────────────────────────────
-  const NORMAL_STRENGTH = 3.5;   // How "deep" the Sobel normals feel (higher = more pronounced lighting detail)
-  const AMBIENT         = 0.62;  // Base brightness on shadow side (0–1)
-  const DIFFUSE         = 0.45;  // Diffuse light contribution (0–1)
-  const SPECULAR        = 0.85;  // Specular highlight intensity (0–1)
-  const SHININESS       = 110.0; // Specular tightness — higher = sharper glaze highlight
-  const LIGHT_BLEND     = 0.75;  // How much the dynamic lighting blends over the original (0 = off, 1 = full)
-  const LIGHT_Z         = 0.42;  // Virtual depth of the light source (higher = softer angle falloff)
-  const MAX_TILT_X      = 10;    // Tilt range in degrees up/down
-  const MAX_TILT_Y      = 14;    // Tilt range in degrees left/right
-  const EASE            = 0.10;  // Smoothing factor for all easing (0 = instant, 1 = no movement)
+  const NORMAL_STRENGTH = 3.5;   // Sobel normal depth (higher = more detail in lighting)
+  const AMBIENT         = 0.70;  // Base brightness — raised slightly to match cream bg
+  const DIFFUSE         = 0.28;  // Diffuse contribution — reduced; porcelain is mostly specular
+  const SPECULAR        = 0.95;  // Main specular intensity
+  const SHININESS       = 160.0; // Very tight highlight — glazed porcelain is mirror-like
+  const FRESNEL_STR     = 0.55;  // Fresnel rim reflectance (the glaze-edge glow)
+  const RIM_STR         = 0.30;  // Soft fill rim from the opposite side
+  const LIGHT_BLEND     = 0.68;  // Master blend over original render
+  const LIGHT_Z         = 0.40;  // Virtual light depth
+  const MAX_TILT_X      = 10;
+  const MAX_TILT_Y      = 14;
+  const EASE            = 0.10;
   // ──────────────────────────────────────────────────────────────────────────
 
   const stage  = document.getElementById('heroStage');
@@ -189,6 +191,8 @@ window.addEventListener('load', () => {
     uniform float     u_diffuse_str;
     uniform float     u_specular;
     uniform float     u_shininess;
+    uniform float     u_fresnel_str;
+    uniform float     u_rim_str;
     uniform float     u_blend;
 
     varying vec2 v_uv;
@@ -199,31 +203,49 @@ window.addEventListener('load', () => {
       // ── Mask: skip pure-black background pixels ──────────────────────────
       float lum = dot(base.rgb, vec3(0.299, 0.587, 0.114));
       if (lum < 0.04) {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);  // fully transparent bg
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
         return;
       }
 
-      // ── Unpack normal map ─────────────────────────────────────────────────
-      //  Flip Y because image-space Y+ = down, but world/UV Y+ = up
+      // ── Unpack normal (flip Y: image Y+ = down, world Y+ = up) ───────────
       vec3 raw = texture2D(u_normal, v_uv).xyz * 2.0 - 1.0;
       vec3 N   = normalize(vec3(raw.x, -raw.y, raw.z));
 
-      // ── Light direction ───────────────────────────────────────────────────
-      //  u_light is in UV space; subtract v_uv to get direction from pixel to light
-      vec3 L = normalize(vec3(u_light - v_uv, ${LIGHT_Z.toFixed(2)}));
+      // ── Vectors ───────────────────────────────────────────────────────────
+      vec3 V = vec3(0.0, 0.0, 1.0);                                   // camera (orthographic)
+      vec3 L = normalize(vec3(u_light - v_uv, ${LIGHT_Z.toFixed(2)})); // main light
+      vec3 H = normalize(L + V);                                       // half-vector
 
-      // ── View direction (orthographic camera looking straight in) ─────────
-      vec3 V = vec3(0.0, 0.0, 1.0);
-      vec3 H = normalize(L + V);   // Blinn-Phong half-vector
+      // ── Diffuse (lambertian, subtle on porcelain) ─────────────────────────
+      float NdotL = max(dot(N, L), 0.0);
+      float diff  = NdotL * u_diffuse_str;
 
-      // ── Lighting components ───────────────────────────────────────────────
-      float diff = max(dot(N, L), 0.0) * u_diffuse_str;
-      float spec = pow(max(dot(N, H), 0.0), u_shininess) * u_specular;
+      // ── Main specular — tight, near-white for glazed ceramic ─────────────
+      float NdotH  = max(dot(N, H), 0.0);
+      float spec   = pow(NdotH, u_shininess) * u_specular;
+      // Porcelain glaze: mostly white with a faint cool tint
+      vec3 specColor = vec3(0.97, 0.98, 1.00);
 
-      // Porcelain glaze: the specular is a cool blue-white (matches the dragon's palette)
-      vec3 specColor = vec3(0.78, 0.91, 1.00);
+      // ── Fresnel (Schlick) — glaze edge glow at grazing angles ─────────────
+      // Real glazed ceramics are near-mirror at glancing angles
+      float NdotV   = max(dot(N, V), 0.0);
+      float fresnel = pow(1.0 - NdotV, 4.0) * u_fresnel_str;
+      // Fresnel tint: slightly warm to match the cream background
+      vec3 fresnelColor = vec3(1.00, 0.97, 0.93);
 
-      vec3 lit   = base.rgb * (u_ambient + diff) + specColor * spec;
+      // ── Soft rim fill — subtle cool light from the opposite side ─────────
+      // Simulates bounce light / environment fill — keeps shadow side from going dead
+      vec3 Lrim   = normalize(vec3(-(u_light - vec2(0.5)) * 0.6, 0.6));
+      float rim   = pow(max(dot(N, Lrim), 0.0), 12.0) * u_rim_str;
+      vec3 rimColor = vec3(0.82, 0.90, 1.00); // cool blue-grey fill
+
+      // ── Combine ───────────────────────────────────────────────────────────
+      vec3 lit =
+        base.rgb * (u_ambient + diff)    // diffuse pass
+        + specColor   * spec             // tight glaze highlight
+        + fresnelColor * fresnel         // edge fresnel
+        + rimColor    * rim;             // fill light
+
       vec3 color = mix(base.rgb, lit, u_blend);
 
       gl_FragColor = vec4(color, base.a);
@@ -295,6 +317,8 @@ window.addEventListener('load', () => {
   gl.uniform1f(gl.getUniformLocation(prog, 'u_diffuse_str'), DIFFUSE);
   gl.uniform1f(gl.getUniformLocation(prog, 'u_specular'),    SPECULAR);
   gl.uniform1f(gl.getUniformLocation(prog, 'u_shininess'),   SHININESS);
+  gl.uniform1f(gl.getUniformLocation(prog, 'u_fresnel_str'), FRESNEL_STR);
+  gl.uniform1f(gl.getUniformLocation(prog, 'u_rim_str'),     RIM_STR);
   gl.uniform1f(gl.getUniformLocation(prog, 'u_blend'),       LIGHT_BLEND);
   const uLight = gl.getUniformLocation(prog, 'u_light');
 
