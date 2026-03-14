@@ -46,22 +46,17 @@
       font-size: 0.75rem;
     }
 
-    /* hero-inner becomes the positioning context */
-    .hero-inner {
-      position: relative;
-    }
-
-    /* CREATIVE / DIRECTOR — absolutely pinned at neck level, behind sculpture */
+    /* CREATIVE / DIRECTOR — full viewport width, pinned at neck level */
     .hero-title {
       position: absolute;
-      top: 54%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 1100px;
-      z-index: 1;
+      top: 50%;
+      left: 4%;
+      right: 4%;
+      width: auto;
+      z-index: 2;
       margin: 0;
       pointer-events: none;
+      transform: none;
     }
 
     /* Hero headline — Cinema Sunday flanking the sculpture */
@@ -130,13 +125,15 @@
 </header>
 
 <main>
-  <section class="hero-center">
-    <div class="hero-inner">
+  <section class="hero-center" style="position:relative;">
 
-      <div class="hero-title reveal reveal-delay-1">
-        <span class="hero-word left">CREATIVE</span>
-        <span class="hero-word right">DIRECTOR</span>
-      </div>
+    <!-- title lives at section level so it spans full viewport width -->
+    <div class="hero-title reveal reveal-delay-1">
+      <span class="hero-word left">CREATIVE</span>
+      <span class="hero-word right">DIRECTOR</span>
+    </div>
+
+    <div class="hero-inner">
 
       <div class="hero-bust" style="position:relative; z-index:3;">
         <div class="hero-sculpture" id="heroStage" style="position:relative;">
