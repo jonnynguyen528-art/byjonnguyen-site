@@ -316,7 +316,7 @@ window.addEventListener('load', () => {
   gl.uniform1f(gl.getUniformLocation(prog, 'u_shininess'),   SHININESS);
   gl.uniform1f(gl.getUniformLocation(prog, 'u_fresnel_str'), FRESNEL_STR);
   gl.uniform1f(gl.getUniformLocation(prog, 'u_rim_str'),     RIM_STR);
-  gl.uniform1f(gl.getUniformLocation(prog, 'u_blend'),       LIGHT_BLEND);
+  const uBlend = gl.getUniformLocation(prog, 'u_blend');
   const uLight = gl.getUniformLocation(prog, 'u_light');
 
   // Alpha blending so transparent bg pixels don't cover the page background
@@ -328,10 +328,13 @@ window.addEventListener('load', () => {
   let lx = 0.5, ly = 0.35;    // eased light position in screen UV (y=0 top, y=1 bottom)
   let tlx = 0.5, tly = 0.35;  // target light position
 
+  // Blend eases to LIGHT_BLEND on hover, back to 0 at rest
+  let blend = 0, targetBlend = 0;
+
   function setFromPointer(e) {
     const r  = stage.getBoundingClientRect();
-    const sx = (e.clientX - r.left) / r.width;   // 0..1 left→right
-    const sy = (e.clientY - r.top)  / r.height;  // 0..1 top→bottom
+    const sx = (e.clientX - r.left) / r.width;
+    const sy = (e.clientY - r.top)  / r.height;
 
     const nx = (sx - 0.5) * 2;
     const ny = (sy - 0.5) * 2;
@@ -340,11 +343,13 @@ window.addEventListener('load', () => {
 
     tlx = sx;
     tly = sy;
+    targetBlend = LIGHT_BLEND; // light on
   }
 
   function resetLight() {
     targetTx = 0; targetTy = 0;
     tlx = 0.5;   tly = 0.35;
+    targetBlend = 0;           // light off
   }
 
   stage.addEventListener('pointermove', setFromPointer, { passive: true });
@@ -358,12 +363,13 @@ window.addEventListener('load', () => {
     stage.style.setProperty('--rx', `${tx.toFixed(2)}deg`);
     stage.style.setProperty('--ry', `${ty.toFixed(2)}deg`);
 
-    // ── Ease light position ───────────────────────────────────────────────
-    lx += (tlx - lx) * EASE;
-    ly += (tly - ly) * EASE;
+    // ── Ease light + blend ────────────────────────────────────────────────
+    lx    += (tlx         - lx)    * EASE;
+    ly    += (tly         - ly)    * EASE;
+    blend += (targetBlend - blend) * EASE;
 
-    // Convert screen UV (y=0 at top) → shader UV (y=0 at bottom)
     gl.uniform2f(uLight, lx, 1.0 - ly);
+    gl.uniform1f(uBlend, blend);
 
     // ── Draw ──────────────────────────────────────────────────────────────
     gl.viewport(0, 0, W, H);
