@@ -5,8 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jon Nguyen — Creative Director</title>
   <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
+  <!-- Montserrat from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
   <style>
+
+    /* ── Cinema Sunday — place the .otf at assets/fonts/cinema-sunday.otf ── */
+    @font-face {
+      font-family: 'Cinema Sunday';
+      src: url('assets/fonts/cinema-sunday.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ── Base typography ─────────────────────────────────────────────────── */
+    /* Reference: Jazz poster — big serif dominates, sans-serif supports */
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Nav — Montserrat, tight, small caps — matches the clean minimal nav in screenshot */
+    .brand {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
+
+    .nav a {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    /* Hero headline — Cinema Sunday for the elegant editorial serif seen in screenshot */
+    .hero-word {
+      font-family: 'Cinema Sunday', serif;
+      font-weight: normal;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    /* "BUILDING WORLDS" — Montserrat bold, generous tracking, as in screenshot */
+    .hero-line1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    /* "BRAND DIGITAL EXPERIENTIAL" — Montserrat light, very open tracking */
+    .hero-line2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+    }
     #sculptureCanvas { display: block; width: 100%; height: auto; }
 
     /* Ground shadow — sits just below the sculpture base */
