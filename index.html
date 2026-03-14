@@ -198,13 +198,22 @@ function positionHeroTitle() {
   titleEl.style.visibility = 'visible';
 }
 
-// Run after fonts + images are ready, and on resize
-document.fonts.ready.then(() => {
-  requestAnimationFrame(() => {
-    positionHeroTitle();
-    window.addEventListener('resize', positionHeroTitle);
-  });
-});
+// Retry until the canvas has real dimensions (WebGL script sizes it async)
+function positionWhenReady() {
+  const canvas = document.getElementById('sculptureCanvas');
+  if (!canvas || canvas.getBoundingClientRect().width === 0) {
+    requestAnimationFrame(positionWhenReady);
+    return;
+  }
+  positionHeroTitle();
+  window.addEventListener('resize', positionHeroTitle);
+}
+
+// Kick off once fonts are loaded
+document.fonts.ready.then(() => requestAnimationFrame(positionWhenReady));
+
+// Also expose globally so the WebGL script can call it after canvas is ready
+window.positionHeroTitle = positionHeroTitle;
 </script>
 
 <script>
@@ -239,6 +248,9 @@ document.fonts.ready.then(() => {
   const H = img.naturalHeight;
   canvas.width  = W;
   canvas.height = H;
+
+  // Canvas is now sized — position the flanking words
+  requestAnimationFrame(() => { if (window.positionHeroTitle) window.positionHeroTitle(); });
 
   // ── Extract pixels for Sobel ──────────────────────────────────────────────
   const tmp    = document.createElement('canvas');
