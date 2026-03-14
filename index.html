@@ -46,6 +46,17 @@
       font-size: 0.75rem;
     }
 
+    /* CREATIVE / DIRECTOR — absolutely pinned to neck of sculpture */
+    .hero-title {
+      position: absolute;
+      bottom: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 148%;
+      z-index: 2;
+      margin: 0;
+    }
+
     /* Hero headline — Cinema Sunday flanking the sculpture */
     .hero-word {
       font-family: 'Cinema Sunday', serif;
@@ -115,16 +126,15 @@
   <section class="hero-center">
     <div class="hero-inner">
 
-      <div class="hero-title reveal reveal-delay-1">
-        <span class="hero-word left">CREATIVE</span>
-        <span class="hero-word right">DIRECTOR</span>
-      </div>
-
-      <div class="hero-bust">
+      <div class="hero-bust" style="position:relative;">
         <div class="hero-sculpture" id="heroStage" style="position:relative;">
           <canvas id="sculptureCanvas"></canvas>
           <div id="groundShadow"></div>
           <span class="shadow" aria-hidden="true"></span>
+        </div>
+        <div class="hero-title reveal reveal-delay-1">
+          <span class="hero-word left">CREATIVE</span>
+          <span class="hero-word right">DIRECTOR</span>
         </div>
       </div>
 
