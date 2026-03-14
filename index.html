@@ -6,6 +6,14 @@
   <title>Jon Nguyen — Creative Director</title>
   <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
   <link rel="stylesheet" href="./style.css" />
+  <style>
+    /* Canvas replaces the <img> — behaves identically in flow */
+    #sculptureCanvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  </style>
 </head>
 
 <body>
@@ -32,9 +40,12 @@
 
       <div class="hero-bust">
         <div class="hero-sculpture" id="heroStage">
-          <img id="heroImage" src="/assets/hero-bust.png" alt="Porcelain sculpture" />
-          <span class="specular" aria-hidden="true"></span>
-          <span class="glaze" aria-hidden="true"></span>
+          <!--
+            WebGL canvas replaces static <img>.
+            specular + glaze spans removed — the shader handles those now.
+            shadow span kept for any CSS drop-shadow beneath the sculpture.
+          -->
+          <canvas id="sculptureCanvas"></canvas>
           <span class="shadow" aria-hidden="true"></span>
         </div>
       </div>
@@ -47,11 +58,12 @@
     </div>
   </section>
 
-  <section id="work" style="height: 50vh;"></section>
-  <section id="about" style="height: 50vh;"></section>
-  <section id="contact" style="height: 50vh;"></section>
+  <section id="work"    style="height:50vh;"></section>
+  <section id="about"   style="height:50vh;"></section>
+  <section id="contact" style="height:50vh;"></section>
 </main>
 
+<!-- Reveal animation (unchanged) -->
 <script>
 window.addEventListener('load', () => {
   requestAnimationFrame(() => {
@@ -60,62 +72,339 @@ window.addEventListener('load', () => {
 });
 </script>
 
+<!-- ── Normal-map WebGL lighting ──────────────────────────────────────────── -->
 <script>
-(() => {
-  const stage = document.getElementById('heroStage');
-  const img = document.getElementById('heroImage');
-  if (!stage || !img) return;
+(async () => {
 
-  const MAX_TILT_X = 10;   // up/down
-  const MAX_TILT_Y = 14;   // left/right
-  const ease = 0.10;
+  // ─── Tuneable parameters ──────────────────────────────────────────────────
+  const NORMAL_STRENGTH = 3.5;   // Sobel normal depth
+  const SHADOW_STR      = 0.10;  // How much shadow side darkens (0 = none, 0.2 = noticeable)
+  const SPECULAR        = 0.55;  // Specular highlight intensity
+  const SHININESS       = 160.0; // Tightness — higher = sharper glaze spot
+  const FRESNEL_STR     = 0.38;  // Edge glaze glow
+  const RIM_STR         = 0.18;  // Opposite-side fill light
+  const LIGHT_BLEND     = 0.60;  // Master blend (0 = off, 1 = full replacement)
+  const LIGHT_Z         = 0.40;  // Virtual light depth
+  const PARALLAX_SCALE  = 0.032; // How far surface layers separate during tilt (try 0.02–0.05)
+  const MAX_TILT_X      = 7;     // Reduced — shader parallax carries more of the 3D illusion now
+  const MAX_TILT_Y      = 10;
+  const EASE            = 0.08;  // Slightly slower ease feels more physical
+  // ──────────────────────────────────────────────────────────────────────────
 
-  let tx = 0, ty = 0;
-  let targetTx = 0, targetTy = 0;
+  const stage  = document.getElementById('heroStage');
+  const canvas = document.getElementById('sculptureCanvas');
+  if (!stage || !canvas) return;
 
-  function setFromPointer(e){
-    const r = stage.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width;  // 0..1
-    const y = (e.clientY - r.top) / r.height;  // 0..1
+  // ── 1. Load the sculpture image ───────────────────────────────────────────
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  await new Promise((res, rej) => {
+    img.onload  = res;
+    img.onerror = rej;
+    img.src     = '/assets/hero-bust.png';
+  });
 
-    const nx = (x - 0.5) * 2; // -1..1
-    const ny = (y - 0.5) * 2; // -1..1
+  const W = img.naturalWidth;
+  const H = img.naturalHeight;
+  canvas.width  = W;
+  canvas.height = H;
 
+  // ── 2. Extract pixel data into an off-screen canvas ───────────────────────
+  const tmp    = document.createElement('canvas');
+  tmp.width    = W;
+  tmp.height   = H;
+  const ctx2d  = tmp.getContext('2d');
+  ctx2d.drawImage(img, 0, 0);
+  const { data: px } = ctx2d.getImageData(0, 0, W, H);
+
+  // ── 3. Generate normal map via 3×3 Sobel filter on luminance ─────────────
+  //
+  //  Convention:
+  //    • dx > 0  →  surface brighter to the right  →  N.x = +dx (right-facing)
+  //    • dy > 0  →  surface brighter below (image y+1 is down)
+  //    • Y gets negated in the fragment shader to convert image-Y → world-Y
+  //
+  function getLum(x, y) {
+    x = Math.max(0, Math.min(W - 1, x));
+    y = Math.max(0, Math.min(H - 1, y));
+    const i = (y * W + x) << 2;
+    return (0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2]) / 255;
+  }
+
+  const nmData = new Uint8ClampedArray(W * H * 4);
+  const S      = NORMAL_STRENGTH;
+
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      // Sobel X  (positive = brighter on right)
+      const dx = (
+        -getLum(x-1,y-1) + getLum(x+1,y-1) +
+        -2*getLum(x-1,y)  + 2*getLum(x+1,y) +
+        -getLum(x-1,y+1) + getLum(x+1,y+1)
+      ) / 8;
+
+      // Sobel Y  (positive = brighter below, image y+ = down)
+      const dy = (
+        -getLum(x-1,y-1) - 2*getLum(x,y-1) - getLum(x+1,y-1) +
+         getLum(x-1,y+1) + 2*getLum(x,y+1) + getLum(x+1,y+1)
+      ) / 8;
+
+      const nx  = dx * S;
+      const ny  = dy * S;
+      const nz  = 1.0;
+      const len = Math.sqrt(nx*nx + ny*ny + nz*nz);
+
+      const i       = (y * W + x) << 2;
+      nmData[i]     = (nx/len * 0.5 + 0.5) * 255;   // R = X
+      nmData[i + 1] = (ny/len * 0.5 + 0.5) * 255;   // G = Y (image space, shader flips it)
+      nmData[i + 2] = (nz/len * 0.5 + 0.5) * 255;   // B = Z (toward viewer)
+      nmData[i + 3] = 255;
+    }
+  }
+
+  // ── 4. WebGL setup ────────────────────────────────────────────────────────
+  const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
+  if (!gl) {
+    // Graceful fallback: just show the static image
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    return;
+  }
+
+  // ── Shaders ───────────────────────────────────────────────────────────────
+  const vertSrc = /* glsl */`
+    attribute vec2 a_pos;
+    attribute vec2 a_uv;
+    varying   vec2 v_uv;
+    void main() {
+      v_uv        = a_uv;
+      gl_Position = vec4(a_pos, 0.0, 1.0);
+    }
+  `;
+
+  const fragSrc = /* glsl */`
+    precision mediump float;
+
+    uniform sampler2D u_diffuse;
+    uniform sampler2D u_normal;
+    uniform vec2      u_light;        // light position in UV space (0..1, y=1 at top)
+    uniform vec2      u_tilt;         // normalised tilt: x=left/right, y=up/down  (-1..1)
+    uniform float     u_parallax;     // parallax scale
+    uniform float     u_shadow_str;
+    uniform float     u_specular;
+    uniform float     u_shininess;
+    uniform float     u_fresnel_str;
+    uniform float     u_rim_str;
+    uniform float     u_blend;
+
+    varying vec2 v_uv;
+
+    void main() {
+      // ── Quick background test at base UV before any offset ────────────────
+      vec4 probe = texture2D(u_diffuse, v_uv);
+      float probeLum = dot(probe.rgb, vec3(0.299, 0.587, 0.114));
+      if (probeLum < 0.04) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        return;
+      }
+
+      // ── Parallax UV displacement ──────────────────────────────────────────
+      //  Height proxy: luminance — bright porcelain surface is "raised",
+      //  dark areas (base edge, shadows) are "further back".
+      //  When tilted right (+x), raised features shift right in UV (+U).
+      //  When tilted up   (+y), raised features shift up   in UV (+V).
+      float height  = smoothstep(0.08, 0.96, probeLum);
+      vec2  pUV     = clamp(v_uv + u_tilt * height * u_parallax, 0.001, 0.999);
+
+      // ── All subsequent sampling uses the parallaxed UV ────────────────────
+      vec4  base = texture2D(u_diffuse, pUV);
+      float lum  = dot(base.rgb, vec3(0.299, 0.587, 0.114));
+      if (lum < 0.04) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        return;
+      }
+
+      // ── Unpack normal (flip Y: image Y+ = down, world Y+ = up) ───────────
+      vec3 raw = texture2D(u_normal, pUV).xyz * 2.0 - 1.0;
+      vec3 N   = normalize(vec3(raw.x, -raw.y, raw.z));
+
+      // ── Vectors ───────────────────────────────────────────────────────────
+      vec3 V = vec3(0.0, 0.0, 1.0);
+      vec3 L = normalize(vec3(u_light - v_uv, ${LIGHT_Z.toFixed(2)}));
+      vec3 H = normalize(L + V);
+
+      float NdotL = max(dot(N, L), 0.0);
+      float NdotH = max(dot(N, H), 0.0);
+      float NdotV = max(dot(N, V), 0.0);
+
+      // ── Shadow-side darkening only — no brightening of the diffuse ────────
+      // The original render already has baked lighting; we only pull the
+      // shadow side down slightly to hint at the light moving.
+      float shadow = 1.0 - (1.0 - NdotL) * u_shadow_str;
+      vec3 shadedBase = base.rgb * shadow;
+
+      // ── Main specular — ADDITIVE, tight white glaze spot ─────────────────
+      float spec     = pow(NdotH, u_shininess) * u_specular;
+      vec3 specColor = vec3(0.97, 0.98, 1.00);
+
+      // ── Fresnel — ADDITIVE edge glow, warm-tinted ────────────────────────
+      float fresnel     = pow(1.0 - NdotV, 4.0) * u_fresnel_str;
+      vec3 fresnelColor = vec3(1.00, 0.97, 0.93);
+
+      // ── Rim fill — ADDITIVE, cool bounce from opposite side ───────────────
+      vec3  Lrim    = normalize(vec3(-(u_light - vec2(0.5)) * 0.6, 0.6));
+      float rim     = pow(max(dot(N, Lrim), 0.0), 12.0) * u_rim_str;
+      vec3  rimColor = vec3(0.82, 0.90, 1.00);
+
+      // ── Combine: base (maybe slightly shadowed) + additive highlights ─────
+      // Clamp BEFORE mix so specular can never blow out the original.
+      vec3 lit   = clamp(shadedBase + specColor * spec
+                                    + fresnelColor * fresnel
+                                    + rimColor * rim,
+                         0.0, 1.0);
+
+      vec3 color = mix(base.rgb, lit, u_blend);
+
+      gl_FragColor = vec4(color, base.a);
+    }
+  `;
+
+  // ── Compile & link ────────────────────────────────────────────────────────
+  function makeShader(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
+      throw new Error('Shader error: ' + gl.getShaderInfoLog(s));
+    return s;
+  }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, makeShader(gl.VERTEX_SHADER,   vertSrc));
+  gl.attachShader(prog, makeShader(gl.FRAGMENT_SHADER, fragSrc));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+    throw new Error('Link error: ' + gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
+
+  // ── Full-screen quad  (pos xy | uv xy) ───────────────────────────────────
+  //  UV (0,0) = screen bottom-left, (1,1) = screen top-right
+  //  With UNPACK_FLIP_Y=true, this maps correctly to image top-left at screen top-left
+  const quad = new Float32Array([
+    -1,-1, 0,0,    1,-1, 1,0,   -1, 1, 0,1,
+     1,-1, 1,0,    1, 1, 1,1,   -1, 1, 0,1,
+  ]);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, quad, gl.STATIC_DRAW);
+
+  const aPos = gl.getAttribLocation(prog, 'a_pos');
+  const aUV  = gl.getAttribLocation(prog, 'a_uv');
+  gl.enableVertexAttribArray(aPos);
+  gl.enableVertexAttribArray(aUV);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 16, 0);
+  gl.vertexAttribPointer(aUV,  2, gl.FLOAT, false, 16, 8);
+
+  // ── Upload textures ───────────────────────────────────────────────────────
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); // flip both textures so UV y=0 = screen bottom
+
+  function uploadTex(slot, data, isImg) {
+    const tex = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0 + slot);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    if (isImg) {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    } else {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, W, H, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    }
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    return tex;
+  }
+
+  uploadTex(0, img,    true);   // slot 0 = diffuse (original PNG)
+  uploadTex(1, nmData, false);  // slot 1 = generated normal map
+
+  // ── Set static uniforms ───────────────────────────────────────────────────
+  gl.uniform1i(gl.getUniformLocation(prog, 'u_diffuse'),     0);
+  gl.uniform1i(gl.getUniformLocation(prog, 'u_normal'),      1);
+  gl.uniform1f(gl.getUniformLocation(prog, 'u_shadow_str'),  SHADOW_STR);
+  gl.uniform1f(gl.getUniformLocation(prog, 'u_specular'),    SPECULAR);
+  gl.uniform1f(gl.getUniformLocation(prog, 'u_shininess'),   SHININESS);
+  gl.uniform1f(gl.getUniformLocation(prog, 'u_fresnel_str'), FRESNEL_STR);
+  gl.uniform1f(gl.getUniformLocation(prog, 'u_rim_str'),     RIM_STR);
+  gl.uniform1f(gl.getUniformLocation(prog, 'u_parallax'),   PARALLAX_SCALE);
+  const uBlend = gl.getUniformLocation(prog, 'u_blend');
+  const uLight = gl.getUniformLocation(prog, 'u_light');
+  const uTilt  = gl.getUniformLocation(prog, 'u_tilt');
+
+  // Alpha blending so transparent bg pixels don't cover the page background
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+  // ── 5. Pointer tracking + eased render loop ───────────────────────────────
+  let tx = 0, ty = 0, targetTx = 0, targetTy = 0;
+  let lx = 0.5, ly = 0.35;    // eased light position in screen UV (y=0 top, y=1 bottom)
+  let tlx = 0.5, tly = 0.35;  // target light position
+
+  // Blend eases to LIGHT_BLEND on hover, back to 0 at rest
+  let blend = 0, targetBlend = 0;
+
+  function setFromPointer(e) {
+    const r  = stage.getBoundingClientRect();
+    const sx = (e.clientX - r.left) / r.width;
+    const sy = (e.clientY - r.top)  / r.height;
+
+    const nx = (sx - 0.5) * 2;
+    const ny = (sy - 0.5) * 2;
     targetTy = nx * MAX_TILT_Y;
     targetTx = -ny * MAX_TILT_X;
 
-    // drive highlight + shadow positions
-    stage.style.setProperty('--lx', `${(x*100).toFixed(2)}%`);
-    stage.style.setProperty('--ly', `${(y*100).toFixed(2)}%`);
+    tlx = sx;
+    tly = sy;
+    targetBlend = LIGHT_BLEND; // light on
   }
 
-  function tick(){
-    tx += (targetTx - tx) * ease;
-    ty += (targetTy - ty) * ease;
+  function resetLight() {
+    targetTx = 0; targetTy = 0;
+    tlx = 0.5;   tly = 0.35;
+    targetBlend = 0;           // light off
+  }
 
+  stage.addEventListener('pointermove', setFromPointer, { passive: true });
+  stage.addEventListener('pointerleave', resetLight);
+  window.addEventListener('blur', resetLight);
+
+  function tick() {
+    // ── Ease tilt ────────────────────────────────────────────────────────
+    tx += (targetTx - tx) * EASE;
+    ty += (targetTy - ty) * EASE;
     stage.style.setProperty('--rx', `${tx.toFixed(2)}deg`);
     stage.style.setProperty('--ry', `${ty.toFixed(2)}deg`);
+
+    // ── Ease light + blend ────────────────────────────────────────────────
+    lx    += (tlx         - lx)    * EASE;
+    ly    += (tly         - ly)    * EASE;
+    blend += (targetBlend - blend) * EASE;
+
+    gl.uniform2f(uLight, lx, 1.0 - ly);
+    gl.uniform1f(uBlend, blend);
+    // Normalise tilt to -1..1 so parallax scale is independent of degree values
+    // ty = rotateY (left/right), tx = rotateX (up/down)
+    gl.uniform2f(uTilt, ty / MAX_TILT_Y, -(tx / MAX_TILT_X));
+
+    // ── Draw ──────────────────────────────────────────────────────────────
+    gl.viewport(0, 0, W, H);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     requestAnimationFrame(tick);
   }
 
+  gl.clearColor(0, 0, 0, 0);
   tick();
 
-  stage.addEventListener('pointermove', setFromPointer, { passive: true });
-
-  stage.addEventListener('pointerleave', () => {
-    targetTx = 0;
-    targetTy = 0;
-    stage.style.setProperty('--lx', `50%`);
-    stage.style.setProperty('--ly', `35%`);
-  });
-
-  window.addEventListener('blur', () => {
-    targetTx = 0;
-    targetTy = 0;
-    stage.style.setProperty('--lx', `50%`);
-    stage.style.setProperty('--ly', `35%`);
-  });
 })();
 </script>
 
