@@ -67,8 +67,8 @@
     }
 
     /* Negative margin pulls words INTO the bust — bust z-index:3 sits on top */
-    .hero-word-col.left  { justify-content: flex-end;  margin-right: -230px; }
-    .hero-word-col.right { justify-content: flex-start; margin-left:  -230px; }
+    .hero-word-col.left  { justify-content: flex-end;  margin-right: -200px; }
+    .hero-word-col.right { justify-content: flex-start; margin-left:  -200px; }
 
     /* Hero headline — Cinema Sunday */
     .hero-word {
@@ -103,6 +103,15 @@
       margin-top: 6px;
     }
     #sculptureCanvas { display: block; width: 100%; height: auto; }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-14px); }
+    }
+
+    .hero-sculpture {
+      animation: floaty 6s ease-in-out infinite;
+    }
 
     /* Ground shadow — sits just below the sculpture base */
     #groundShadow {
