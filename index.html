@@ -46,15 +46,21 @@
       font-size: 0.75rem;
     }
 
-    /* CREATIVE / DIRECTOR — absolutely pinned to neck of sculpture */
+    /* hero-inner becomes the positioning context */
+    .hero-inner {
+      position: relative;
+    }
+
+    /* CREATIVE / DIRECTOR — absolutely pinned at neck level, full-width, behind sculpture */
     .hero-title {
       position: absolute;
-      bottom: 30%;
+      top: 52%;
       left: 50%;
       transform: translateX(-50%);
-      width: 148%;
-      z-index: 2;
+      width: min(1060px, 96vw);
+      z-index: 1;
       margin: 0;
+      pointer-events: none;
     }
 
     /* Hero headline — Cinema Sunday flanking the sculpture */
@@ -64,7 +70,7 @@
       text-transform: uppercase;
       letter-spacing: 0.02em;
       line-height: 1;
-      font-size: clamp(52px, 7vw, 108px);
+      font-size: clamp(18px, 2.2vw, 36px);
       color: rgba(18,18,18,0.88);
     }
 
@@ -126,15 +132,16 @@
   <section class="hero-center">
     <div class="hero-inner">
 
-      <div class="hero-bust" style="position:relative;">
+      <div class="hero-title reveal reveal-delay-1">
+        <span class="hero-word left">CREATIVE</span>
+        <span class="hero-word right">DIRECTOR</span>
+      </div>
+
+      <div class="hero-bust" style="position:relative; z-index:3;">
         <div class="hero-sculpture" id="heroStage" style="position:relative;">
           <canvas id="sculptureCanvas"></canvas>
           <div id="groundShadow"></div>
           <span class="shadow" aria-hidden="true"></span>
-        </div>
-        <div class="hero-title reveal reveal-delay-1">
-          <span class="hero-word left">CREATIVE</span>
-          <span class="hero-word right">DIRECTOR</span>
         </div>
       </div>
 
