@@ -46,17 +46,16 @@
       font-size: 0.75rem;
     }
 
-    /* CREATIVE / DIRECTOR — full viewport width, pinned at neck level */
+    /* CREATIVE / DIRECTOR — each word anchored to viewport center */
     .hero-title {
       position: absolute;
       top: 46%;
-      left: calc(50% - 490px);
-      right: calc(50% - 490px);
-      width: auto;
+      left: 0;
+      right: 0;
       z-index: 2;
       margin: 0;
       pointer-events: none;
-      transform: none;
+      display: block;
     }
 
     /* Hero headline — Cinema Sunday flanking the sculpture */
@@ -68,6 +67,17 @@
       line-height: 1;
       font-size: clamp(32px, 3.8vw, 62px);
       color: rgba(18,18,18,0.88);
+      position: absolute;
+    }
+
+    /* CREATIVE — right edge sits just inside the bust's left shoulder */
+    .hero-word.left {
+      right: calc(50% + 230px);
+    }
+
+    /* DIRECTOR — left edge sits just inside the bust's right shoulder */
+    .hero-word.right {
+      left: calc(50% + 230px);
     }
 
     /* "BUILDING WORLDS" — Montserrat medium, very wide tracking */
