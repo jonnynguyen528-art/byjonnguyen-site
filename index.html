@@ -46,19 +46,27 @@
       font-size: 0.75rem;
     }
 
-    /* CREATIVE / DIRECTOR — positioned by JS after bust renders */
-    .hero-title {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 2;
-      margin: 0;
-      pointer-events: none;
-      display: block;
-      visibility: hidden; /* hide until JS positions them */
+    /* 3-col composition: CREATIVE | bust | DIRECTOR */
+    .hero-composition {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
     }
 
+    /* Each word column takes equal flex space, bust is fixed */
+    .hero-word-col {
+      flex: 1;
+      display: flex;
+      align-items: flex-end; /* align word to bottom of its column */
+      /* push word down to ~52% of bust height (neck) */
+      padding-top: calc(min(560px, 82vw) * 0.68);
+    }
+
+    .hero-word-col.left  { justify-content: flex-end;  padding-right: 12px; }
+    .hero-word-col.right { justify-content: flex-start; padding-left:  12px; }
+
+    /* Hero headline — Cinema Sunday */
     .hero-word {
       font-family: 'Cinema Sunday', serif;
       font-weight: normal;
@@ -67,7 +75,6 @@
       line-height: 1;
       font-size: clamp(32px, 3.8vw, 62px);
       color: rgba(18,18,18,0.88);
-      position: absolute;
       white-space: nowrap;
     }
 
@@ -126,21 +133,25 @@
 </header>
 
 <main>
-  <section class="hero-center" style="position:relative;">
-
-    <!-- title lives at section level so it spans full viewport width -->
-    <div class="hero-title reveal reveal-delay-1">
-      <span class="hero-word left">CREATIVE</span>
-      <span class="hero-word right">DIRECTOR</span>
-    </div>
-
+  <section class="hero-center">
     <div class="hero-inner">
 
-      <div class="hero-bust" style="position:relative; z-index:3;">
-        <div class="hero-sculpture" id="heroStage" style="position:relative;">
-          <canvas id="sculptureCanvas"></canvas>
-          <div id="groundShadow"></div>
-          <span class="shadow" aria-hidden="true"></span>
+      <!-- 3-col row: word | bust | word -->
+      <div class="hero-composition reveal reveal-delay-1">
+        <div class="hero-word-col left">
+          <span class="hero-word">CREATIVE</span>
+        </div>
+
+        <div class="hero-bust">
+          <div class="hero-sculpture" id="heroStage" style="position:relative;">
+            <canvas id="sculptureCanvas"></canvas>
+            <div id="groundShadow"></div>
+            <span class="shadow" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="hero-word-col right">
+          <span class="hero-word">DIRECTOR</span>
         </div>
       </div>
 
@@ -165,56 +176,6 @@ window.addEventListener('load', () => {
 });
 </script>
 
-<script>
-// ── Position CREATIVE / DIRECTOR relative to actual bust rect ────────────────
-function positionHeroTitle() {
-  const canvas    = document.getElementById('sculptureCanvas');
-  const titleEl   = document.querySelector('.hero-title');
-  const wordLeft  = document.querySelector('.hero-word.left');
-  const wordRight = document.querySelector('.hero-word.right');
-  const section   = document.querySelector('.hero-center');
-  if (!canvas || !titleEl || !wordLeft || !wordRight || !section) return;
-
-  const bustRect    = canvas.getBoundingClientRect();
-  const sectionRect = section.getBoundingClientRect();
-
-  // Vertical: place text at 52% down the bust (neck area)
-  const neckY = bustRect.top - sectionRect.top + bustRect.height * 0.52;
-  // Offset upward by half the word's rendered height
-  const wordH = wordLeft.getBoundingClientRect().height || 62;
-  const topPx = neckY - wordH * 0.5;
-
-  titleEl.style.top = topPx + 'px';
-
-  // Horizontal: CREATIVE right edge = bust left edge + 30px overlap
-  //             DIRECTOR left edge  = bust right edge - 30px overlap
-  const bustLeft  = bustRect.left  - sectionRect.left;
-  const bustRight = bustRect.right - sectionRect.left;
-  const OVERLAP   = 40; // px the bust overlaps each word's inner edge
-
-  wordLeft.style.right  = (sectionRect.width - bustLeft  - OVERLAP) + 'px';
-  wordRight.style.left  = (bustRight - OVERLAP) + 'px';
-
-  titleEl.style.visibility = 'visible';
-}
-
-// Retry until the canvas has real dimensions (WebGL script sizes it async)
-function positionWhenReady() {
-  const canvas = document.getElementById('sculptureCanvas');
-  if (!canvas || canvas.getBoundingClientRect().width === 0) {
-    requestAnimationFrame(positionWhenReady);
-    return;
-  }
-  positionHeroTitle();
-  window.addEventListener('resize', positionHeroTitle);
-}
-
-// Kick off once fonts are loaded
-document.fonts.ready.then(() => requestAnimationFrame(positionWhenReady));
-
-// Also expose globally so the WebGL script can call it after canvas is ready
-window.positionHeroTitle = positionHeroTitle;
-</script>
 
 <script>
 (async () => {
@@ -248,9 +209,6 @@ window.positionHeroTitle = positionHeroTitle;
   const H = img.naturalHeight;
   canvas.width  = W;
   canvas.height = H;
-
-  // Canvas is now sized — position the flanking words
-  requestAnimationFrame(() => { if (window.positionHeroTitle) window.positionHeroTitle(); });
 
   // ── Extract pixels for Sobel ──────────────────────────────────────────────
   const tmp    = document.createElement('canvas');
