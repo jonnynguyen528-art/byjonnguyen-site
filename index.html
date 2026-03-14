@@ -12,6 +12,29 @@
       width: 100%;
       height: auto;
     }
+    /* Loading state — fades out once GLB is ready */
+    #sculptureWrap {
+      position: relative;
+    }
+    #sculptureLoader {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+    #sculptureLoader.hidden { opacity: 0; }
+    #sculptureLoader span {
+      width: 28px; height: 28px;
+      border: 2px solid rgba(0,0,0,0.12);
+      border-top-color: rgba(0,0,0,0.45);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 
@@ -39,7 +62,10 @@
 
       <div class="hero-bust">
         <div class="hero-sculpture" id="heroStage">
-          <canvas id="sculptureCanvas"></canvas>
+          <div id="sculptureWrap">
+            <canvas id="sculptureCanvas"></canvas>
+            <div id="sculptureLoader"><span></span></div>
+          </div>
           <span class="shadow" aria-hidden="true"></span>
         </div>
       </div>
@@ -76,175 +102,159 @@ window.addEventListener('load', () => {
 </script>
 
 <script type="module">
-import * as THREE                      from 'three';
-import { GLTFLoader }                  from 'three/addons/loaders/GLTFLoader.js';
-import { DRACOLoader }                 from 'three/addons/loaders/DRACOLoader.js';
+import * as THREE       from 'three';
+import { GLTFLoader }  from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  TUNEABLE — tweak here without touching the rest of the code
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Config ────────────────────────────────────────────────────────────────────
 const CFG = {
-  // Camera
-  fov:          28,     // telephoto — matches reference render, no facial distortion
-  canvasW:      820,
-  canvasH:      1060,
-
-  // How much of the frame height the bust should fill (1.0 = perfect fit)
-  frameFill:    0.86,
-
-  // Tone mapping exposure — keep ≤ 1 to avoid blowing out the white porcelain
-  exposure:     0.80,
-
-  // Lights  — intensities tuned against the reference image:
-  //   soft overall illumination, key from upper-left, no harsh specular
-  ambientColor: 0xfff8f2,  ambientIntensity:  0.72,   // warm fill, stops shadows going black
-  keyColor:     0xffffff,  keyIntensity:      0.68,   // main shape-defining light, upper-left
-  fillColor:    0xe8f0ff,  fillIntensity:     0.20,   // cool fill, right side
-  rimColor:     0xffffff,  rimIntensity:      0.14,   // top rim, picks out hair edges
-
-  // Interaction
-  maxRotY:  0.30,   // radians left/right  (~17°)
-  maxRotX:  0.18,   // radians up/down     (~10°)
-  ease:     0.07,
+  glbPath:    '/assets/porcelain_girl_2_opt.glb',
+  fov:        28,       // telephoto — no facial distortion
+  frameFill:  0.86,     // how much vertical FOV the bust fills
+  exposure:   0.80,     // ACESFilmic exposure — ≤1 to avoid blowing out whites
+  ambientColor: 0xfff8f2, ambientIntensity: 0.72,
+  keyColor:     0xffffff, keyIntensity:     0.68,
+  fillColor:    0xe8f0ff, fillIntensity:    0.20,
+  rimColor:     0xffffff, rimIntensity:     0.14,
+  maxRotY: 0.30,
+  maxRotX: 0.18,
+  ease:    0.07,
 };
-// ─────────────────────────────────────────────────────────────────────────────
 
 const stage  = document.getElementById('heroStage');
 const canvas = document.getElementById('sculptureCanvas');
+const loader_el = document.getElementById('sculptureLoader');
 
 // ── Renderer ──────────────────────────────────────────────────────────────────
 const renderer = new THREE.WebGLRenderer({
   canvas,
-  alpha:              true,   // transparent bg → page cream shows through
-  antialias:          true,
+  alpha: true,
+  antialias: true,
   premultipliedAlpha: false,
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(CFG.canvasW, CFG.canvasH);
-renderer.outputColorSpace   = THREE.SRGBColorSpace;
-renderer.toneMapping        = THREE.ACESFilmicToneMapping;
+renderer.outputColorSpace    = THREE.SRGBColorSpace;
+renderer.toneMapping         = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = CFG.exposure;
-renderer.setClearColor(0x000000, 0);  // fully transparent clear
+renderer.setClearColor(0x000000, 0);
 
-// ── Scene ─────────────────────────────────────────────────────────────────────
+// ── CRITICAL: setSize with updateStyle=false ──────────────────────────────────
+// Passing false means Three.js sets canvas.width/height (resolution) but does
+// NOT inject canvas.style.width/height inline — so our CSS width:100% stays.
+function syncSize() {
+  // Use the parent's width; derive height from the 820:1060 aspect ratio.
+  const w = canvas.parentElement?.clientWidth || 820;
+  const h = Math.round(w * (1060 / 820));
+  renderer.setSize(w, h, false);   // <-- false is the key fix
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+
+// ── Scene & Camera ────────────────────────────────────────────────────────────
 const scene  = new THREE.Scene();
-
-// ── Camera ────────────────────────────────────────────────────────────────────
-// Telephoto (28°) collapses depth the same way a portrait lens does —
-// the reference image has this compressed, sculpture-photo quality.
-const camera = new THREE.PerspectiveCamera(
-  CFG.fov,
-  CFG.canvasW / CFG.canvasH,
-  0.01, 200
-);
+const camera = new THREE.PerspectiveCamera(CFG.fov, 820 / 1060, 0.01, 200);
 
 // ── Lighting ──────────────────────────────────────────────────────────────────
-// Reference image analysis:
-//   • Overall tone is very even and soft — no single harsh source
-//   • Key light from upper-left casts gentle shadows on the right cheek
-//   • Right side is dimly filled (not black), cool-tinted
-//   • Top of head catches a faint rim
-//   • Zero blown-out specular on the white surfaces
+scene.add(new THREE.AmbientLight(CFG.ambientColor, CFG.ambientIntensity));
 
-const ambientLight = new THREE.AmbientLight(CFG.ambientColor, CFG.ambientIntensity);
-scene.add(ambientLight);
-
-// Key — upper-left, forward
 const keyLight = new THREE.DirectionalLight(CFG.keyColor, CFG.keyIntensity);
 keyLight.position.set(-1.6, 2.8, 3.2);
 scene.add(keyLight);
 
-// Fill — right side, cool tint, very soft
 const fillLight = new THREE.DirectionalLight(CFG.fillColor, CFG.fillIntensity);
 fillLight.position.set(3.0, 0.8, 2.0);
 scene.add(fillLight);
 
-// Rim — directly above, just separates hair from background
 const rimLight = new THREE.DirectionalLight(CFG.rimColor, CFG.rimIntensity);
 rimLight.position.set(0, 6, 0.5);
 scene.add(rimLight);
 
-// ── Load GLB ──────────────────────────────────────────────────────────────────
-const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
+// ── Load GLB (with optional Draco) ───────────────────────────────────────────
+const draco = new DRACOLoader();
+draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
 
-const loader = new GLTFLoader();
-loader.setDRACOLoader(dracoLoader);
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(draco);
 
 let modelGroup = null;
 
-loader.load(
-  '/assets/porcelain_girl_2_opt.glb',
+gltfLoader.load(
+  CFG.glbPath,
+
+  // ── onLoad ────────────────────────────────────────────────────────────────
   (gltf) => {
     const model = gltf.scene;
 
-    // ── Centre on bounding box ─────────────────────────────────────────────
+    // Centre pivot on bounding box
     const box    = new THREE.Box3().setFromObject(model);
     const center = box.getCenter(new THREE.Vector3());
     const size   = box.getSize(new THREE.Vector3());
-    model.position.sub(center);  // move pivot to geometric centre
+    model.position.sub(center);
 
     modelGroup = new THREE.Group();
     modelGroup.add(model);
     scene.add(modelGroup);
 
-    // ── Position camera to frame the bust like the reference ───────────────
-    // Place camera so the bust fills `frameFill` of the vertical FOV.
-    // Then nudge slightly upward so we look at the face, not the base.
-    const fovRad   = camera.fov * (Math.PI / 180);
+    // Frame camera: bust fills frameFill of vertical FOV, look at face area
+    const fovRad   = camera.fov * Math.PI / 180;
     const distance = (size.y * CFG.frameFill) / (2 * Math.tan(fovRad / 2));
-    const eyeY     = size.y * 0.05;   // camera sits slightly above mid-height
-
+    const eyeY     = size.y * 0.05;
     camera.position.set(0, eyeY, distance);
     camera.lookAt(0, eyeY, 0);
     camera.updateProjectionMatrix();
+
+    // Re-sync canvas size now we know the aspect
+    syncSize();
+
+    // Hide loading spinner
+    if (loader_el) loader_el.classList.add('hidden');
+    setTimeout(() => { if (loader_el) loader_el.remove(); }, 700);
   },
+
+  // ── onProgress ────────────────────────────────────────────────────────────
   undefined,
-  (err) => console.error('GLB load error:', err)
+
+  // ── onError ───────────────────────────────────────────────────────────────
+  (err) => {
+    console.error('[sculpture] GLB failed to load:', err);
+    console.error('[sculpture] Tried path:', CFG.glbPath);
+    if (loader_el) loader_el.innerHTML =
+      '<small style="color:#c00;font-size:11px">GLB not found — check /assets/ path</small>';
+  }
 );
 
-// ── Mouse-driven rotation ─────────────────────────────────────────────────────
-let targetRX = 0, targetRY = 0;
-let currentRX = 0, currentRY = 0;
+// ── Pointer rotation ──────────────────────────────────────────────────────────
+let targetRX = 0, targetRY = 0, currentRX = 0, currentRY = 0;
 
 stage.addEventListener('pointermove', (e) => {
   const r  = stage.getBoundingClientRect();
-  const nx = ((e.clientX - r.left) / r.width  - 0.5) * 2;  // −1 .. 1
+  const nx = ((e.clientX - r.left) / r.width  - 0.5) * 2;
   const ny = ((e.clientY - r.top)  / r.height - 0.5) * 2;
   targetRY =  nx * CFG.maxRotY;
   targetRX = -ny * CFG.maxRotX;
 }, { passive: true });
 
-stage.addEventListener('pointerleave', () => { targetRX = 0; targetRY = 0; });
-window.addEventListener('blur',        () => { targetRX = 0; targetRY = 0; });
+const resetRot = () => { targetRX = 0; targetRY = 0; };
+stage.addEventListener('pointerleave', resetRot);
+window.addEventListener('blur', resetRot);
 
 // ── Render loop ───────────────────────────────────────────────────────────────
 function tick() {
   requestAnimationFrame(tick);
-
   currentRX += (targetRX - currentRX) * CFG.ease;
   currentRY += (targetRY - currentRY) * CFG.ease;
-
   if (modelGroup) {
     modelGroup.rotation.x = currentRX;
     modelGroup.rotation.y = currentRY;
   }
-
   renderer.render(scene, camera);
 }
 
+// Initial size sync then start loop
+syncSize();
 tick();
 
-// ── Responsive resize ─────────────────────────────────────────────────────────
-window.addEventListener('resize', () => {
-  const w = canvas.clientWidth;
-  const h = canvas.clientHeight;
-  if (w > 0 && h > 0) {
-    renderer.setSize(w, h, false);  // false = don't set CSS, just canvas attrs
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
-});
+window.addEventListener('resize', syncSize);
 
 </script>
 
