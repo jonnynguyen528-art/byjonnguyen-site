@@ -87,9 +87,10 @@ window.addEventListener('load', () => {
   const LIGHT_Z         = 0.40;  // Virtual light depth
   const NORMAL_ROT_Y    = 0.28;  // How much left/right tilt rotates the normals (radians at full tilt)
   const NORMAL_ROT_X    = 0.20;  // How much up/down tilt rotates the normals
-  const MAX_TILT_X      = 10;
-  const MAX_TILT_Y      = 15;
-  const EASE            = 0.08;
+  const PARALLAX_SCALE  = 0.055; // Max UV shift at face center (try 0.04–0.09)
+  const MAX_TILT_X      = 5;     // CSS tilt kept subtle — parallax carries the rotation feel
+  const MAX_TILT_Y      = 7;
+  const EASE            = 0.07;
   // ──────────────────────────────────────────────────────────────────────────
 
   const stage  = document.getElementById('heroStage');
@@ -189,6 +190,7 @@ window.addEventListener('load', () => {
     uniform sampler2D u_normal;
     uniform vec2      u_light;        // light position in UV space (0..1, y=1 at top)
     uniform vec2      u_tilt;         // normalised tilt: x=left/right, y=up/down  (-1..1)
+    uniform float     u_parallax;     // max UV shift at depth = 1
     uniform float     u_shadow_str;
     uniform float     u_specular;
     uniform float     u_shininess;
@@ -199,8 +201,28 @@ window.addEventListener('load', () => {
     varying vec2 v_uv;
 
     void main() {
-      // ── Sample at straight UV — no per-pixel displacement ────────────────
-      vec4  base = texture2D(u_diffuse, v_uv);
+      // ── Smooth radial depth parallax ─────────────────────────────────────
+      //
+      //  Model the bust as a convex object: the face/nose is the point
+      //  closest to the camera, depth falls off smoothly toward the edges.
+      //  Using a radial field means all neighbouring pixels shift by nearly
+      //  the same amount — no tearing, no tiles, just clean coherent motion.
+      //
+      //  bustCenter: face center in UV (x=0..1, y=0 bottom / y=1 top)
+      //  Ellipse aspect is stretched vertically because the bust is taller
+      //  than it is wide, so the radial falloff matches the silhouette better.
+      //
+      //  u_tilt.x > 0 = tilted right → front features lead rightward (+U)
+      //  u_tilt.y > 0 = tilted up    → front features lead upward    (+V)
+
+      vec2  bustCenter = vec2(0.50, 0.60);
+      vec2  delta      = (v_uv - bustCenter) * vec2(0.80, 1.10);
+      float depth      = smoothstep(0.55, 0.02, length(delta));
+      vec2  pUV        = clamp(v_uv + vec2(u_tilt.x, u_tilt.y) * depth * u_parallax,
+                               0.001, 0.999);
+
+      // ── All sampling uses the depth-offset UV ─────────────────────────────
+      vec4  base = texture2D(u_diffuse, pUV);
       float lum  = dot(base.rgb, vec3(0.299, 0.587, 0.114));
       if (lum < 0.04) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
@@ -208,7 +230,7 @@ window.addEventListener('load', () => {
       }
 
       // ── Unpack normal (flip Y: image Y+ = down, world Y+ = up) ───────────
-      vec3 raw = texture2D(u_normal, v_uv).xyz * 2.0 - 1.0;
+      vec3 raw = texture2D(u_normal, pUV).xyz * 2.0 - 1.0;
       vec3 N   = normalize(vec3(raw.x, -raw.y, raw.z));
 
       // ── Rotate normals to match the CSS tilt ──────────────────────────────
@@ -346,6 +368,7 @@ window.addEventListener('load', () => {
   gl.uniform1f(gl.getUniformLocation(prog, 'u_shininess'),   SHININESS);
   gl.uniform1f(gl.getUniformLocation(prog, 'u_fresnel_str'), FRESNEL_STR);
   gl.uniform1f(gl.getUniformLocation(prog, 'u_rim_str'),     RIM_STR);
+  gl.uniform1f(gl.getUniformLocation(prog, 'u_parallax'), PARALLAX_SCALE);
   const uBlend = gl.getUniformLocation(prog, 'u_blend');
   const uLight = gl.getUniformLocation(prog, 'u_light');
   const uTilt  = gl.getUniformLocation(prog, 'u_tilt');
