@@ -67,8 +67,8 @@
     }
 
     /* Negative margin pulls words INTO the bust — bust z-index:3 sits on top */
-    .hero-word-col.left  { justify-content: flex-end;  margin-right: -200px; }
-    .hero-word-col.right { justify-content: flex-start; margin-left:  -200px; }
+    .hero-word-col.left  { justify-content: flex-end;  margin-right: -260px; }
+    .hero-word-col.right { justify-content: flex-start; margin-left:  -260px; }
 
     /* Hero headline — Cinema Sunday */
     .hero-word {
@@ -112,6 +112,24 @@
     .hero-sculpture {
       animation: floaty 6s ease-in-out infinite;
     }
+
+    /* ── Full-page cursor spotlight overlay ─────────────────────────────── */
+    #cursorSpotlight {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      background: radial-gradient(
+        600px circle at 50% 50%,
+        rgba(255,255,245, 0.18) 0%,
+        rgba(255,252,235, 0.08) 30%,
+        transparent 70%
+      );
+      mix-blend-mode: screen;
+    }
+    #cursorSpotlight.active { opacity: 1; }
 
     /* Ground shadow — sits just below the sculpture base */
     #groundShadow {
@@ -181,12 +199,57 @@
   <section id="contact" style="height:50vh;"></section>
 </main>
 
+<!-- Full-page cursor spotlight -->
+<div id="cursorSpotlight"></div>
+
 <script>
 window.addEventListener('load', () => {
   requestAnimationFrame(() => {
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
   });
 });
+</script>
+
+<script>
+(function () {
+  const spotlight = document.getElementById('cursorSpotlight');
+  let mouseX = window.innerWidth  / 2;
+  let mouseY = window.innerHeight / 2;
+  let curX   = mouseX;
+  let curY   = mouseY;
+  let active = false;
+  const LERP = 0.07; // inertia — lower = more lag (like serious.business)
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (!active) {
+      active = true;
+      spotlight.classList.add('active');
+    }
+  });
+
+  document.addEventListener('mouseleave', () => {
+    active = false;
+    spotlight.classList.remove('active');
+  });
+
+  function tick() {
+    // Smooth lerp toward real cursor position
+    curX += (mouseX - curX) * LERP;
+    curY += (mouseY - curY) * LERP;
+
+    spotlight.style.background = `radial-gradient(
+      600px circle at ${curX}px ${curY}px,
+      rgba(255,255,245, 0.22) 0%,
+      rgba(255,252,230, 0.10) 28%,
+      transparent 68%
+    )`;
+
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
 </script>
 
 
