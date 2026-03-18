@@ -21,14 +21,11 @@
       font-display: swap;
     }
 
-    /* ── Base typography ─────────────────────────────────────────────────── */
-    /* Reference: Jazz poster — big serif dominates, sans-serif supports */
-
     body {
       font-family: 'Montserrat', sans-serif;
     }
 
-    /* Nav brand — Cinema Sunday, large editorial treatment */
+    /* Nav brand — Cinema Sunday */
     .brand {
       font-family: 'Cinema Sunday', serif;
       font-weight: normal;
@@ -55,22 +52,18 @@
       overflow: visible;
     }
 
-    /* Each word column takes equal flex space, bust is fixed */
     .hero-word-col {
       flex: 1;
       display: flex;
-      align-items: flex-end; /* align word to bottom of its column */
-      /* push word down to ~52% of bust height (neck) */
+      align-items: flex-end;
       padding-top: calc(min(560px, 82vw) * 0.46);
       position: relative;
-      z-index: 1; /* bust (z-index:3) renders on top for overlap effect */
+      z-index: 1;
     }
 
-    /* Negative margin pulls words INTO the bust — bust z-index:3 sits on top */
     .hero-word-col.left  { justify-content: flex-end;  margin-right: -200px; }
     .hero-word-col.right { justify-content: flex-start; margin-left:  -200px; }
 
-    /* Hero headline — Cinema Sunday */
     .hero-word {
       font-family: 'Cinema Sunday', serif;
       font-weight: normal;
@@ -82,7 +75,6 @@
       white-space: nowrap;
     }
 
-    /* "BUILDING WORLDS" — Montserrat medium, very wide tracking */
     .hero-line1 {
       font-family: 'Montserrat', sans-serif;
       font-weight: 500;
@@ -92,7 +84,6 @@
       color: rgba(18,18,18,0.70);
     }
 
-    /* "BRAND · DIGITAL · EXPERIENTIAL" — Montserrat light, open tracking */
     .hero-line2 {
       font-family: 'Montserrat', sans-serif;
       font-weight: 300;
@@ -102,46 +93,14 @@
       color: rgba(18,18,18,0.48);
       margin-top: 6px;
     }
-    /* ── Turntable ───────────────────────────────────────────────────────── */
-    .turntable-wrap {
-      position: relative;
-      width: 100%;
-      line-height: 0;
-    }
 
-    /* Two stacked images — we crossfade between them */
-    .turntable-img {
+    /* ── Hero bust ───────────────────────────────────────────────────────── */
+    .hero-bust-img {
       display: block;
       width: 100%;
       height: auto;
-      /* Radial mask fades out black corners so the bust
-         floats on the off-white background without re-exporting */
-      -webkit-mask-image: radial-gradient(
-        ellipse 78% 88% at 50% 48%,
-        black 55%, transparent 100%
-      );
-      mask-image: radial-gradient(
-        ellipse 78% 88% at 50% 48%,
-        black 55%, transparent 100%
-      );
       user-select: none;
       pointer-events: none;
-    }
-
-    /* Back frame sits underneath, never animated */
-    .turntable-img.back {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-    }
-
-    /* Crossfade: front fades out → back fades in */
-    .turntable-wrap.fading .turntable-img.front { opacity: 0; }
-    .turntable-wrap.fading .turntable-img.back   { opacity: 1; }
-
-    .turntable-img.front,
-    .turntable-img.back {
-      transition: opacity 0.2s ease-in-out;
     }
 
     @keyframes floaty {
@@ -154,7 +113,6 @@
     }
 
     /* ── Full-page cursor spotlight overlay ─────────────────────────────── */
-    /* Spotlight: dark vignette with a transparent hole at cursor = real spotlight feel */
     #cursorSpotlight {
       position: fixed;
       inset: 0;
@@ -163,9 +121,8 @@
       opacity: 0;
       transition: opacity 0.8s ease;
     }
-    #cursorSpotlight.active { opacity: 1; }
 
-    /* Ground shadow — sits just below the sculpture base */
+    /* Ground shadow */
     #groundShadow {
       position: absolute;
       bottom: 3%;
@@ -209,14 +166,10 @@
 
         <div class="hero-bust">
           <div class="hero-sculpture" id="heroStage" style="position:relative;">
-            <div class="turntable-wrap" id="turntableWrap">
-              <!-- Front frame (visible) -->
-              <img class="turntable-img front" id="ttFront"
-                   src="frames/hero-bust-b2.png" alt="Porcelain bust sculpture" draggable="false" />
-              <!-- Back frame (fades in during swap) -->
-              <img class="turntable-img back"  id="ttBack"
-                   src="frames/hero-bust-b2.png" alt="" draggable="false" />
-            </div>
+            <img class="hero-bust-img"
+                 src="frames/hero-bust-b2.png"
+                 alt="Porcelain bust sculpture"
+                 draggable="false" />
             <div id="groundShadow"></div>
           </div>
         </div>
@@ -253,11 +206,12 @@ window.addEventListener('load', () => {
 <script>
 (function () {
   const spotlight = document.getElementById('cursorSpotlight');
+  const shadowEl  = document.getElementById('groundShadow');
   let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;
   let curX = mouseX, curY = mouseY;
   let hasEntered = false;
-  const LERP = 0.08; // matches WebGL EASE exactly
+  const LERP = 0.08;
 
   document.addEventListener('mousemove', e => {
     mouseX = e.clientX;
@@ -269,12 +223,9 @@ window.addEventListener('load', () => {
     curX += (mouseX - curX) * LERP;
     curY += (mouseY - curY) * LERP;
 
-        if (!hasEntered) {
-      requestAnimationFrame(tick);
-      return;
-    }
+    if (!hasEntered) { requestAnimationFrame(tick); return; }
 
-    // Spotlight strength: how far cursor is from screen center (0=center, 1=edge)
+    // ── Spotlight ────────────────────────────────────────────────────────
     const W = window.innerWidth, H = window.innerHeight;
     const dx = (curX - W * 0.5) / (W * 0.5);
     const dy = (curY - H * 0.5) / (H * 0.5);
@@ -283,199 +234,37 @@ window.addEventListener('load', () => {
 
     if (blendRatio < 0.02) {
       spotlight.style.opacity = '0';
-      requestAnimationFrame(tick);
-      return;
+    } else {
+      spotlight.style.opacity = blendRatio.toFixed(3);
+      spotlight.style.background = `
+        radial-gradient(
+          320px circle at ${curX}px ${curY}px,
+          rgba(255, 242, 210, 0.10) 0%,
+          rgba(255, 238, 195, 0.04) 50%,
+          transparent 100%
+        ),
+        radial-gradient(
+          800px circle at ${curX}px ${curY}px,
+          transparent 0%,
+          transparent 25%,
+          rgba(12, 10, 6, 0.05) 60%,
+          rgba(12, 10, 6, 0.13) 100%
+        )
+      `;
     }
 
-    spotlight.style.opacity = blendRatio.toFixed(3);
-    spotlight.style.background = `
-      radial-gradient(
-        320px circle at ${curX}px ${curY}px,
-        rgba(255, 242, 210, 0.10) 0%,
-        rgba(255, 238, 195, 0.04) 50%,
-        transparent 100%
-      ),
-      radial-gradient(
-        800px circle at ${curX}px ${curY}px,
-        transparent 0%,
-        transparent 25%,
-        rgba(12, 10, 6, 0.05) 60%,
-        rgba(12, 10, 6, 0.13) 100%
-      )
-    `;
+    // ── Ground shadow ────────────────────────────────────────────────────
+    if (shadowEl) {
+      const cx      = mouseX / window.innerWidth - 0.5;
+      const adist   = Math.abs(cx);
+      shadowEl.style.transform = `translateX(calc(-50% + ${(-cx * 120).toFixed(1)}px)) scaleX(${(0.8 + adist * 2.0).toFixed(3)})`;
+      shadowEl.style.filter    = `blur(${(8 + adist * 20).toFixed(1)}px)`;
+      shadowEl.style.opacity   = Math.min(0.08 + adist * 0.25, 0.4).toFixed(3);
+    }
 
     requestAnimationFrame(tick);
   }
   tick();
-})();
-</script>
-
-
-<script>
-(function () {
-
-  // ── Config ────────────────────────────────────────────────────────────────
-  const H_FRAMES  = 3;           // columns: a=left(-15°)  b=center(0°)  c=right(+15°)
-  const V_FRAMES  = 3;           // rows:    1=up(+15°)    2=center(0°)  3=down(-15°)
-  const FRAME_DIR = 'frames/';   // folder containing hero-bust-[a/b/c][1/2/3].png
-  const H_COLS    = ['a', 'b', 'c'];
-  const LERP      = 0.06;        // easing speed — lower = more cinematic drag
-  const FADE_MS   = 180;         // slightly under CSS transition (200ms) so commit lands mid-fade
-  const DEAD_ZONE = 0.22;        // fraction of screen each side that stays on b2
-                                 // (0.22 × 2 = 44% center → always b2)
-
-  // ── Elements ──────────────────────────────────────────────────────────────
-  const wrap     = document.getElementById('turntableWrap');
-  const front    = document.getElementById('ttFront');
-  const back     = document.getElementById('ttBack');
-  const shadowEl = document.getElementById('groundShadow');
-  if (!wrap || !front || !back) return;
-
-  // ── Preload all 9 frames into a 2D array: frames[h][v] ───────────────────
-  // b2 (h=1, v=1) is already in the DOM — preload the other 8 silently.
-  // Turntable stays on b2 until all frames are ready.
-  let framesReady = false;
-  const frames = [];
-  let loadedCount = 0;
-  const TOTAL = H_FRAMES * V_FRAMES;
-
-  for (let h = 0; h < H_FRAMES; h++) {
-    frames[h] = [];
-    for (let v = 0; v < V_FRAMES; v++) {
-      const img = new Image();
-      const src = `${FRAME_DIR}hero-bust-${H_COLS[h]}${v + 1}.png`;
-      img.onload = img.onerror = () => {
-        loadedCount++;
-        if (loadedCount >= TOTAL) framesReady = true;
-      };
-      // b2 is already displayed — count it as loaded immediately
-      if (h === 1 && v === 1) { img.src = front.src; loadedCount++; }
-      else img.src = src;
-      frames[h][v] = img;
-    }
-  }
-  if (loadedCount >= TOTAL) framesReady = true;
-
-  // ── State ─────────────────────────────────────────────────────────────────
-  // Float indices lerp toward target, then snap to nearest integer for frame lookup
-  let curH = 1, curV = 1;        // float, start at center frame b2 (h1, v1)
-  let tgtH = 1, tgtV = 1;
-  let shownH = 1, shownV = 1;    // which frame is currently displayed
-  let mouseX = window.innerWidth  / 2;
-  let mouseY = window.innerHeight / 2;
-  let hasEntered = false;
-
-  // ── Idle: return to b2 after 3s without movement ──────────────────────────
-  let idleTimer = null;
-  function resetToIdle() {
-    tgtH = 1; tgtV = 1;  // b2 = center, the resting position
-  }
-  function scheduleIdle() {
-    clearTimeout(idleTimer);
-    idleTimer = setTimeout(resetToIdle, 3000);
-  }
-
-  // ── Dead-zone mapping: center band stays on b2, edges ease to a/c ─────────
-  // norm 0→1, returns float frame index 0→(FRAMES-1)
-  function mapAxis(norm, total) {
-    const half = (total - 1) / 2;           // 1.0 for 3 frames
-    if (norm < DEAD_ZONE) {
-      // left/top outer zone → 0 … half - 0.5
-      return (norm / DEAD_ZONE) * (half - 0.5);
-    }
-    if (norm > 1 - DEAD_ZONE) {
-      // right/bottom outer zone → half + 0.5 … total - 1
-      return (half + 0.5) + ((norm - (1 - DEAD_ZONE)) / DEAD_ZONE) * (half - 0.5);
-    }
-    // center dead zone → stays near half (rounds to 1 = b2)
-    const t = (norm - DEAD_ZONE) / (1 - 2 * DEAD_ZONE); // 0→1 across center band
-    return half - 0.5 + t;                 // smoothly crosses half (never reaches 0 or 2)
-  }
-
-  // ── Cursor tracking ───────────────────────────────────────────────────────
-  document.addEventListener('mousemove', e => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    hasEntered = true;
-
-    tgtH = mapAxis(e.clientX / window.innerWidth,  H_FRAMES);
-    tgtV = mapAxis(e.clientY / window.innerHeight, V_FRAMES);
-
-    scheduleIdle();
-  });
-
-  // Mouse leaves window — snap back to b2 immediately
-  document.addEventListener('mouseleave', () => {
-    clearTimeout(idleTimer);
-    resetToIdle();
-  });
-
-  // ── Ground shadow — shifts opposite cursor X ──────────────────────────────
-  function updateShadow() {
-    if (!shadowEl || !hasEntered) return;
-    const cx     = mouseX / window.innerWidth - 0.5;  // -0.5 → 0.5
-    const dist   = Math.abs(cx);
-    const offsetX = -cx * 120;
-    const scaleX  = 0.8 + dist * 2.0;
-    const blur    = 8   + dist * 20;
-    const opacity = 0.08 + dist * 0.25;
-    shadowEl.style.transform = `translateX(calc(-50% + ${offsetX.toFixed(1)}px)) scaleX(${scaleX.toFixed(3)})`;
-    shadowEl.style.filter    = `blur(${blur.toFixed(1)}px)`;
-    shadowEl.style.opacity   = Math.min(opacity, 0.4).toFixed(3);
-  }
-
-  // ── Frame swap with crossfade ─────────────────────────────────────────────
-  let isFading = false;
-  let pendingH  = -1, pendingV = -1;  // queued frame if a swap arrives mid-fade
-
-  function commitFade(h, v) {
-    front.src = frames[h][v].src;
-    wrap.classList.remove('fading');
-    isFading = false;
-    shownH = h; shownV = v;
-    // If another frame was queued while we were fading, run it now
-    if (pendingH !== -1) {
-      const ph = pendingH, pv = pendingV;
-      pendingH = pendingV = -1;
-      swapToFrame(ph, pv);
-    }
-  }
-
-  function swapToFrame(h, v) {
-    if (!framesReady) return;
-    if (h === shownH && v === shownV) return;
-    const img = frames[h][v];
-    if (!img || !img.complete) return;
-
-    if (isFading) {
-      // Queue this frame — commitFade will pick it up
-      pendingH = h; pendingV = v;
-      // Also update back.src so the in-flight fade lands on the right image
-      back.src = img.src;
-      return;
-    }
-
-    back.src = img.src;
-    isFading  = true;
-    wrap.classList.add('fading');
-    setTimeout(() => commitFade(h, v), FADE_MS);
-  }
-
-  // ── Animation loop ────────────────────────────────────────────────────────
-  function tick() {
-    curH += (tgtH - curH) * LERP;
-    curV += (tgtV - curV) * LERP;
-
-    const h = Math.max(0, Math.min(H_FRAMES - 1, Math.round(curH)));
-    const v = Math.max(0, Math.min(V_FRAMES - 1, Math.round(curV)));
-
-    swapToFrame(h, v);
-    updateShadow();
-    requestAnimationFrame(tick);
-  }
-
-  tick();
-
 })();
 </script>
 
