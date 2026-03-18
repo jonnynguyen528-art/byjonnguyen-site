@@ -114,20 +114,14 @@
     }
 
     /* ── Full-page cursor spotlight overlay ─────────────────────────────── */
+    /* Spotlight: dark vignette with a transparent hole at cursor = real spotlight feel */
     #cursorSpotlight {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 9999;
       opacity: 0;
-      transition: opacity 0.6s ease;
-      background: radial-gradient(
-        600px circle at 50% 50%,
-        rgba(255,255,245, 0.18) 0%,
-        rgba(255,252,235, 0.08) 30%,
-        transparent 70%
-      );
-      mix-blend-mode: screen;
+      transition: opacity 0.8s ease;
     }
     #cursorSpotlight.active { opacity: 1; }
 
@@ -239,11 +233,13 @@ window.addEventListener('load', () => {
     curX += (mouseX - curX) * LERP;
     curY += (mouseY - curY) * LERP;
 
+    // Dark vignette with a soft transparent hole where the cursor is
     spotlight.style.background = `radial-gradient(
-      600px circle at ${curX}px ${curY}px,
-      rgba(255,255,245, 0.22) 0%,
-      rgba(255,252,230, 0.10) 28%,
-      transparent 68%
+      500px circle at ${curX}px ${curY}px,
+      transparent 0%,
+      transparent 15%,
+      rgba(18, 15, 10, 0.06) 45%,
+      rgba(18, 15, 10, 0.18) 100%
     )`;
 
     requestAnimationFrame(tick);
