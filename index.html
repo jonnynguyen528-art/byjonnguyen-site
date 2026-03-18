@@ -141,7 +141,7 @@
 
     .turntable-img.front,
     .turntable-img.back {
-      transition: opacity 0.06s linear;
+      transition: opacity 0.2s ease-in-out;
     }
 
     @keyframes floaty {
@@ -320,7 +320,7 @@ window.addEventListener('load', () => {
   const FRAME_DIR = 'frames/';   // folder containing hero-bust-[a/b/c][1/2/3].png
   const H_COLS    = ['a', 'b', 'c'];
   const LERP      = 0.06;        // easing speed — lower = more cinematic drag
-  const FADE_MS   = 200;         // crossfade duration in ms
+  const FADE_MS   = 180;         // slightly under CSS transition (200ms) so commit lands mid-fade
   const DEAD_ZONE = 0.22;        // fraction of screen each side that stays on b2
                                  // (0.22 × 2 = 44% center → always b2)
 
