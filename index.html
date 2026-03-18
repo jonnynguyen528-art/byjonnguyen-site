@@ -319,7 +319,10 @@ window.addEventListener('load', () => {
   const V_FRAMES  = 3;           // rows:    1=up(+15°)    2=center(0°)  3=down(-15°)
   const FRAME_DIR = 'frames/';   // folder containing hero-bust-[a/b/c][1/2/3].png
   const H_COLS    = ['a', 'b', 'c'];
-  const LERP      = 0.08;        // easing speed (lower = more cinematic)
+  const LERP      = 0.06;        // easing speed — lower = more cinematic drag
+  const FADE_MS   = 200;         // crossfade duration in ms
+  const DEAD_ZONE = 0.22;        // fraction of screen each side that stays on b2
+                                 // (0.22 × 2 = 44% center → always b2)
 
   // ── Elements ──────────────────────────────────────────────────────────────
   const wrap     = document.getElementById('turntableWrap');
@@ -372,17 +375,31 @@ window.addEventListener('load', () => {
     idleTimer = setTimeout(resetToIdle, 3000);
   }
 
+  // ── Dead-zone mapping: center band stays on b2, edges ease to a/c ─────────
+  // norm 0→1, returns float frame index 0→(FRAMES-1)
+  function mapAxis(norm, total) {
+    const half = (total - 1) / 2;           // 1.0 for 3 frames
+    if (norm < DEAD_ZONE) {
+      // left/top outer zone → 0 … half - 0.5
+      return (norm / DEAD_ZONE) * (half - 0.5);
+    }
+    if (norm > 1 - DEAD_ZONE) {
+      // right/bottom outer zone → half + 0.5 … total - 1
+      return (half + 0.5) + ((norm - (1 - DEAD_ZONE)) / DEAD_ZONE) * (half - 0.5);
+    }
+    // center dead zone → stays near half (rounds to 1 = b2)
+    const t = (norm - DEAD_ZONE) / (1 - 2 * DEAD_ZONE); // 0→1 across center band
+    return half - 0.5 + t;                 // smoothly crosses half (never reaches 0 or 2)
+  }
+
   // ── Cursor tracking ───────────────────────────────────────────────────────
   document.addEventListener('mousemove', e => {
     mouseX = e.clientX;
     mouseY = e.clientY;
     hasEntered = true;
 
-    // X: full viewport width → h0 (left) … h2 (right)
-    tgtH = (e.clientX / window.innerWidth)  * (H_FRAMES - 1);
-
-    // Y: full viewport height → v0 (up) … v2 (down)
-    tgtV = (e.clientY / window.innerHeight) * (V_FRAMES - 1);
+    tgtH = mapAxis(e.clientX / window.innerWidth,  H_FRAMES);
+    tgtV = mapAxis(e.clientY / window.innerHeight, V_FRAMES);
 
     scheduleIdle();
   });
@@ -409,29 +426,39 @@ window.addEventListener('load', () => {
 
   // ── Frame swap with crossfade ─────────────────────────────────────────────
   let isFading = false;
+  let pendingH  = -1, pendingV = -1;  // queued frame if a swap arrives mid-fade
+
+  function commitFade(h, v) {
+    front.src = frames[h][v].src;
+    wrap.classList.remove('fading');
+    isFading = false;
+    shownH = h; shownV = v;
+    // If another frame was queued while we were fading, run it now
+    if (pendingH !== -1) {
+      const ph = pendingH, pv = pendingV;
+      pendingH = pendingV = -1;
+      swapToFrame(ph, pv);
+    }
+  }
 
   function swapToFrame(h, v) {
-    if (!framesReady) return;       // hold on b2 until all frames are loaded
+    if (!framesReady) return;
     if (h === shownH && v === shownV) return;
     const img = frames[h][v];
     if (!img || !img.complete) return;
 
-    back.src = img.src;
-
-    if (!isFading) {
-      isFading = true;
-      wrap.classList.add('fading');
-      setTimeout(() => {
-        front.src = back.src;
-        wrap.classList.remove('fading');
-        isFading = false;
-        shownH = h;
-        shownV = v;
-      }, 65);
-    } else {
-      shownH = h;
-      shownV = v;
+    if (isFading) {
+      // Queue this frame — commitFade will pick it up
+      pendingH = h; pendingV = v;
+      // Also update back.src so the in-flight fade lands on the right image
+      back.src = img.src;
+      return;
     }
+
+    back.src = img.src;
+    isFading  = true;
+    wrap.classList.add('fading');
+    setTimeout(() => commitFade(h, v), FADE_MS);
   }
 
   // ── Animation loop ────────────────────────────────────────────────────────
