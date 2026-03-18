@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jon Nguyen — Creative Director</title>
   <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
-  <!-- Montserrat from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
   <style>
 
-    /* ── Cinema Sunday — place the .otf at assets/fonts/cinema-sunday.otf ── */
     @font-face {
       font-family: 'Cinema Sunday';
       src: url('assets/fonts/cinema-sunday.otf') format('opentype');
@@ -21,11 +19,8 @@
       font-display: swap;
     }
 
-    body {
-      font-family: 'Montserrat', sans-serif;
-    }
+    body { font-family: 'Montserrat', sans-serif; }
 
-    /* Nav brand — Cinema Sunday */
     .brand {
       font-family: 'Cinema Sunday', serif;
       font-weight: normal;
@@ -43,7 +38,7 @@
       font-size: 0.75rem;
     }
 
-    /* 3-col composition: CREATIVE | bust | DIRECTOR */
+    /* 3-col composition */
     .hero-composition {
       display: flex;
       align-items: flex-start;
@@ -95,12 +90,30 @@
     }
 
     /* ── Hero bust ───────────────────────────────────────────────────────── */
+    /* The img is the layout element (sets container height); canvas renders on top */
     .hero-bust-img {
       display: block;
       width: 100%;
       height: auto;
-      user-select: none;
+      visibility: hidden; /* hidden but reserves space */
+    }
+
+    #bustCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
+      user-select: none;
+      /* Radial mask fades black-background corners into the off-white site */
+      -webkit-mask-image: radial-gradient(
+        ellipse 78% 88% at 50% 48%,
+        black 55%, transparent 100%
+      );
+      mask-image: radial-gradient(
+        ellipse 78% 88% at 50% 48%,
+        black 55%, transparent 100%
+      );
     }
 
     @keyframes floaty {
@@ -108,11 +121,9 @@
       50%       { transform: translateY(-14px); }
     }
 
-    .hero-sculpture {
-      animation: floaty 6s ease-in-out infinite;
-    }
+    .hero-sculpture { animation: floaty 6s ease-in-out infinite; }
 
-    /* ── Full-page cursor spotlight overlay ─────────────────────────────── */
+    /* ── Cursor spotlight ────────────────────────────────────────────────── */
     #cursorSpotlight {
       position: fixed;
       inset: 0;
@@ -122,7 +133,7 @@
       transition: opacity 0.8s ease;
     }
 
-    /* Ground shadow */
+    /* ── Ground shadow ───────────────────────────────────────────────────── */
     #groundShadow {
       position: absolute;
       bottom: 3%;
@@ -158,7 +169,6 @@
   <section class="hero-center">
     <div class="hero-inner">
 
-      <!-- 3-col row: word | bust | word -->
       <div class="hero-composition reveal reveal-delay-1">
         <div class="hero-word-col left">
           <span class="hero-word">CREATIVE</span>
@@ -166,10 +176,13 @@
 
         <div class="hero-bust">
           <div class="hero-sculpture" id="heroStage" style="position:relative;">
-            <img class="hero-bust-img"
+            <!-- Hidden img → reserves layout space + is the WebGL texture source -->
+            <img id="bustImg" class="hero-bust-img"
                  src="frames/hero-bust-b2.png"
                  alt="Porcelain bust sculpture"
                  draggable="false" />
+            <!-- WebGL canvas renders the lit version on top -->
+            <canvas id="bustCanvas"></canvas>
             <div id="groundShadow"></div>
           </div>
         </div>
@@ -192,7 +205,6 @@
   <section id="contact" style="height:50vh;"></section>
 </main>
 
-<!-- Full-page cursor spotlight -->
 <div id="cursorSpotlight"></div>
 
 <script>
@@ -203,20 +215,18 @@ window.addEventListener('load', () => {
 });
 </script>
 
+<!-- ── Cursor spotlight + ground shadow ──────────────────────────────────── -->
 <script>
 (function () {
   const spotlight = document.getElementById('cursorSpotlight');
   const shadowEl  = document.getElementById('groundShadow');
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
+  let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
   let curX = mouseX, curY = mouseY;
   let hasEntered = false;
   const LERP = 0.08;
 
   document.addEventListener('mousemove', e => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    hasEntered = true;
+    mouseX = e.clientX; mouseY = e.clientY; hasEntered = true;
   });
 
   function tick() {
@@ -225,46 +235,205 @@ window.addEventListener('load', () => {
 
     if (!hasEntered) { requestAnimationFrame(tick); return; }
 
-    // ── Spotlight ────────────────────────────────────────────────────────
     const W = window.innerWidth, H = window.innerHeight;
     const dx = (curX - W * 0.5) / (W * 0.5);
     const dy = (curY - H * 0.5) / (H * 0.5);
     const dist = Math.min(Math.sqrt(dx * dx + dy * dy), 1.0);
-    const blendRatio = dist * 0.8;
+    const blend = dist * 0.8;
 
-    if (blendRatio < 0.02) {
+    if (blend < 0.02) {
       spotlight.style.opacity = '0';
     } else {
-      spotlight.style.opacity = blendRatio.toFixed(3);
+      spotlight.style.opacity = blend.toFixed(3);
       spotlight.style.background = `
-        radial-gradient(
-          320px circle at ${curX}px ${curY}px,
-          rgba(255, 242, 210, 0.10) 0%,
-          rgba(255, 238, 195, 0.04) 50%,
-          transparent 100%
-        ),
-        radial-gradient(
-          800px circle at ${curX}px ${curY}px,
-          transparent 0%,
-          transparent 25%,
-          rgba(12, 10, 6, 0.05) 60%,
-          rgba(12, 10, 6, 0.13) 100%
-        )
-      `;
+        radial-gradient(320px circle at ${curX}px ${curY}px,
+          rgba(255,242,210,0.10) 0%, rgba(255,238,195,0.04) 50%, transparent 100%),
+        radial-gradient(800px circle at ${curX}px ${curY}px,
+          transparent 0%, transparent 25%,
+          rgba(12,10,6,0.05) 60%, rgba(12,10,6,0.13) 100%)`;
     }
 
-    // ── Ground shadow ────────────────────────────────────────────────────
     if (shadowEl) {
-      const cx      = mouseX / window.innerWidth - 0.5;
-      const adist   = Math.abs(cx);
-      shadowEl.style.transform = `translateX(calc(-50% + ${(-cx * 120).toFixed(1)}px)) scaleX(${(0.8 + adist * 2.0).toFixed(3)})`;
-      shadowEl.style.filter    = `blur(${(8 + adist * 20).toFixed(1)}px)`;
-      shadowEl.style.opacity   = Math.min(0.08 + adist * 0.25, 0.4).toFixed(3);
+      const cx    = mouseX / W - 0.5;
+      const adist = Math.abs(cx);
+      shadowEl.style.transform = `translateX(calc(-50% + ${(-cx*120).toFixed(1)}px)) scaleX(${(0.8+adist*2).toFixed(3)})`;
+      shadowEl.style.filter    = `blur(${(8+adist*20).toFixed(1)}px)`;
+      shadowEl.style.opacity   = Math.min(0.08+adist*0.25, 0.4).toFixed(3);
     }
 
     requestAnimationFrame(tick);
   }
   tick();
+})();
+</script>
+
+<!-- ── WebGL normal-map lighting ──────────────────────────────────────────── -->
+<script>
+(function () {
+  const bustImg = document.getElementById('bustImg');
+  const canvas  = document.getElementById('bustCanvas');
+  if (!bustImg || !canvas) return;
+
+  // Raw cursor target in NDC (-1..1), lerped in the render loop
+  let tgtLX = 0, tgtLY = 0;
+  let curLX = 0, curLY = 0;
+
+  document.addEventListener('mousemove', e => {
+    tgtLX =  (e.clientX / window.innerWidth)  * 2 - 1;
+    tgtLY = -((e.clientY / window.innerHeight) * 2 - 1);
+  });
+
+  // ── Shaders ───────────────────────────────────────────────────────────────
+  const VERT = `
+    attribute vec2 a_pos;
+    varying vec2 v_uv;
+    void main(){
+      // flip Y so image is right-side up
+      v_uv = vec2(a_pos.x * 0.5 + 0.5, 0.5 - a_pos.y * 0.5);
+      gl_Position = vec4(a_pos, 0.0, 1.0);
+    }`;
+
+  const FRAG = `
+    precision mediump float;
+    varying vec2 v_uv;
+    uniform sampler2D u_tex;
+    uniform vec2  u_texel;   // 1 / naturalSize — for Sobel sampling
+    uniform vec2  u_light;   // cursor NDC (-1..1)
+    uniform float u_aspect;  // canvas width / height
+
+    // Sobel luminance gradient → screen-space normal
+    vec3 getNormal(vec2 uv) {
+      vec3 lum = vec3(0.299, 0.587, 0.114);
+      float L = dot(texture2D(u_tex, uv + vec2(-u_texel.x,  0.0       )).rgb, lum);
+      float R = dot(texture2D(u_tex, uv + vec2( u_texel.x,  0.0       )).rgb, lum);
+      float D = dot(texture2D(u_tex, uv + vec2( 0.0,       -u_texel.y )).rgb, lum);
+      float U = dot(texture2D(u_tex, uv + vec2( 0.0,        u_texel.y )).rgb, lum);
+      // nx/ny from gradient; z controls how "bumpy" the surface reads
+      return normalize(vec3((L - R), (D - U), 0.14));
+    }
+
+    void main(){
+      vec4 c = texture2D(u_tex, v_uv);
+
+      // Discard background (near-black rendered pixels)
+      float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+      if (lum < 0.04) { gl_FragColor = vec4(0.0); return; }
+
+      vec3 N = getNormal(v_uv);
+
+      // Fragment position in aspect-corrected NDC, matching light space
+      vec2 fragPos = (v_uv * 2.0 - 1.0) * vec2(u_aspect, 1.0);
+      vec2 lightPos = u_light * vec2(u_aspect, 1.0);
+
+      // Light direction (z=1.5 keeps it slightly in front of surface)
+      vec3 L = normalize(vec3(lightPos - fragPos, 1.5));
+
+      // Diffuse
+      float diff = max(dot(N, L), 0.0);
+
+      // Specular — porcelain glaze: high shininess, cool tint
+      vec3 V = vec3(0.0, 0.0, 1.0);
+      vec3 H = normalize(L + V);
+      float spec = pow(max(dot(N, H), 0.0), 90.0);
+
+      // Combine: ambient keeps the render readable in dark areas
+      vec3 lit = c.rgb * (0.68 + diff * 0.42)
+               + vec3(0.92, 0.95, 1.00) * spec * 0.55;
+
+      gl_FragColor = vec4(clamp(lit, 0.0, 1.0), 1.0);
+    }`;
+
+  // ── WebGL init ────────────────────────────────────────────────────────────
+  let gl, prog, lightLoc, aspectLoc;
+
+  function compileShader(type, src) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    return sh;
+  }
+
+  function resize() {
+    const r = bustImg.getBoundingClientRect();
+    const w = Math.round(r.width), h = Math.round(r.height);
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w; canvas.height = h;
+      if (gl) gl.viewport(0, 0, w, h);
+    }
+  }
+
+  function initGL() {
+    gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
+    if (!gl) {
+      // Fallback: just show the img if WebGL unavailable
+      bustImg.style.visibility = 'visible';
+      canvas.style.display = 'none';
+      return;
+    }
+
+    prog = gl.createProgram();
+    gl.attachShader(prog, compileShader(gl.VERTEX_SHADER,   VERT));
+    gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+
+    // Full-screen quad
+    const vbuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
+    gl.bufferData(gl.ARRAY_BUFFER,
+      new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    const aPos = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    // Upload texture from the hidden img element
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bustImg);
+    gl.generateMipmap(gl.TEXTURE_2D);
+
+    // Static uniforms
+    const texelLoc = gl.getUniformLocation(prog, 'u_texel');
+    gl.uniform2f(texelLoc, 1 / bustImg.naturalWidth, 1 / bustImg.naturalHeight);
+
+    lightLoc  = gl.getUniformLocation(prog, 'u_light');
+    aspectLoc = gl.getUniformLocation(prog, 'u_aspect');
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    resize();
+    loop();
+  }
+
+  // ── Render loop ───────────────────────────────────────────────────────────
+  const LERP = 0.07;
+  function loop() {
+    curLX += (tgtLX - curLX) * LERP;
+    curLY += (tgtLY - curLY) * LERP;
+
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    gl.uniform2f(lightLoc,  curLX, curLY);
+    gl.uniform1f(aspectLoc, canvas.width / canvas.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+    requestAnimationFrame(loop);
+  }
+
+  // ── Boot ─────────────────────────────────────────────────────────────────
+  if (bustImg.complete && bustImg.naturalWidth > 0) initGL();
+  else bustImg.addEventListener('load', initGL);
+
+  window.addEventListener('resize', resize);
+  new ResizeObserver(resize).observe(bustImg);
 })();
 </script>
 
