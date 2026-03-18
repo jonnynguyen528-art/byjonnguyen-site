@@ -38,7 +38,6 @@
       font-size: 0.75rem;
     }
 
-    /* 3-col composition */
     .hero-composition {
       display: flex;
       align-items: flex-start;
@@ -89,31 +88,12 @@
       margin-top: 6px;
     }
 
-    /* ── Hero bust ───────────────────────────────────────────────────────── */
-    /* The img is the layout element (sets container height); canvas renders on top */
     .hero-bust-img {
       display: block;
       width: 100%;
       height: auto;
-      visibility: hidden; /* hidden but reserves space */
-    }
-
-    #bustCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
       user-select: none;
-      /* Radial mask fades black-background corners into the off-white site */
-      -webkit-mask-image: radial-gradient(
-        ellipse 78% 88% at 50% 48%,
-        black 55%, transparent 100%
-      );
-      mask-image: radial-gradient(
-        ellipse 78% 88% at 50% 48%,
-        black 55%, transparent 100%
-      );
+      pointer-events: none;
     }
 
     @keyframes floaty {
@@ -123,7 +103,6 @@
 
     .hero-sculpture { animation: floaty 6s ease-in-out infinite; }
 
-    /* ── Cursor spotlight ────────────────────────────────────────────────── */
     #cursorSpotlight {
       position: fixed;
       inset: 0;
@@ -133,7 +112,6 @@
       transition: opacity 0.8s ease;
     }
 
-    /* ── Ground shadow ───────────────────────────────────────────────────── */
     #groundShadow {
       position: absolute;
       bottom: 3%;
@@ -176,13 +154,10 @@
 
         <div class="hero-bust">
           <div class="hero-sculpture" id="heroStage" style="position:relative;">
-            <!-- Hidden img → reserves layout space + is the WebGL texture source -->
-            <img id="bustImg" class="hero-bust-img"
+            <img class="hero-bust-img"
                  src="frames/hero-bust-b2.png"
                  alt="Porcelain bust sculpture"
                  draggable="false" />
-            <!-- WebGL canvas renders the lit version on top -->
-            <canvas id="bustCanvas"></canvas>
             <div id="groundShadow"></div>
           </div>
         </div>
@@ -215,7 +190,6 @@ window.addEventListener('load', () => {
 });
 </script>
 
-<!-- ── Cursor spotlight + ground shadow ──────────────────────────────────── -->
 <script>
 (function () {
   const spotlight = document.getElementById('cursorSpotlight');
@@ -264,168 +238,6 @@ window.addEventListener('load', () => {
     requestAnimationFrame(tick);
   }
   tick();
-})();
-</script>
-
-<!-- ── WebGL normal-map lighting ──────────────────────────────────────────── -->
-<script>
-(function () {
-  const bustImg = document.getElementById('bustImg');
-  const canvas  = document.getElementById('bustCanvas');
-  if (!bustImg || !canvas) return;
-
-  function fallback() {
-    bustImg.style.visibility = 'visible';
-    canvas.style.display = 'none';
-  }
-
-  let tgtLX = 0, tgtLY = 0, curLX = 0, curLY = 0;
-  document.addEventListener('mousemove', e => {
-    tgtLX =  (e.clientX / window.innerWidth)  * 2 - 1;
-    tgtLY = -((e.clientY / window.innerHeight) * 2 - 1);
-  });
-
-  // ── Shaders ───────────────────────────────────────────────────────────────
-  const VERT = `
-    attribute vec2 a_pos;
-    varying vec2 v_uv;
-    void main(){
-      // UNPACK_FLIP_Y_WEBGL=true flips the image so (0,0)=bottom=image-bottom
-      // Use standard screen→UV mapping: screen-top(y=1)→uv-top(v=1)
-      v_uv = vec2(a_pos.x * 0.5 + 0.5, a_pos.y * 0.5 + 0.5);
-      gl_Position = vec4(a_pos, 0.0, 1.0);
-    }`;
-
-  const FRAG = `
-    precision mediump float;
-    varying vec2 v_uv;
-    uniform sampler2D u_tex;
-    uniform vec2  u_texel;
-    uniform vec2  u_light;
-    uniform float u_aspect;
-
-    vec3 getNormal(vec2 uv) {
-      vec3 w = vec3(0.299, 0.587, 0.114);
-      float L = dot(texture2D(u_tex, uv + vec2(-u_texel.x, 0.0)).rgb, w);
-      float R = dot(texture2D(u_tex, uv + vec2( u_texel.x, 0.0)).rgb, w);
-      float D = dot(texture2D(u_tex, uv + vec2(0.0, -u_texel.y)).rgb, w);
-      float U = dot(texture2D(u_tex, uv + vec2(0.0,  u_texel.y)).rgb, w);
-      return normalize(vec3(L - R, D - U, 0.14));
-    }
-
-    void main(){
-      vec4 c = texture2D(u_tex, v_uv);
-
-      // Use alpha to discard transparent background
-      if (c.a < 0.5) { gl_FragColor = vec4(0.0); return; }
-
-      vec3 N = getNormal(v_uv);
-      vec2 fp = (v_uv * 2.0 - 1.0) * vec2(u_aspect, 1.0);
-      vec2 lp = u_light * vec2(u_aspect, 1.0);
-      vec3 L  = normalize(vec3(lp - fp, 1.5));
-
-      float diff = max(dot(N, L), 0.0);
-      vec3  H    = normalize(L + vec3(0.0, 0.0, 1.0));
-      float spec = pow(max(dot(N, H), 0.0), 90.0);
-
-      vec3 lit = c.rgb * (0.68 + diff * 0.42)
-               + vec3(0.92, 0.95, 1.00) * spec * 0.55;
-
-      gl_FragColor = vec4(clamp(lit, 0.0, 1.0), c.a);
-    }`;
-
-  // ── Init ──────────────────────────────────────────────────────────────────
-  let gl, lightLoc, aspectLoc, texW, texH;
-
-  function compileShader(type, src) {
-    const sh = gl.createShader(type);
-    gl.shaderSource(sh, src);
-    gl.compileShader(sh);
-    return sh;
-  }
-
-  function resize() {
-    const r = bustImg.getBoundingClientRect();
-    const w = Math.round(r.width), h = Math.round(r.height);
-    if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
-      canvas.width = w; canvas.height = h;
-      if (gl) gl.viewport(0, 0, w, h);
-    }
-  }
-
-  function setupGL(bitmap) {
-    gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
-    if (!gl) { fallback(); return; }
-
-    const prog = gl.createProgram();
-    gl.attachShader(prog, compileShader(gl.VERTEX_SHADER,   VERT));
-    gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, FRAG));
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { fallback(); return; }
-    gl.useProgram(prog);
-
-    // Full-screen quad
-    const buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER,
-      new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-    const aPos = gl.getAttribLocation(prog, 'a_pos');
-    gl.enableVertexAttribArray(aPos);
-    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-
-    // Texture — upload the decoded bitmap directly
-    texW = bitmap.width; texH = bitmap.height;
-    const tex = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); // flip so row 0 = top of image
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bitmap);
-    gl.generateMipmap(gl.TEXTURE_2D);
-
-    gl.uniform2f(gl.getUniformLocation(prog, 'u_texel'), 1 / texW, 1 / texH);
-    lightLoc  = gl.getUniformLocation(prog, 'u_light');
-    aspectLoc = gl.getUniformLocation(prog, 'u_aspect');
-
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-    resize();
-    loop();
-  }
-
-  // ── Render loop ───────────────────────────────────────────────────────────
-  function loop() {
-    curLX += (tgtLX - curLX) * 0.07;
-    curLY += (tgtLY - curLY) * 0.07;
-
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.uniform2f(lightLoc,  curLX, curLY);
-    gl.uniform1f(aspectLoc, canvas.width / canvas.height);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    requestAnimationFrame(loop);
-  }
-
-  // ── Boot — fetch → decode → upload ───────────────────────────────────────
-  // Fetch ensures we get fresh decoded pixels regardless of img cache state
-  async function boot() {
-    try {
-      const src = bustImg.src || bustImg.getAttribute('data-src');
-      const resp = await fetch(src, { credentials: 'same-origin' });
-      const blob = await resp.blob();
-      const bitmap = await createImageBitmap(blob);
-      setupGL(bitmap);
-    } catch(e) {
-      fallback();
-    }
-  }
-
-  window.addEventListener('resize', resize);
-  new ResizeObserver(resize).observe(bustImg);
-  boot();
 })();
 </script>
 
