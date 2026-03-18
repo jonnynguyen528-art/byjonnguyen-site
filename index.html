@@ -207,40 +207,55 @@ window.addEventListener('load', () => {
 <script>
 (function () {
   const spotlight = document.getElementById('cursorSpotlight');
-  let mouseX = window.innerWidth  / 2;
+  let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;
-  let curX   = mouseX;
-  let curY   = mouseY;
-  let active = false;
-  const LERP = 0.07; // inertia — lower = more lag (like serious.business)
+  let curX = mouseX, curY = mouseY;
+  let hasEntered = false;
+  const LERP = 0.08; // matches WebGL EASE exactly
 
   document.addEventListener('mousemove', e => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    if (!active) {
-      active = true;
-      spotlight.classList.add('active');
-    }
-  });
-
-  document.addEventListener('mouseleave', () => {
-    active = false;
-    spotlight.classList.remove('active');
+    hasEntered = true;
   });
 
   function tick() {
-    // Smooth lerp toward real cursor position
     curX += (mouseX - curX) * LERP;
     curY += (mouseY - curY) * LERP;
 
-    // Dark vignette with a soft transparent hole where the cursor is
-    spotlight.style.background = `radial-gradient(
-      500px circle at ${curX}px ${curY}px,
-      transparent 0%,
-      transparent 15%,
-      rgba(18, 15, 10, 0.06) 45%,
-      rgba(18, 15, 10, 0.18) 100%
-    )`;
+    // Sync blend strength with WebGL — spotlight only shows when sculpture is lit
+    const wg = window.__wgLight;
+    const blendRatio = wg ? (wg.blend / wg.maxBlend) : 0;
+
+    if (!hasEntered || blendRatio < 0.01) {
+      spotlight.style.opacity = '0';
+      requestAnimationFrame(tick);
+      return;
+    }
+
+    spotlight.style.opacity = blendRatio.toFixed(3);
+
+    // Use WebGL's lerped lx,ly (0-1) mapped to screen coords for the warm core,
+    // but use raw pixel curX,curY for the vignette hole (they'll converge)
+    const W = window.innerWidth, H = window.innerHeight;
+    const wx = wg ? wg.lx * W : curX;
+    const wy = wg ? wg.ly * H : curY;
+
+    spotlight.style.background = `
+      radial-gradient(
+        280px circle at ${wx}px ${wy}px,
+        rgba(255, 240, 200, 0.28) 0%,
+        rgba(255, 235, 185, 0.12) 40%,
+        transparent 100%
+      ),
+      radial-gradient(
+        700px circle at ${curX}px ${curY}px,
+        transparent 0%,
+        transparent 20%,
+        rgba(12, 10, 6, 0.08) 55%,
+        rgba(12, 10, 6, 0.22) 100%
+      )
+    `;
 
     requestAnimationFrame(tick);
   }
@@ -486,6 +501,9 @@ window.addEventListener('load', () => {
     gl.uniform2f(uLight, lx, 1.0-ly);
     gl.uniform1f(uBlend, blend);
     gl.uniform2f(uTilt, ty/MAX_TILT_Y, -(tx/MAX_TILT_X));
+
+    // Expose light state for the CSS spotlight to sync with
+    window.__wgLight = { lx, ly, blend, maxBlend: LIGHT_BLEND };
 
     gl.viewport(0,0,W,H);
     gl.clear(gl.COLOR_BUFFER_BIT);
