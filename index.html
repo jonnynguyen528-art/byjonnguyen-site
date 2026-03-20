@@ -53,13 +53,19 @@
       flex: 1;
       display: flex;
       align-items: flex-end;
-      padding-top: calc(min(460px, 60vw) * 0.46);
+      /*
+        bust width = clamp(320px, 58vw, 680px)
+        image aspect is roughly 1:1.25 tall
+        we want words at ~52% down the bust height
+        so padding-top ≈ bust_width * 1.25 * 0.52, minus the negative margin offset
+      */
+      padding-top: calc(clamp(320px, 58vw, 680px) * 0.62);
       position: relative;
       z-index: 1;
     }
 
-    .hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-80px, -14vw, -160px); }
-    .hero-word-col.right { justify-content: flex-start; margin-left:  clamp(-80px, -14vw, -160px); }
+    .hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-140px, -22vw, -260px); }
+    .hero-word-col.right { justify-content: flex-start; margin-left:  clamp(-140px, -22vw, -260px); }
 
     .hero-word {
       font-family: 'Cinema Sunday', serif;
@@ -67,7 +73,7 @@
       text-transform: uppercase;
       letter-spacing: 0.02em;
       line-height: 1;
-      font-size: clamp(22px, 3.6vw, 62px);
+      font-size: clamp(28px, 4.4vw, 76px);
       color: rgba(18,18,18,0.88);
       white-space: nowrap;
     }
@@ -75,12 +81,12 @@
     /* ── Tablet: reduce overlap, scale back bust ── */
     @media (max-width: 900px) {
       .hero-word-col {
-        padding-top: calc(min(380px, 68vw) * 0.44);
+        padding-top: calc(clamp(240px, 48vw, 480px) * 0.60);
       }
-      .hero-word-col.left  { margin-right: clamp(-40px, -8vw, -80px); }
-      .hero-word-col.right { margin-left:  clamp(-40px, -8vw, -80px); }
+      .hero-word-col.left  { margin-right: clamp(-80px, -14vw, -160px); }
+      .hero-word-col.right { margin-left:  clamp(-80px, -14vw, -160px); }
       .hero-word {
-        font-size: clamp(18px, 4.2vw, 38px);
+        font-size: clamp(20px, 4.0vw, 48px);
       }
     }
 
