@@ -38,6 +38,8 @@
       font-size: 0.75rem;
     }
 
+    /* ─── HERO COMPOSITION LAYOUT ───────────────────────────────────── */
+
     .hero-composition {
       display: flex;
       align-items: flex-start;
@@ -46,17 +48,18 @@
       overflow: visible;
     }
 
+    /* Desktop: words flank the bust with negative overlap */
     .hero-word-col {
       flex: 1;
       display: flex;
       align-items: flex-end;
-      padding-top: calc(min(560px, 82vw) * 0.46);
+      padding-top: calc(min(460px, 60vw) * 0.46);
       position: relative;
       z-index: 1;
     }
 
-    .hero-word-col.left  { justify-content: flex-end;  margin-right: -200px; }
-    .hero-word-col.right { justify-content: flex-start; margin-left:  -200px; }
+    .hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-80px, -14vw, -160px); }
+    .hero-word-col.right { justify-content: flex-start; margin-left:  clamp(-80px, -14vw, -160px); }
 
     .hero-word {
       font-family: 'Cinema Sunday', serif;
@@ -64,9 +67,45 @@
       text-transform: uppercase;
       letter-spacing: 0.02em;
       line-height: 1;
-      font-size: clamp(32px, 3.8vw, 62px);
+      font-size: clamp(22px, 3.6vw, 62px);
       color: rgba(18,18,18,0.88);
       white-space: nowrap;
+    }
+
+    /* ── Tablet: reduce overlap, scale back bust ── */
+    @media (max-width: 900px) {
+      .hero-word-col {
+        padding-top: calc(min(380px, 68vw) * 0.44);
+      }
+      .hero-word-col.left  { margin-right: clamp(-40px, -8vw, -80px); }
+      .hero-word-col.right { margin-left:  clamp(-40px, -8vw, -80px); }
+      .hero-word {
+        font-size: clamp(18px, 4.2vw, 38px);
+      }
+    }
+
+    /* ── Mobile: stack vertically, words centered above/below bust ── */
+    @media (max-width: 600px) {
+      .hero-composition {
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+      .hero-word-col {
+        width: 100%;
+        flex: none;
+        padding-top: 0;
+        justify-content: center !important;
+        margin: 0 !important;
+      }
+      .hero-word-col.left  { order: 1; margin-bottom: 12px !important; }
+      .hero-bust            { order: 2; }
+      .hero-word-col.right { order: 3; margin-top: 12px !important; }
+
+      .hero-word {
+        font-size: clamp(28px, 9vw, 48px);
+        text-align: center;
+      }
     }
 
     .hero-line1 {
@@ -127,6 +166,127 @@
       pointer-events: none;
       will-change: transform, opacity, filter;
     }
+
+    /* ─── LUXURY REVEAL SYSTEM ──────────────────────────────────────── */
+
+    /*
+      Three actors, three keyframes, one orchestrated sequence.
+      Easing: cubic-bezier(0.16, 1, 0.3, 1) — an expo-out curve.
+      Slow start, decisive arrival. Very haute couture.
+    */
+
+    /* CREATIVE — drifts in from the left */
+    @keyframes revealLeft {
+      0% {
+        opacity: 0;
+        transform: translateX(-48px);
+        filter: blur(6px);
+      }
+      60% {
+        filter: blur(0px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0px);
+      }
+    }
+
+    /* DIRECTOR — drifts in from the right */
+    @keyframes revealRight {
+      0% {
+        opacity: 0;
+        transform: translateX(48px);
+        filter: blur(6px);
+      }
+      60% {
+        filter: blur(0px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0px);
+      }
+    }
+
+    /* PNG bust — descends from slightly above, like being unveiled */
+    @keyframes revealBust {
+      0% {
+        opacity: 0;
+        transform: translateY(-28px) scale(0.97);
+        filter: blur(4px);
+      }
+      55% {
+        filter: blur(0px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+      }
+    }
+
+    /* Subtitle lines — rise up softly after everything else lands */
+    @keyframes revealUp {
+      0% {
+        opacity: 0;
+        transform: translateY(16px);
+        letter-spacing: 0.28em;
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Default hidden state for all reveal actors */
+    .rx { opacity: 0; }
+
+    /* CREATIVE fires first */
+    .rx-creative {
+      animation: revealLeft 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+    }
+
+    /* DIRECTOR follows — beat after CREATIVE */
+    .rx-director {
+      animation: revealRight 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+    }
+
+    /* Bust drops in last — the reveal moment */
+    .rx-bust {
+      animation: revealBust 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+    }
+
+    /* Subtitle breathes in after everything has landed */
+    .rx-sub {
+      animation: revealUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
+    }
+
+    /* ─────────────────────────────────────────────────────────────── */
+
+    /* ─── MOBILE REVEAL OVERRIDE ────────────────────────────────────
+       On mobile the layout stacks vertically so left/right slides
+       look wrong. Swap to a simple fade+rise for both words.
+    ─────────────────────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      @keyframes revealWordMobile {
+        0%   { opacity: 0; transform: translateY(22px); filter: blur(4px); }
+        100% { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+      }
+      .rx-creative {
+        animation: revealWordMobile 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+      }
+      .rx-director {
+        animation: revealWordMobile 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+      }
+      .rx-bust {
+        animation: revealBust 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.85s forwards;
+      }
+      .rx-sub {
+        animation: revealUp 1.0s cubic-bezier(0.16, 1, 0.3, 1) 1.45s forwards;
+      }
+    }
+
   </style>
 </head>
 
@@ -147,12 +307,13 @@
   <section class="hero-center">
     <div class="hero-inner">
 
-      <div class="hero-composition reveal reveal-delay-1">
+      <div class="hero-composition">
+
         <div class="hero-word-col left">
-          <span class="hero-word">CREATIVE</span>
+          <span class="hero-word rx rx-creative">CREATIVE</span>
         </div>
 
-        <div class="hero-bust">
+        <div class="hero-bust rx rx-bust">
           <div class="hero-sculpture" id="heroStage" style="position:relative;">
             <img class="hero-bust-img"
                  src="frames/hero-bust-b2.png"
@@ -163,11 +324,12 @@
         </div>
 
         <div class="hero-word-col right">
-          <span class="hero-word">DIRECTOR</span>
+          <span class="hero-word rx rx-director">DIRECTOR</span>
         </div>
+
       </div>
 
-      <div class="hero-sub reveal reveal-delay-3">
+      <div class="hero-sub rx rx-sub">
         <div class="hero-line1">BUILDING WORLDS</div>
         <div class="hero-line2">BRAND &nbsp;·&nbsp; DIGITAL &nbsp;·&nbsp; EXPERIENTIAL</div>
       </div>
@@ -181,14 +343,6 @@
 </main>
 
 <div id="cursorSpotlight"></div>
-
-<script>
-window.addEventListener('load', () => {
-  requestAnimationFrame(() => {
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
-  });
-});
-</script>
 
 <script>
 (function () {
