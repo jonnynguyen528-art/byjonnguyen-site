@@ -50,13 +50,13 @@
       flex: 1;
       display: flex;
       align-items: flex-end;
-      padding-top: calc(clamp(320px, 58vw, 680px) * 0.26);
+      padding-top: calc(clamp(320px, 58vw, 680px) * 0.22);
       position: relative;
       z-index: 1;
     }
 
-    .hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-60px, -10vw, -140px); }
-    .hero-word-col.right { justify-content: flex-start; margin-left:  clamp(-60px, -10vw, -140px); }
+    .hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-120px, -18vw, -220px); }
+    .hero-word-col.right { justify-content: flex-start; margin-left:  clamp(-120px, -18vw, -220px); }
 
     .hero-word {
       font-family: 'Cinema Sunday', serif;
@@ -64,18 +64,16 @@
       text-transform: uppercase;
       letter-spacing: 0.02em;
       line-height: 1;
-      font-size: clamp(28px, 4.4vw, 76px);
+      font-size: clamp(32px, 5vw, 82px);
       color: rgba(18,18,18,0.88);
       white-space: nowrap;
     }
 
     @media (max-width: 900px) {
-      .hero-word-col {
-        padding-top: calc(clamp(240px, 48vw, 480px) * 0.26);
-      }
-      .hero-word-col.left  { margin-right: clamp(-40px, -7vw, -90px); }
-      .hero-word-col.right { margin-left:  clamp(-40px, -7vw, -90px); }
-      .hero-word { font-size: clamp(20px, 4.0vw, 48px); }
+      .hero-word-col { padding-top: calc(clamp(240px, 48vw, 480px) * 0.22); }
+      .hero-word-col.left  { margin-right: clamp(-60px, -12vw, -140px); }
+      .hero-word-col.right { margin-left:  clamp(-60px, -12vw, -140px); }
+      .hero-word { font-size: clamp(22px, 4.2vw, 52px); }
     }
 
     @media (max-width: 600px) {
@@ -148,19 +146,16 @@
       60%  { filter: blur(0px); }
       100% { opacity: 1; transform: translateX(0);     filter: blur(0px); }
     }
-
     @keyframes revealRight {
       0%   { opacity: 0; transform: translateX(48px);  filter: blur(6px); }
       60%  { filter: blur(0px); }
       100% { opacity: 1; transform: translateX(0);     filter: blur(0px); }
     }
-
     @keyframes revealBust {
       0%   { opacity: 0; transform: translateY(-28px) scale(0.97); filter: blur(4px); }
       55%  { filter: blur(0px); }
       100% { opacity: 1; transform: translateY(0) scale(1);        filter: blur(0px); }
     }
-
     @keyframes revealUp {
       0%   { opacity: 0; transform: translateY(16px); letter-spacing: 0.28em; }
       100% { opacity: 1; transform: translateY(0); }
