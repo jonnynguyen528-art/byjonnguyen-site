@@ -1,394 +1,99 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jon Nguyen — Creative Director</title>
-  <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./style.css" />
-  <style>
-
-```
-@font-face {
-  font-family: 'Cinema Sunday';
-  src: url('assets/fonts/cinema-sunday.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
+:root {
+  --bg: #f4f1ea;
+  --ink: #121212;
+  --blue: #1f57ff;
+  --max: 1200px;
+  --lx: 50%;
+  --ly: 35%;
+  --rx: 0deg;
+  --ry: 0deg;
 }
 
-body { font-family: 'Montserrat', sans-serif; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
 
-.brand {
-  font-family: 'Cinema Sunday', serif;
-  font-weight: normal;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 2.2rem;
-  line-height: 1;
-}
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Montserrat', sans-serif; }
+a { color: inherit; text-decoration: none; }
 
-.nav a {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-}
+.site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 22px 32px; }
+.nav-wrap { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+.brand { font-weight: 700; letter-spacing: 0.06em; color: var(--blue); font-size: 14px; text-transform: uppercase; }
+.nav { display: flex; gap: 28px; }
+.nav a { font-weight: 700; letter-spacing: 0.14em; color: var(--blue); font-size: 11px; text-transform: uppercase; }
 
-/* ─── HERO COMPOSITION LAYOUT ───────────────────────────────────── */
+.hero-center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 24px 72px; }
+.hero-inner { width: 100%; max-width: 1100px; text-align: center; position: relative; }
 
-.hero-composition {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  width: 100%;
-  overflow: visible;
-}
-
-/* Desktop: words flank the bust with negative overlap */
-.hero-word-col {
-  flex: 1;
-  display: flex;
-  align-items: flex-end;
-  padding-top: calc(clamp(320px, 58vw, 680px) * 0.27);
+.hero-bust {
   position: relative;
-  z-index: 1;
+  z-index: 3;
+  width: clamp(320px, 58vw, 680px);
+  margin-top: -180px;
+  pointer-events: auto;
+  flex-shrink: 0;
 }
 
-.hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-150px, -21vw, -260px); }
-.hero-word-col.right { justify-content: flex-start; margin-left:  clamp(-150px, -21vw, -260px); }
+.hero-sculpture { position: relative; width: 100%; height: 100%; display: grid; place-items: center; perspective: 1400px; transform-style: preserve-3d; }
 
-.hero-word {
-  font-family: 'Cinema Sunday', serif;
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  line-height: 1;
-  font-size: clamp(32px, 5vw, 82px);
-  color: rgba(18,18,18,0.88);
-  white-space: nowrap;
+.hero-bust-img { display: block; width: 100%; height: auto; user-select: none; pointer-events: none; }
+
+.hero-sculpture .specular {
+  position: absolute; inset: -8%; pointer-events: none;
+  transform: rotateX(var(--rx)) rotateY(var(--ry)) translateZ(40px);
+  background: radial-gradient(circle at var(--lx) var(--ly), rgba(255,255,255,0.55), rgba(255,255,255,0.18) 18%, rgba(255,255,255,0) 45%);
+  mix-blend-mode: overlay; opacity: 0.65; filter: blur(10px);
 }
 
-/* ── Tablet ── */
-@media (max-width: 900px) {
-  .hero-word-col {
-    padding-top: calc(clamp(240px, 48vw, 480px) * 0.22);
-  }
-  .hero-word-col.left  { margin-right: clamp(-60px, -12vw, -140px); }
-  .hero-word-col.right { margin-left:  clamp(-60px, -12vw, -140px); }
-  .hero-word {
-    font-size: clamp(22px, 4.2vw, 52px);
-  }
+.hero-sculpture .glaze {
+  position: absolute; inset: -6%; pointer-events: none;
+  transform: rotateX(var(--rx)) rotateY(var(--ry)) translateZ(30px);
+  background: radial-gradient(circle at calc(var(--lx) + 8%) calc(var(--ly) - 10%), rgba(255,255,255,0.22), rgba(255,255,255,0) 55%);
+  mix-blend-mode: screen; opacity: 0.45; filter: blur(18px);
 }
 
-/* ── Mobile: flanking layout scaled for narrow screens ── */
-@media (max-width: 600px) {
-  .hero-composition { flex-direction: row; align-items: flex-start; overflow: hidden; }
-  .hero-word-col { flex: 1; padding-top: calc(62vw * 0.50) !important; }
-  .hero-word-col.left  { justify-content: flex-end;  margin-right: -5vw !important; }
-  .hero-word-col.right { justify-content: flex-start; margin-left:  -5vw !important; }
-  .hero-word { font-size: clamp(13px, 5vw, 22px); text-align: unset; white-space: nowrap; }
-}
-
-
-.hero-line1 {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
-  font-size: 11px;
-  color: rgba(18,18,18,0.70);
-}
-
-.hero-line2 {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.36em;
-  text-transform: uppercase;
-  font-size: 9.5px;
-  color: rgba(18,18,18,0.48);
-  margin-top: 6px;
-}
-
-.hero-bust-img {
-  display: block;
-  width: 100%;
-  height: auto;
-  user-select: none;
-  pointer-events: none;
+.hero-sculpture .shadow {
+  position: absolute; left: 50%; bottom: 8%; width: 72%; height: 16%;
+  transform: translateX(-50%) translateZ(0); pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.20), rgba(0,0,0,0) 70%);
+  filter: blur(14px); opacity: 0.55;
 }
 
 @keyframes floaty {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-14px); }
+  0%, 100% { transform: rotateX(var(--rx)) rotateY(var(--ry)) translateZ(20px) translateY(0); }
+  50%       { transform: rotateX(var(--rx)) rotateY(var(--ry)) translateZ(20px) translateY(-10px); }
 }
 
-.hero-sculpture { animation: floaty 6s ease-in-out infinite; }
+.hero-sub { margin-top: 20px; }
+.hero-line1 { font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; font-weight: 500; color: rgba(18,18,18,0.70); }
+.hero-line2 { margin-top: 6px; font-family: 'Montserrat', sans-serif; font-size: 9.5px; letter-spacing: 0.32em; text-transform: uppercase; font-weight: 300; color: rgba(18,18,18,0.48); }
 
-#cursorSpotlight {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.8s ease;
+.reveal { opacity: 0; transform: translateY(18px); filter: blur(10px); transition: opacity 900ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 900ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.reveal.in { opacity: 1; transform: translateY(0); filter: blur(0); }
+.reveal-delay-1 { transition-delay: 120ms; }
+.reveal-delay-2 { transition-delay: 240ms; }
+.reveal-delay-3 { transition-delay: 360ms; }
+
+@media (max-width: 900px) {
+  .site-header { padding: 18px 24px; }
+  .nav { gap: 20px; }
+  .hero-center { padding: 100px 20px 60px; }
+  .hero-bust { width: clamp(240px, 52vw, 480px); margin-top: -120px; }
 }
 
-#groundShadow {
-  position: absolute;
-  bottom: 3%;
-  left: 50%;
-  width: 52%;
-  height: 28px;
-  background: radial-gradient(ellipse at center,
-    rgba(0,0,0,0.32) 0%,
-    rgba(0,0,0,0.12) 45%,
-    transparent 70%);
-  transform: translateX(-50%);
-  opacity: 0;
-  pointer-events: none;
-  will-change: transform, opacity, filter;
-}
-
-/* ─── LUXURY REVEAL SYSTEM ──────────────────────────────────────── */
-
-/*
-  Three actors, three keyframes, one orchestrated sequence.
-  Easing: cubic-bezier(0.16, 1, 0.3, 1) — an expo-out curve.
-  Slow start, decisive arrival. Very haute couture.
-*/
-
-/* CREATIVE — drifts in from the left */
-@keyframes revealLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-48px);
-    filter: blur(6px);
-  }
-  60% {
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-    filter: blur(0px);
-  }
-}
-
-/* DIRECTOR — drifts in from the right */
-@keyframes revealRight {
-  0% {
-    opacity: 0;
-    transform: translateX(48px);
-    filter: blur(6px);
-  }
-  60% {
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-    filter: blur(0px);
-  }
-}
-
-/* PNG bust — descends from slightly above, like being unveiled */
-@keyframes revealBust {
-  0% {
-    opacity: 0;
-    transform: translateY(-28px) scale(0.97);
-    filter: blur(4px);
-  }
-  55% {
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0px);
-  }
-}
-
-/* Subtitle lines — rise up softly after everything else lands */
-@keyframes revealUp {
-  0% {
-    opacity: 0;
-    transform: translateY(16px);
-    letter-spacing: 0.28em;
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Default hidden state for all reveal actors */
-.rx { opacity: 0; }
-
-/* CREATIVE fires first */
-.rx-creative {
-  animation: revealLeft 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
-}
-
-/* DIRECTOR follows — beat after CREATIVE */
-.rx-director {
-  animation: revealRight 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
-}
-
-/* Bust drops in last — the reveal moment */
-.rx-bust {
-  animation: revealBust 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
-}
-
-/* Subtitle breathes in after everything has landed */
-.rx-sub {
-  animation: revealUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
-}
-
-/* ─────────────────────────────────────────────────────────────── */
-
-/* ─── MOBILE REVEAL OVERRIDE ────────────────────────────────────
-   Side-by-side on mobile, so use left/right slides like desktop.
-─────────────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
-  @keyframes revealWordMobileL {
-    0%   { opacity: 0; transform: translateX(-20px); filter: blur(4px); }
-    100% { opacity: 1; transform: translateX(0);     filter: blur(0);   }
-  }
-  @keyframes revealWordMobileR {
-    0%   { opacity: 0; transform: translateX(20px);  filter: blur(4px); }
-    100% { opacity: 1; transform: translateX(0);     filter: blur(0);   }
-  }
-  .rx-creative {
-    animation: revealWordMobileL 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
-  }
-  .rx-director {
-    animation: revealWordMobileR 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
-  }
-  .rx-bust {
-    animation: revealBust 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.85s forwards;
-  }
-  .rx-sub {
-    animation: revealUp 1.0s cubic-bezier(0.16, 1, 0.3, 1) 1.45s forwards;
-  }
+  .site-header { padding: 16px 18px; }
+  .nav { gap: 14px; }
+  .nav a { font-size: 10px; letter-spacing: 0.1em; }
+  .brand { font-size: 1.4rem; }
+  .hero-center { padding: 90px 16px 56px; min-height: 100svh; }
+  .hero-bust { width: 62vw; margin-top: -80px; }
+  .hero-sub { margin-top: 16px; }
+  .hero-line1 { font-size: 9px; letter-spacing: 0.3em; }
+  .hero-line2 { font-size: 8px; letter-spacing: 0.26em; }
 }
-```
 
-  </style>
-</head>
-
-<body>
-
-<header class="site-header">
-  <div class="nav-wrap">
-    <a class="brand" href="#">JON NGUYEN</a>
-    <nav class="nav">
-      <a href="#work">WORK</a>
-      <a href="#about">ABOUT</a>
-      <a href="#contact">CONTACT</a>
-    </nav>
-  </div>
-</header>
-
-<main>
-  <section class="hero-center">
-    <div class="hero-inner">
-
-```
-  <div class="hero-composition">
-
-    <div class="hero-word-col left">
-      <span class="hero-word rx rx-creative">CREATIVE</span>
-    </div>
-
-    <div class="hero-bust rx rx-bust">
-      <div class="hero-sculpture" id="heroStage" style="position:relative;">
-        <img class="hero-bust-img"
-             src="frames/hero-bust-b2.png"
-             alt="Porcelain bust sculpture"
-             draggable="false" />
-        <div id="groundShadow"></div>
-      </div>
-    </div>
-
-    <div class="hero-word-col right">
-      <span class="hero-word rx rx-director">DIRECTOR</span>
-    </div>
-
-  </div>
-
-  <div class="hero-sub rx rx-sub">
-    <div class="hero-line1">BUILDING WORLDS</div>
-    <div class="hero-line2">BRAND &nbsp;·&nbsp; DIGITAL &nbsp;·&nbsp; EXPERIENTIAL</div>
-  </div>
-
-</div>
-```
-
-  </section>
-
-  <section id="work"    style="height:50vh;"></section>
-  <section id="about"   style="height:50vh;"></section>
-  <section id="contact" style="height:50vh;"></section>
-</main>
-
-<div id="cursorSpotlight"></div>
-
-<script>
-(function () {
-  const spotlight = document.getElementById('cursorSpotlight');
-  const shadowEl  = document.getElementById('groundShadow');
-  let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-  let curX = mouseX, curY = mouseY;
-  let hasEntered = false;
-  const LERP = 0.08;
-
-  document.addEventListener('mousemove', e => {
-    mouseX = e.clientX; mouseY = e.clientY; hasEntered = true;
-  });
-
-  function tick() {
-    curX += (mouseX - curX) * LERP;
-    curY += (mouseY - curY) * LERP;
-
-    if (!hasEntered) { requestAnimationFrame(tick); return; }
-
-    const W = window.innerWidth, H = window.innerHeight;
-    const dx = (curX - W * 0.5) / (W * 0.5);
-    const dy = (curY - H * 0.5) / (H * 0.5);
-    const dist = Math.min(Math.sqrt(dx * dx + dy * dy), 1.0);
-    const blend = dist * 0.8;
-
-    if (blend < 0.02) {
-      spotlight.style.opacity = '0';
-    } else {
-      spotlight.style.opacity = blend.toFixed(3);
-      spotlight.style.background = `
-        radial-gradient(320px circle at ${curX}px ${curY}px,
-          rgba(255,242,210,0.10) 0%, rgba(255,238,195,0.04) 50%, transparent 100%),
-        radial-gradient(800px circle at ${curX}px ${curY}px,
-          transparent 0%, transparent 25%,
-          rgba(12,10,6,0.05) 60%, rgba(12,10,6,0.13) 100%)`;
-    }
-
-    if (shadowEl) {
-      const cx    = mouseX / W - 0.5;
-      const adist = Math.abs(cx);
-      shadowEl.style.transform = `translateX(calc(-50% + ${(-cx*120).toFixed(1)}px)) scaleX(${(0.8+adist*2).toFixed(3)})`;
-      shadowEl.style.filter    = `blur(${(8+adist*20).toFixed(1)}px)`;
-      shadowEl.style.opacity   = Math.min(0.08+adist*0.25, 0.4).toFixed(3);
-    }
-
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-</script>
-
-</body>
-</html>
+@media (max-width: 380px) {
+  .brand { font-size: 1.1rem; }
+  .nav a { font-size: 9px; }
+  .hero-bust { width: 72vw; }
+}
