@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="preload" href="assets/fonts/cinema-sunday.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" as="image" href="frames/hero-bust-b2.png">
   <link rel="stylesheet" href="./style.css" />
   <style>
 
@@ -180,7 +181,7 @@ body { font-family: 'Montserrat', sans-serif; }
 
 /* Bust — slow cinematic materialise after both words have landed */
 .rx-bust {
-  animation: revealBust 2.4s cubic-bezier(0.16, 1, 0.3, 1) 1.7s forwards;
+  /* animation triggered by JS once image is fully loaded */
 }
 
 /* Subtitle — breathes in last */
@@ -331,6 +332,25 @@ body { font-family: 'Montserrat', sans-serif; }
   }
   tick();
 })();
+
+  // ── Bust reveal: wait for full image load so PNG never paints partially ──
+  (function () {
+    var PAGE_START = Date.now();
+    var BUST_DELAY = 1700;
+    var bustEl  = document.querySelector('.rx-bust');
+    var bustImg = document.querySelector('.hero-bust-img');
+    function revealBust() {
+      var elapsed = Date.now() - PAGE_START;
+      var delay   = Math.max(0, BUST_DELAY - elapsed);
+      bustEl.style.animation = 'revealBust 2.4s cubic-bezier(0.16,1,0.3,1) ' + delay + 'ms forwards';
+    }
+    if (bustImg.complete && bustImg.naturalWidth > 0) {
+      revealBust();
+    } else {
+      bustImg.addEventListener('load',  revealBust);
+      bustImg.addEventListener('error', revealBust);
+    }
+  })();
 </script>
 
 </body>
