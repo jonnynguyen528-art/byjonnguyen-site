@@ -63,7 +63,7 @@ a { color: inherit; text-decoration: none; }
   50%       { transform: rotateX(var(--rx)) rotateY(var(--ry)) translateZ(20px) translateY(-10px); }
 }
 
-.hero-sub { margin-top: -200px; position: relative; z-index: 4; }
+.hero-sub { margin-top: -320px; position: relative; z-index: 4; }
 .hero-line1 { font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; font-weight: 500; color: rgba(18,18,18,0.70); }
 .hero-line2 { margin-top: 6px; font-family: 'Montserrat', sans-serif; font-size: 9.5px; letter-spacing: 0.32em; text-transform: uppercase; font-weight: 300; color: rgba(18,18,18,0.48); }
 
