@@ -58,6 +58,7 @@ body { font-family: 'Montserrat', sans-serif; }
   padding-top: calc(clamp(320px, 58vw, 680px) * 0.27);
   position: relative;
   z-index: 1;
+  overflow: hidden;
 }
 
 .hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-150px, -21vw, -260px); }
@@ -157,123 +158,69 @@ body { font-family: 'Montserrat', sans-serif; }
 /* ─── LUXURY REVEAL SYSTEM ──────────────────────────────────────── */
 
 /*
-  Three actors, three keyframes, one orchestrated sequence.
-  Easing: cubic-bezier(0.16, 1, 0.3, 1) — an expo-out curve.
-  Slow start, decisive arrival. Very haute couture.
+  Words pan up through a hidden-overflow mask — one at a time.
+  User reads CREATIVE, then DIRECTOR, then the sculpture materialises.
+  Easing: cubic-bezier(0.22, 1, 0.36, 1) — snappy expo-out for words.
+  Bust uses a longer, slower curve for cinematic weight.
 */
 
-/* CREATIVE — drifts in from the left */
-@keyframes revealLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-48px);
-    filter: blur(6px);
-  }
-  60% {
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-    filter: blur(0px);
-  }
-}
-
-/* DIRECTOR — drifts in from the right */
-@keyframes revealRight {
-  0% {
-    opacity: 0;
-    transform: translateX(48px);
-    filter: blur(6px);
-  }
-  60% {
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-    filter: blur(0px);
-  }
-}
-
-/* PNG bust — descends from slightly above, like being unveiled */
-@keyframes revealBust {
-  0% {
-    opacity: 0;
-    transform: translateY(-28px) scale(0.97);
-    filter: blur(4px);
-  }
-  55% {
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0px);
-  }
-}
-
-/* Subtitle lines — rise up softly after everything else lands */
-@keyframes revealUp {
-  0% {
-    opacity: 0;
-    transform: translateY(16px);
-    letter-spacing: 0.28em;
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Default hidden state for all reveal actors */
+/* Initial state — all hidden */
 .rx { opacity: 0; }
 
-/* CREATIVE fires first */
+/* CREATIVE — pans up first */
 .rx-creative {
-  animation: revealLeft 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+  animation: revealWord 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
 }
 
-/* DIRECTOR follows — beat after CREATIVE */
+/* DIRECTOR — clear beat after CREATIVE */
 .rx-director {
-  animation: revealRight 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+  animation: revealWord 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.85s forwards;
 }
 
-/* Bust drops in last — the reveal moment */
+/* Bust — slow cinematic materialise after both words have landed */
 .rx-bust {
-  animation: revealBust 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+  animation: revealBust 2.4s cubic-bezier(0.16, 1, 0.3, 1) 1.7s forwards;
 }
 
-/* Subtitle breathes in after everything has landed */
+/* Subtitle — breathes in last */
 .rx-sub {
-  animation: revealUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
+  animation: revealSub 1.2s cubic-bezier(0.16, 1, 0.3, 1) 2.5s forwards;
 }
 
-/* ─────────────────────────────────────────────────────────────── */
+/* CREATIVE / DIRECTOR — pan up through overflow mask, quick fade */
+@keyframes revealWord {
+  0%   { opacity: 0; transform: translateY(110%); }
+  20%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Bust — drifts upward as it fades in, unhurried */
+@keyframes revealBust {
+  0%   { opacity: 0; transform: translateY(32px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Subtitle — soft rise */
+@keyframes revealSub {
+  0%   { opacity: 0; transform: translateY(14px); letter-spacing: 0.34em; }
+  100% { opacity: 1; transform: translateY(0); }
+}
 
 /* ─── MOBILE REVEAL OVERRIDE ────────────────────────────────────
-   Side-by-side on mobile, so use left/right slides like desktop.
+   Same pan-up on mobile — layout stays side-by-side.
 ─────────────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
-  @keyframes revealWordMobileL {
-    0%   { opacity: 0; transform: translateX(-20px); filter: blur(4px); }
-    100% { opacity: 1; transform: translateX(0);     filter: blur(0);   }
-  }
-  @keyframes revealWordMobileR {
-    0%   { opacity: 0; transform: translateX(20px);  filter: blur(4px); }
-    100% { opacity: 1; transform: translateX(0);     filter: blur(0);   }
-  }
   .rx-creative {
-    animation: revealWordMobileL 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+    animation: revealWord 1.0s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
   }
   .rx-director {
-    animation: revealWordMobileR 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+    animation: revealWord 1.0s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards;
   }
   .rx-bust {
-    animation: revealBust 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.85s forwards;
+    animation: revealBust 2.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
   }
   .rx-sub {
-    animation: revealUp 1.0s cubic-bezier(0.16, 1, 0.3, 1) 1.45s forwards;
+    animation: revealSub 1.0s cubic-bezier(0.16, 1, 0.3, 1) 2.3s forwards;
   }
 }
 ```
