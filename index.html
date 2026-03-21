@@ -197,8 +197,8 @@ body { font-family: 'Montserrat', sans-serif; }
   color: rgba(18,18,18,0.88);
   opacity: 0;
   transform: translateY(115%);
-  transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, opacity;
 }
 
@@ -209,7 +209,7 @@ body { font-family: 'Montserrat', sans-serif; }
 
 /* WORLDS gets a delayed transition so it visually arrives after BUILDING */
 #bwWorlds {
-  transition-delay: 0.18s;
+  transition-delay: 0.06s;
 }
 
 .bw-rule {
@@ -404,9 +404,9 @@ body { font-family: 'Montserrat', sans-serif; }
 
     // Each piece reveals at a distinct scroll threshold
     if (progress > 0.04) bwBuilding.classList.add('revealed');
-    if (progress > 0.26) bwWorlds.classList.add('revealed');
-    if (progress > 0.50) bwRule.classList.add('revealed');
-    if (progress > 0.66) bwTagline.classList.add('revealed');
+    if (progress > 0.12) bwWorlds.classList.add('revealed');
+    if (progress > 0.20) bwRule.classList.add('revealed');
+    if (progress > 0.28) bwTagline.classList.add('revealed');
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
