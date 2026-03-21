@@ -35,7 +35,7 @@ a { color: inherit; text-decoration: none; }
 
 .hero-sculpture { position: relative; width: 100%; height: 100%; display: grid; place-items: center; perspective: 1400px; transform-style: preserve-3d; }
 
-.hero-bust-img { display: block; width: 100%; height: auto; user-select: none; pointer-events: none; -webkit-mask-image: linear-gradient(to bottom, black 58%, transparent 90%); mask-image: linear-gradient(to bottom, black 58%, transparent 90%); }
+.hero-bust-img { display: block; width: 100%; height: auto; user-select: none; pointer-events: none; -webkit-mask-image: linear-gradient(to bottom, black 72%, transparent 96%); mask-image: linear-gradient(to bottom, black 72%, transparent 96%); }
 
 .hero-sculpture .specular {
   position: absolute; inset: -8%; pointer-events: none;
