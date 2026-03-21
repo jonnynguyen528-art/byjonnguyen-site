@@ -22,7 +22,16 @@
   font-display: block;
 }
 
+/* ─── SCROLL SNAP ────────────────────────────────────────────────── */
+
+html {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+}
+
 body { font-family: 'Montserrat', sans-serif; }
+
+/* ─── NAV ────────────────────────────────────────────────────────── */
 
 .brand {
   font-family: 'Cinema Sunday', serif;
@@ -41,7 +50,14 @@ body { font-family: 'Montserrat', sans-serif; }
   font-size: 0.75rem;
 }
 
-/* ─── HERO COMPOSITION LAYOUT ───────────────────────────────────── */
+/* ─── HERO ───────────────────────────────────────────────────────── */
+
+.hero-center {
+  height: 100vh;
+  scroll-snap-align: start;
+  overflow: hidden;
+  position: relative;
+}
 
 .hero-composition {
   display: flex;
@@ -131,7 +147,7 @@ body { font-family: 'Montserrat', sans-serif; }
   will-change: transform, opacity, filter;
 }
 
-/* ─── LUXURY REVEAL SYSTEM ──────────────────────────────────────── */
+/* ─── HERO REVEAL ANIMATIONS ─────────────────────────────────────── */
 
 .rx { opacity: 0; }
 
@@ -143,9 +159,7 @@ body { font-family: 'Montserrat', sans-serif; }
   animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.85s forwards;
 }
 
-.rx-bust {
-  /* triggered by JS */
-}
+.rx-bust { /* triggered by JS */ }
 
 @keyframes revealWord {
   0%   { opacity: 0; transform: translateY(110%); }
@@ -163,17 +177,11 @@ body { font-family: 'Montserrat', sans-serif; }
   .rx-bust     { animation: revealBust 2.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards; }
 }
 
-/* ─── BUILDING WORLDS — SCROLL HANDOFF ──────────────────────────── */
+/* ─── BUILDING WORLDS SECTION ────────────────────────────────────── */
 
 .bw-section {
-  height: 220vh;
-  position: relative;
-}
-
-.bw-stage {
-  position: sticky;
-  top: 0;
   height: 100vh;
+  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -207,17 +215,12 @@ body { font-family: 'Montserrat', sans-serif; }
   transform: translateY(0);
 }
 
-/* WORLDS gets a delayed transition so it visually arrives after BUILDING */
-#bwWorlds {
-  transition-delay: 0.06s;
-}
-
 .bw-rule {
   width: 0;
   height: 1px;
   background: rgba(18,18,18,0.18);
   margin: 40px auto;
-  transition: width 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bw-rule.revealed {
@@ -233,8 +236,8 @@ body { font-family: 'Montserrat', sans-serif; }
   color: rgba(18,18,18,0.45);
   opacity: 0;
   transform: translateY(14px);
-  transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .bw-tagline.revealed {
@@ -245,6 +248,13 @@ body { font-family: 'Montserrat', sans-serif; }
 @media (max-width: 600px) {
   .bw-word { font-size: clamp(38px, 13vw, 76px); }
   .bw-rule { margin: 28px auto; }
+}
+
+/* ─── WORK / ABOUT / CONTACT SECTIONS ───────────────────────────── */
+
+.content-section {
+  height: 100vh;
+  scroll-snap-align: start;
 }
 
   </style>
@@ -264,58 +274,59 @@ body { font-family: 'Montserrat', sans-serif; }
 </header>
 
 <main>
+
+  <!-- ─── HERO ─────────────────────────────────────────────────── -->
   <section class="hero-center">
     <div class="hero-inner">
 
-  <div class="hero-composition">
+      <div class="hero-composition">
 
-    <div class="hero-word-col left">
-      <div class="word-mask"><span class="hero-word rx rx-creative">CREATIVE</span></div>
-    </div>
+        <div class="hero-word-col left">
+          <div class="word-mask"><span class="hero-word rx rx-creative">CREATIVE</span></div>
+        </div>
 
-    <div class="hero-bust rx rx-bust">
-      <div class="hero-sculpture" id="heroStage" style="position:relative;">
-        <img class="hero-bust-img"
-             src="frames/hero-bust-b2.png"
-             alt="Porcelain bust sculpture"
-             fetchpriority="high"
-             draggable="false" />
-        <div id="groundShadow"></div>
+        <div class="hero-bust rx rx-bust">
+          <div class="hero-sculpture" id="heroStage" style="position:relative;">
+            <img class="hero-bust-img"
+                 src="frames/hero-bust-b2.png"
+                 alt="Porcelain bust sculpture"
+                 fetchpriority="high"
+                 draggable="false" />
+            <div id="groundShadow"></div>
+          </div>
+        </div>
+
+        <div class="hero-word-col right">
+          <div class="word-mask"><span class="hero-word rx rx-director">DIRECTOR</span></div>
+        </div>
+
       </div>
+
     </div>
-
-    <div class="hero-word-col right">
-      <div class="word-mask"><span class="hero-word rx rx-director">DIRECTOR</span></div>
-    </div>
-
-  </div>
-
-</div>
-
   </section>
 
-  <!-- ─── BUILDING WORLDS — SCROLL HANDOFF ─────────────────────── -->
+  <!-- ─── BUILDING WORLDS ──────────────────────────────────────── -->
   <section class="bw-section">
-    <div class="bw-stage">
-      <div class="bw-word-wrap">
-        <span class="bw-word" id="bwBuilding">BUILDING</span>
-      </div>
-      <div class="bw-word-wrap">
-        <span class="bw-word" id="bwWorlds">WORLDS</span>
-      </div>
-      <div class="bw-rule" id="bwRule"></div>
-      <div class="bw-tagline" id="bwTagline">BRAND &nbsp;&middot;&nbsp; DIGITAL &nbsp;&middot;&nbsp; EXPERIENTIAL</div>
+    <div class="bw-word-wrap">
+      <span class="bw-word" id="bwBuilding">BUILDING</span>
     </div>
+    <div class="bw-word-wrap">
+      <span class="bw-word" id="bwWorlds">WORLDS</span>
+    </div>
+    <div class="bw-rule" id="bwRule"></div>
+    <div class="bw-tagline" id="bwTagline">BRAND &nbsp;&middot;&nbsp; DIGITAL &nbsp;&middot;&nbsp; EXPERIENTIAL</div>
   </section>
 
-  <section id="work"    style="height:50vh;"></section>
-  <section id="about"   style="height:50vh;"></section>
-  <section id="contact" style="height:50vh;"></section>
+  <section id="work"    class="content-section"></section>
+  <section id="about"   class="content-section"></section>
+  <section id="contact" class="content-section"></section>
+
 </main>
 
 <div id="cursorSpotlight"></div>
 
 <script>
+// ── Cursor spotlight ──
 (function () {
   const spotlight = document.getElementById('cursorSpotlight');
   const shadowEl  = document.getElementById('groundShadow');
@@ -389,28 +400,35 @@ body { font-family: 'Montserrat', sans-serif; }
   }
 })();
 
-// ── BUILDING WORLDS scroll reveal ──
+// ── BUILDING WORLDS — IntersectionObserver reveal ──
 (function () {
-  var section    = document.querySelector('.bw-section');
+  var bwSection  = document.querySelector('.bw-section');
   var bwBuilding = document.getElementById('bwBuilding');
   var bwWorlds   = document.getElementById('bwWorlds');
   var bwRule     = document.getElementById('bwRule');
   var bwTagline  = document.getElementById('bwTagline');
+  var triggered  = false;
 
-  function onScroll() {
-    var rect        = section.getBoundingClientRect();
-    var totalScroll = section.offsetHeight - window.innerHeight;
-    var progress    = Math.max(0, Math.min(1, -rect.top / totalScroll));
-
-    // Each piece reveals at a distinct scroll threshold
-    if (progress > 0.04) bwBuilding.classList.add('revealed');
-    if (progress > 0.12) bwWorlds.classList.add('revealed');
-    if (progress > 0.20) bwRule.classList.add('revealed');
-    if (progress > 0.28) bwTagline.classList.add('revealed');
+  function fireReveal() {
+    if (triggered) return;
+    triggered = true;
+    // Staggered: BUILDING → WORLDS → rule → tagline
+    setTimeout(function() { bwBuilding.classList.add('revealed'); }, 80);
+    setTimeout(function() { bwWorlds.classList.add('revealed');   }, 520);
+    setTimeout(function() { bwRule.classList.add('revealed');     }, 980);
+    setTimeout(function() { bwTagline.classList.add('revealed');  }, 1260);
   }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        fireReveal();
+        observer.unobserve(bwSection);
+      }
+    });
+  }, { threshold: 0.6 });
+
+  observer.observe(bwSection);
 })();
 </script>
 
