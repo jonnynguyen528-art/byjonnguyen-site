@@ -58,8 +58,9 @@ body { font-family: 'Montserrat', sans-serif; }
   padding-top: calc(clamp(320px, 58vw, 680px) * 0.27);
   position: relative;
   z-index: 1;
-  overflow: hidden;
 }
+
+.word-mask { overflow: hidden; display: inline-block; }
 
 .hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-150px, -21vw, -260px); }
 .hero-word-col.right { justify-content: flex-start; margin-left:  clamp(-150px, -21vw, -260px); }
@@ -248,7 +249,7 @@ body { font-family: 'Montserrat', sans-serif; }
   <div class="hero-composition">
 
     <div class="hero-word-col left">
-      <span class="hero-word rx rx-creative">CREATIVE</span>
+      <div class="word-mask"><span class="hero-word rx rx-creative">CREATIVE</span></div>
     </div>
 
     <div class="hero-bust rx rx-bust">
@@ -262,7 +263,7 @@ body { font-family: 'Montserrat', sans-serif; }
     </div>
 
     <div class="hero-word-col right">
-      <span class="hero-word rx rx-director">DIRECTOR</span>
+      <div class="word-mask"><span class="hero-word rx rx-director">DIRECTOR</span></div>
     </div>
 
   </div>
