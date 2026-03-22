@@ -284,8 +284,8 @@ body { font-family: 'Montserrat', sans-serif; }
   gap: 3px;
   padding: 0 3px 3px;
   min-height: 0;
-  perspective: 900px;
-  perspective-origin: 50% -15%;
+  perspective: 1400px;
+  perspective-origin: 50% -25%;
 }
 .work-card-wrap {
   flex: 1;
@@ -294,6 +294,7 @@ body { font-family: 'Montserrat', sans-serif; }
   flex-direction: column;
   opacity: 0;
   perspective: 800px;
+  transition: opacity 0.4s ease;
 }
 .work-card {
   flex: 1;
@@ -577,23 +578,23 @@ body { font-family: 'Montserrat', sans-serif; }
   var wxWraps = document.querySelectorAll('.work-card-wrap');
   var wxFired = false;
   var wxAnims = [];
-  var WX_DUR = 1300, WX_EASE = 'cubic-bezier(0.16,1,0.3,1)';
+  var WX_DUR = 1600, WX_EASE = 'cubic-bezier(0.16,1,0.3,1)';
   var WX_STACK = [
-    'translateX(100%) translateZ(-280px) rotateX(14deg)',
-    'translateX(0%) translateZ(-120px) rotateX(7deg)',
-    'translateX(-100%) translateZ(-380px) rotateX(20deg)'
+    'translateX(115%) translateZ(-580px) rotateX(28deg)',
+    'translateX(0%) translateZ(-200px) rotateX(11deg)',
+    'translateX(-115%) translateZ(-800px) rotateX(38deg)'
   ];
   var WX_FINAL = 'translateX(0%) translateZ(0px) rotateX(0deg)';
   function fireWork() {
     if (wxFired) return; wxFired = true;
     wxWraps.forEach(function(wrap) {
       wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-title, .work-card-arrow')
-        .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(16px)'; });
+        .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(24px) scale(0.95)'; });
     });
     wxWraps.forEach(function(wrap, i) {
       wrap.style.transform = WX_STACK[i];
       wrap.style.opacity = '0';
-      var delay = 60 + i * 200;
+      var delay = i * 260;
       var a = wrap.animate([
         { transform: WX_STACK[i], opacity: '0' },
         { transform: WX_FINAL, opacity: '1' }
@@ -604,9 +605,9 @@ body { font-family: 'Montserrat', sans-serif; }
         wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-title, .work-card-arrow')
           .forEach(function(t, j) {
             t.animate([
-              { transform: 'translateY(16px)', opacity: '0' },
-              { transform: 'translateY(0)', opacity: '1' }
-            ], { duration: 550, delay: j * 70, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+              { transform: 'translateY(24px) scale(0.95)', opacity: '0' },
+              { transform: 'translateY(0px) scale(1)', opacity: '1' }
+            ], { duration: 600, delay: j * 80, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
           });
       };
       wxAnims.push(a);
@@ -621,7 +622,9 @@ body { font-family: 'Montserrat', sans-serif; }
       wrap.style.opacity = '0';
       wrap.style.transition = '';
       wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-title, .work-card-arrow')
-        .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(16px)'; });
+        .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(24px) scale(0.95)'; });
+      var card = wrap.querySelector('.wx-card');
+      if (card) { card.style.transform = ''; card.style.boxShadow = ''; }
     });
   }
   var wxParallaxInit = false;
@@ -629,16 +632,27 @@ body { font-family: 'Montserrat', sans-serif; }
     if (wxParallaxInit) return; wxParallaxInit = true;
     wxWraps.forEach(function(wrap) {
       var card = wrap.querySelector('.wx-card');
+      wrap.addEventListener('mouseenter', function() {
+        card.style.transition = 'box-shadow 0.4s ease';
+        card.style.boxShadow = '0 40px 100px rgba(0,0,0,0.5), 0 15px 35px rgba(0,0,0,0.25)';
+        wxWraps.forEach(function(other) {
+          if (other !== wrap) { other.style.opacity = '0.5'; }
+        });
+      });
       wrap.addEventListener('mousemove', function(e) {
         var rect = wrap.getBoundingClientRect();
         var dx = (e.clientX - rect.left) / rect.width - 0.5;
         var dy = (e.clientY - rect.top) / rect.height - 0.5;
         card.style.transition = '';
-        card.style.transform = 'rotateY(' + (dx * 10) + 'deg) rotateX(' + (-dy * 6) + 'deg)';
+        card.style.transform = 'scale(1.04) rotateY(' + (dx * 14) + 'deg) rotateX(' + (-dy * 8) + 'deg)';
       });
       wrap.addEventListener('mouseleave', function() {
-        card.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1)';
-        card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+        card.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s ease';
+        card.style.transform = '';
+        card.style.boxShadow = '';
+        wxWraps.forEach(function(other) {
+          if (other !== wrap) { other.style.opacity = ''; }
+        });
       });
     });
   }
