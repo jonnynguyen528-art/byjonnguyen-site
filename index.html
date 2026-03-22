@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jon Nguyen — Creative Director</title>
+  <title>Jon Nguyen â Creative Director</title>
   <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,830 +12,939 @@
   <link rel="preload" as="image" href="frames/hero-bust-b2.png">
   <link rel="stylesheet" href="./style.css" />
   <style>
+    @font-face {
+      font-family: 'Cinema Sunday';
+      src: url('assets/fonts/cinema-sunday.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    html, body { height: 100%; overflow: hidden; margin: 0; }
+    .panel { position: fixed; inset: 0; will-change: transform; }
+    #panel-hero { z-index: 1; }
+    #panel-bw { z-index: 2; transform: translateY(100%); background: rgb(244,241,234); }
+    #panel-content { z-index: 3; transform: translateY(100%); background: rgb(244,241,234); overflow-y: hidden; }
+    .panel-moving { transition: transform 0.88s cubic-bezier(0.16, 1, 0.3, 1); }
+    body { font-family: 'Montserrat', sans-serif; }
+    .brand { font-family: 'Cinema Sunday', serif; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 2.2rem; line-height: 1; }
+    .nav a { font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.75rem; }
+    .hero-center { height: 100%; overflow: hidden; position: relative; align-items: flex-start; }
+    .hero-composition { display: flex; align-items: flex-start; justify-content: center; width: 100%; overflow: visible; }
+    .hero-word-col { flex: 1; display: flex; align-items: flex-end; padding-top: calc(clamp(320px, 58vw, 680px) * 0.27); position: relative; z-index: 1; }
+    .word-mask { overflow: hidden; display: inline-block; }
+    .hero-word-col.left { justify-content: flex-end; margin-right: clamp(-150px, -21vw, -260px); }
+    .hero-word-col.right { justify-content: flex-start; margin-left: clamp(-150px, -21vw, -260px); }
+    .hero-word { display: block; font-family: 'Cinema Sunday', serif; font-weight: normal; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; font-size: clamp(32px, 5vw, 82px); color: rgba(18,18,18,0.88); white-space: nowrap; }
+    @media (max-width: 900px) {
+      .hero-word-col { padding-top: calc(clamp(240px, 48vw, 480px) * 0.22); }
+      .hero-word-col.left { margin-right: clamp(-60px, -12vw, -140px); }
+      .hero-word-col.right { margin-left: clamp(-60px, -12vw, -140px); }
+      .hero-word { font-size: clamp(22px, 4.2vw, 52px); }
+    }
+    @media (max-width: 600px) {
+      .hero-composition { flex-direction: row; align-items: flex-start; overflow: visible; }
+      .hero-word-col { flex: 1; padding-top: calc(62vw * 0.27) !important; }
+      .hero-word-col.left { justify-content: flex-end; margin-right: clamp(-40px, -11vw, -60px) !important; }
+      .hero-word-col.right { justify-content: flex-start; margin-left: clamp(-40px, -11vw, -60px) !important; }
+      .hero-word { font-size: clamp(16px, 6.5vw, 28px); text-align: unset; white-space: nowrap; }
+    }
+    .hero-bust-img { display: block; width: 100%; height: auto; user-select: none; pointer-events: none; }
+    @keyframes floaty { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-14px); } }
+    .hero-sculpture { animation: floaty 6s ease-in-out infinite; }
+    #cursorSpotlight { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0; transition: opacity 0.8s ease; }
+    #groundShadow { position: absolute; bottom: 3%; left: 50%; width: 52%; height: 28px; background: radial-gradient(ellipse at center, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.12) 45%, transparent 70%); transform: translateX(-50%); opacity: 0; pointer-events: none; will-change: transform, opacity, filter; }
+    .rx { opacity: 0; }
+    .rx-creative { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards; }
+    .rx-director { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.85s forwards; }
+    .rx-bust { }
+    @keyframes revealWord {
+      0%   { opacity: 0; transform: translateY(110%); filter: blur(14px); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
+    }
+    @keyframes revealBust {
+      0%   { opacity: 0; transform: translateY(32px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 600px) {
+      .rx-creative { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards; }
+      .rx-director { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards; }
+      .rx-bust { animation: revealBust 2.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards; }
+    }
+    .bw-section { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+    .bw-word-wrap { overflow: hidden; display: block; line-height: 1.0; }
+    .bw-word { display: block; font-family: 'Cinema Sunday', serif; font-weight: normal; text-transform: uppercase; letter-spacing: 0.04em; font-size: clamp(52px, 10vw, 156px); color: rgba(18,18,18,0.88); opacity: 0; transform: translateY(115%); filter: blur(12px); transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), transform 1.4s cubic-bezier(0.4, 0, 0.2, 1), filter 1.4s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, opacity, filter; }
+    .bw-word.revealed { opacity: 1; transform: translateY(0); filter: blur(0px); }
+    .bw-rule { width: 0; height: 1px; background: rgba(18,18,18,0.18); margin: 40px auto; transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+    .bw-rule.revealed { width: clamp(100px, 20vw, 280px); }
+    .bw-tagline { font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 0.38em; text-transform: uppercase; font-size: clamp(9px, 0.85vw, 11px); color: rgba(18,18,18,0.45); opacity: 0; transform: translateY(14px); filter: blur(8px); transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+    .bw-tagline.revealed { opacity: 1; filter: blur(0px); transform: translateY(0); }
+    @media (max-width: 600px) {
+      .bw-word { font-size: clamp(38px, 13vw, 76px); }
+      .bw-rule { margin: 28px auto; }
+    }
+    .content-section { min-height: 100vh; }
+    .work-section { height: 100vh; display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+    .work-header { padding: clamp(88px,10vh,108px) clamp(32px,5vw,80px) clamp(14px,1.8vh,24px); flex-shrink: 0; }
+    .work-eyebrow { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: clamp(9px,0.75vw,11px); letter-spacing: 0.38em; text-transform: uppercase; color: rgba(18,18,18,0.38); }
+    .work-cards-grid { flex: 1; display: flex; gap: 3px; padding: 0 3px 3px; min-height: 0; perspective: 1400px; perspective-origin: 50% -25%; }
+    .work-card-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; opacity: 0; perspective: 800px; }
+    .work-card { flex: 1; position: relative; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+    .work-card-bg { position: absolute; inset: 0; transition: transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+    .wx-1 .work-card-bg { background: linear-gradient(160deg,#ddd6c8 0%,#b8a88a 45%,#6e5c48 100%); }
+    .wx-2 .work-card-bg { background: linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%); }
+    .wx-3 .work-card-bg { background: linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%); }
+    .work-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,10,8,0.72) 0%, rgba(12,10,8,0.0) 55%); transition: opacity 0.6s ease; }
+    .work-card-body { position: relative; z-index: 2; padding: clamp(20px,3vw,40px) clamp(20px,2.5vw,36px); }
+    .work-card-num { font-family: 'Montserrat', sans-serif; font-size: clamp(9px,0.7vw,11px); letter-spacing: 0.32em; color: rgba(244,241,234,0.45); margin-bottom: 10px; }
+    .work-card-cat { font-family: 'Montserrat', sans-serif; font-size: clamp(8px,0.65vw,10px); letter-spacing: 0.28em; text-transform: uppercase; color: rgba(244,241,234,0.55); margin-bottom: 10px; }
+    .work-card-title { font-family: 'Cinema Sunday', serif; font-weight: normal; font-size: clamp(28px,3.2vw,56px); line-height: 1.05; color: rgba(244,241,234,0.95); letter-spacing: 0.02em; }
+    .work-card-arrow { font-family: 'Montserrat', sans-serif; font-size: clamp(16px,1.4vw,22px); color: rgba(244,241,234,0.0); margin-top: 18px; transition: color 0.4s ease, transform 0.4s ease; display: inline-block; }
+    .work-card:hover .work-card-bg { transform: scale(1.08); }
+    .work-card:hover .work-card-arrow { color: rgba(244,241,234,0.8); transform: translateX(4px) translateY(-4px); }
 
-@font-face {
-  font-family: 'Cinema Sunday';
-  src: url('assets/fonts/cinema-sunday.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: block;
-}
-
-/* ─── FULL-PAGE PANEL SYSTEM ─────────────────────────────────────
-   html/body locked to viewport. Three fixed panels stacked by z-index.
-   JS drives all transitions — no CSS scroll-snap.
-──────────────────────────────────────────────────────────────────*/
-
-html, body {
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
-}
-
-.panel {
-  position: fixed;
-  inset: 0;
-  will-change: transform;
-}
-
-#panel-hero    { z-index: 1; }
-#panel-bw      { z-index: 2; transform: translateY(100%); background: rgb(244,241,234); }
-#panel-content { z-index: 3; transform: translateY(100%); background: rgb(244,241,234); overflow-y: hidden; }
-
-/* Transition class applied by JS during moves */
-.panel-moving {
-  transition: transform 0.88s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ─── NAV ────────────────────────────────────────────────────────*/
-
-body { font-family: 'Montserrat', sans-serif; }
-
-.brand {
-  font-family: 'Cinema Sunday', serif;
-  font-weight: normal;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 2.2rem;
-  line-height: 1;
-}
-
-.nav a {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-}
-
-/* ─── HERO ───────────────────────────────────────────────────────*/
-
-.hero-center {
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  align-items: flex-start;
-}
-
-.hero-composition {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  width: 100%;
-  overflow: visible;
-}
-
-.hero-word-col {
-  flex: 1;
-  display: flex;
-  align-items: flex-end;
-  padding-top: calc(clamp(320px, 58vw, 680px) * 0.27);
-  position: relative;
-  z-index: 1;
-}
-
-.word-mask { overflow: hidden; display: inline-block; }
-
-.hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-150px, -21vw, -260px); }
-.hero-word-col.right { justify-content: flex-start; margin-left:  clamp(-150px, -21vw, -260px); }
-
-.hero-word {
-  display: block;
-  font-family: 'Cinema Sunday', serif;
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  line-height: 1;
-  font-size: clamp(32px, 5vw, 82px);
-  color: rgba(18,18,18,0.88);
-  white-space: nowrap;
-}
-
-@media (max-width: 900px) {
-  .hero-word-col { padding-top: calc(clamp(240px, 48vw, 480px) * 0.22); }
-  .hero-word-col.left  { margin-right: clamp(-60px, -12vw, -140px); }
-  .hero-word-col.right { margin-left:  clamp(-60px, -12vw, -140px); }
-  .hero-word { font-size: clamp(22px, 4.2vw, 52px); }
-}
-
-@media (max-width: 600px) {
-  .hero-composition { flex-direction: row; align-items: flex-start; overflow: visible; }
-  .hero-word-col { flex: 1; padding-top: calc(62vw * 0.27) !important; }
-  .hero-word-col.left  { justify-content: flex-end;  margin-right: clamp(-40px, -11vw, -60px) !important; }
-  .hero-word-col.right { justify-content: flex-start; margin-left:  clamp(-40px, -11vw, -60px) !important; }
-  .hero-word { font-size: clamp(16px, 6.5vw, 28px); text-align: unset; white-space: nowrap; }
-}
-
-.hero-bust-img {
-  display: block;
-  width: 100%;
-  height: auto;
-  user-select: none;
-  pointer-events: none;
-}
-
-@keyframes floaty {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-14px); }
-}
-
-.hero-sculpture { animation: floaty 6s ease-in-out infinite; }
-
-#cursorSpotlight {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-
-#groundShadow {
-  position: absolute;
-  bottom: 3%;
-  left: 50%;
-  width: 52%;
-  height: 28px;
-  background: radial-gradient(ellipse at center,
-    rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.12) 45%, transparent 70%);
-  transform: translateX(-50%);
-  opacity: 0;
-  pointer-events: none;
-  will-change: transform, opacity, filter;
-}
-
-/* ─── HERO REVEAL ANIMATIONS ─────────────────────────────────────*/
-
-.rx { opacity: 0; }
-
-.rx-creative { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards; }
-.rx-director { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.85s forwards; }
-.rx-bust     { /* triggered by JS */ }
-
-@keyframes revealWord {
-  0%   { opacity: 0; transform: translateY(110%); filter: blur(14px); }
-  100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
-}
-
-@keyframes revealBust {
-  0%   { opacity: 0; transform: translateY(32px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 600px) {
-  .rx-creative { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards; }
-  .rx-director { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards; }
-  .rx-bust     { animation: revealBust 2.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards; }
-}
-
-/* ─── BUILDING WORLDS PANEL ──────────────────────────────────────*/
-
-.bw-section {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.bw-word-wrap {
-  overflow: hidden;
-  display: block;
-  line-height: 1.0;
-}
-
-.bw-word {
-  display: block;
-  font-family: 'Cinema Sunday', serif;
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: clamp(52px, 10vw, 156px);
-  color: rgba(18,18,18,0.88);
-  opacity: 0;
-  transform: translateY(115%);
-  filter: blur(12px);
-  transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 1.4s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 1.4s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, opacity, filter;
-}
-
-.bw-word.revealed { opacity: 1; transform: translateY(0); filter: blur(0px); }
-
-.bw-rule {
-  width: 0;
-  height: 1px;
-  background: rgba(18,18,18,0.18);
-  margin: 40px auto;
-  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.bw-rule.revealed { width: clamp(100px, 20vw, 280px); }
-
-.bw-tagline {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.38em;
-  text-transform: uppercase;
-  font-size: clamp(9px, 0.85vw, 11px);
-  color: rgba(18,18,18,0.45);
-  opacity: 0;
-  transform: translateY(14px);
-  filter: blur(8px);
-  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.bw-tagline.revealed { opacity: 1; filter: blur(0px); transform: translateY(0); }
-
-@media (max-width: 600px) {
-  .bw-word { font-size: clamp(38px, 13vw, 76px); }
-  .bw-rule { margin: 28px auto; }
-}
-
-/* ─── CONTENT PANEL ──────────────────────────────────────────────*/
-
-.content-section { min-height: 100vh; }
-
-  
-/* ─── WORK SECTION ───────────────────────────────────────────── */
-.work-section {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 0;
-}
-.work-header {
-  padding: clamp(88px,10vh,108px) clamp(32px,5vw,80px) clamp(14px,1.8vh,24px);
-  flex-shrink: 0;
-}
-.work-eyebrow {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
-  font-size: clamp(9px,0.75vw,11px);
-  letter-spacing: 0.38em;
-  text-transform: uppercase;
-  color: rgba(18,18,18,0.38);
-}
-.work-cards-grid {
-  flex: 1;
-  display: flex;
-  gap: 3px;
-  padding: 0 3px 3px;
-  min-height: 0;
-  perspective: 1400px;
-  perspective-origin: 50% -25%;
-}
-.work-card-wrap {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  opacity: 0;
-  perspective: 800px;
-}
-.work-card {
-  flex: 1;
-  position: relative;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-}
-.work-card-bg {
-  position: absolute;
-  inset: 0;
-  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
-}
-.wx-1 .work-card-bg { transition: transform 0.9s cubic-bezier(0.16,1,0.3,1); background: linear-gradient(160deg,#ddd6c8 0%,#b8a88a 45%,#6e5c48 100%); }
-.wx-2 .work-card-bg { background: linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%); }
-.wx-3 .work-card-bg { background: linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%); }
-.work-card-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(12,10,8,0.72) 0%, rgba(12,10,8,0.0) 55%);
-  transition: opacity 0.6s ease;
-}
-.work-card-body {
-  position: relative;
-  z-index: 2;
-  padding: clamp(20px,3vw,40px) clamp(20px,2.5vw,36px);
-}
-.work-card-num {
-  font-family: 'Montserrat', sans-serif;
-  font-size: clamp(9px,0.7vw,11px);
-  letter-spacing: 0.32em;
-  color: rgba(244,241,234,0.45);
-  margin-bottom: 10px;
-}
-.work-card-cat {
-  font-family: 'Montserrat', sans-serif;
-  font-size: clamp(8px,0.65vw,10px);
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(244,241,234,0.55);
-  margin-bottom: 10px;
-}
-.work-card-title {
-  font-family: 'Cinema Sunday', serif;
-  font-weight: normal;
-  font-size: clamp(28px,3.2vw,56px);
-  line-height: 1.05;
-  color: rgba(244,241,234,0.95);
-  letter-spacing: 0.02em;
-}
-.work-card-arrow {
-  font-family: 'Montserrat', sans-serif;
-  font-size: clamp(16px,1.4vw,22px);
-  color: rgba(244,241,234,0.0);
-  margin-top: 18px;
-  transition: color 0.4s ease, transform 0.4s ease;
-  display: inline-block;
-}
-.work-card:hover .work-card-bg { transform: scale(1.08); }
-.work-card:hover .work-card-arrow { color: rgba(244,241,234,0.8); transform: translateX(4px) translateY(-4px); }
-
-</style>
+    /* âââ CASE STUDY OVERLAY ââââââââââââââââââââââââââââââââââââ */
+    .cs-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      clip-path: inset(100% 0 0 0 round 0px);
+      pointer-events: none; overflow: hidden;
+    }
+    .cs-overlay.cs-open { pointer-events: all; }
+    .cs-inner {
+      position: absolute; inset: 0;
+      overflow: hidden;
+    }
+    .cs-inner.cs-scrollable { overflow-y: auto; overflow-x: hidden; }
+    .cs-hero {
+      position: relative; height: 100vh;
+      display: flex; align-items: flex-end; overflow: hidden;
+    }
+    .cs-hero-bg {
+      position: absolute; inset: -10%;
+      will-change: transform;
+    }
+    .cs-hero-content {
+      position: relative; z-index: 2;
+      padding: clamp(32px,5vw,80px) clamp(32px,5vw,80px) clamp(60px,8vw,120px);
+      width: 100%;
+    }
+    .cs-hero-meta {
+      display: flex; gap: 32px; margin-bottom: 32px;
+      opacity: 0; transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cs-hero-meta.revealed { opacity: 1; }
+    .cs-hero-meta span {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(9px,0.75vw,11px); letter-spacing: 0.32em;
+      text-transform: uppercase; color: rgba(244,241,234,0.55);
+    }
+    .cs-hero-title {
+      font-family: 'Cinema Sunday', serif; font-weight: normal;
+      font-size: clamp(52px,7.5vw,140px); line-height: 1.0;
+      letter-spacing: 0.02em; color: rgba(244,241,234,0.95);
+      margin: 0 0 28px; opacity: 0;
+    }
+    .cs-hero-title.cs-title-ready { opacity: 1; }
+    .cs-hero-statement {
+      font-family: 'Montserrat', sans-serif; font-weight: 300;
+      font-size: clamp(13px,1.2vw,18px); letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(244,241,234,0.6);
+      margin: 0; max-width: 520px;
+      opacity: 0; transform: translateY(12px); filter: blur(8px);
+      transition: opacity 1s cubic-bezier(0.16,1,0.3,1),
+                  transform 1s cubic-bezier(0.16,1,0.3,1),
+                  filter 1s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cs-hero-statement.revealed { opacity: 1; transform: translateY(0); filter: blur(0px); }
+    .cs-scroll-hint {
+      position: absolute; bottom: clamp(24px,4vh,48px); right: clamp(32px,5vw,80px);
+      font-family: 'Montserrat', sans-serif; font-size: clamp(8px,0.65vw,10px);
+      letter-spacing: 0.32em; text-transform: uppercase; color: rgba(244,241,234,0.35);
+      opacity: 0; transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cs-scroll-hint.revealed { opacity: 1; }
+    .cs-close {
+      position: fixed; top: clamp(20px,3vh,36px); right: clamp(24px,3vw,48px);
+      z-index: 600; background: none; border: none; cursor: pointer;
+      font-family: 'Montserrat', sans-serif; font-size: clamp(8px,0.65vw,10px);
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(244,241,234,0.55); padding: 12px;
+      opacity: 0; transition: opacity 0.6s ease, color 0.3s ease;
+    }
+    .cs-close.revealed { opacity: 1; }
+    .cs-close:hover { color: rgba(244,241,234,0.95); }
+    .cs-body { background: rgb(244,241,234); padding: clamp(80px,10vw,160px) clamp(32px,5vw,80px); }
+    .cs-section { margin-bottom: clamp(80px,10vw,160px); }
+    .cs-section-label {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(8px,0.65vw,10px);
+      letter-spacing: 0.32em; text-transform: uppercase; color: rgba(18,18,18,0.35);
+      margin-bottom: 24px; display: block;
+    }
+    .cs-brief {
+      font-family: 'Montserrat', sans-serif; font-weight: 300;
+      font-size: clamp(16px,1.6vw,24px); line-height: 1.65; color: rgba(18,18,18,0.75);
+      max-width: 680px;
+    }
+    .cs-details { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 48px; }
+    .cs-detail-label {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(8px,0.65vw,10px);
+      letter-spacing: 0.28em; text-transform: uppercase; color: rgba(18,18,18,0.35);
+      margin-bottom: 10px;
+    }
+    .cs-detail-val {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(11px,0.9vw,14px);
+      letter-spacing: 0.08em; color: rgba(18,18,18,0.7); line-height: 1.6;
+    }
+    .cs-img-full {
+      width: calc(100% + clamp(64px,10vw,160px));
+      margin-left: calc(-1 * clamp(32px,5vw,80px));
+      aspect-ratio: 16/9; overflow: hidden;
+      margin-bottom: clamp(80px,10vw,160px);
+    }
+    .cs-img-full-inner {
+      width: 100%; height: 100%; background-size: cover; background-position: center;
+    }
+    .cs-img-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+      width: calc(100% + clamp(64px,10vw,160px));
+      margin-left: calc(-1 * clamp(32px,5vw,80px));
+      margin-bottom: clamp(80px,10vw,160px);
+    }
+    .cs-img-half { aspect-ratio: 4/5; overflow: hidden; }
+    .cs-img-half-inner { width: 100%; height: 100%; background-size: cover; background-position: center; }
+    .cs-statement-large {
+      font-family: 'Cinema Sunday', serif; font-weight: normal;
+      font-size: clamp(36px,5.5vw,96px); line-height: 1.1; letter-spacing: 0.02em;
+      color: rgba(18,18,18,0.85); max-width: 900px;
+      margin-bottom: clamp(80px,10vw,160px);
+    }
+    .cs-outcome { padding: clamp(48px,6vw,96px); background: rgba(18,18,18,0.04); border-radius: 4px; }
+    .cs-outcome-text {
+      font-family: 'Montserrat', sans-serif; font-weight: 300;
+      font-size: clamp(14px,1.2vw,18px); line-height: 1.7; color: rgba(18,18,18,0.65);
+      max-width: 560px;
+    }
+    .cs-reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cs-reveal.revealed { opacity: 1; transform: translateY(0); }
+  </style>
 </head>
-
 <body>
+  <header class="site-header" style="position:fixed;z-index:200;">
+    <div class="nav-wrap">
+      <a class="brand" href="#">JON NGUYEN</a>
+      <nav class="nav">
+        <a href="#work">WORK</a>
+        <a href="#about">ABOUT</a>
+        <a href="#contact">CONTACT</a>
+      </nav>
+    </div>
+  </header>
 
-<header class="site-header" style="position:fixed;z-index:200;">
-  <div class="nav-wrap">
-    <a class="brand" href="#">JON NGUYEN</a>
-    <nav class="nav">
-      <a href="#work">WORK</a>
-      <a href="#about">ABOUT</a>
-      <a href="#contact">CONTACT</a>
-    </nav>
-  </div>
-</header>
-
-<!-- ─── PANEL 1: HERO ─────────────────────────────────────────── -->
-<div id="panel-hero" class="panel">
-  <section class="hero-center">
-    <div class="hero-inner">
-      <div class="hero-composition">
-
-        <div class="hero-word-col left">
-          <div class="word-mask"><span class="hero-word rx rx-creative">CREATIVE</span></div>
-        </div>
-
-        <div class="hero-bust rx rx-bust">
-          <div class="hero-sculpture" id="heroStage" style="position:relative;">
-            <img class="hero-bust-img"
-                 src="frames/hero-bust-b2.png"
-                 alt="Porcelain bust sculpture"
-                 fetchpriority="high"
-                 draggable="false" />
-            <div id="groundShadow"></div>
+  <!-- âââ PANEL 1: HERO ââââââââââââââââââââââââââââââââââââââââ -->
+  <div id="panel-hero" class="panel">
+    <section class="hero-center">
+      <div class="hero-inner">
+        <div class="hero-composition">
+          <div class="hero-word-col left">
+            <div class="word-mask"><span class="hero-word rx rx-creative">CREATIVE</span></div>
+          </div>
+          <div class="hero-bust rx rx-bust">
+            <div class="hero-sculpture" id="heroStage" style="position:relative;">
+              <img class="hero-bust-img" src="frames/hero-bust-b2.png" alt="Porcelain bust sculpture" fetchpriority="high" draggable="false" />
+              <div id="groundShadow"></div>
+            </div>
+          </div>
+          <div class="hero-word-col right">
+            <div class="word-mask"><span class="hero-word rx rx-director">DIRECTOR</span></div>
           </div>
         </div>
-
-        <div class="hero-word-col right">
-          <div class="word-mask"><span class="hero-word rx rx-director">DIRECTOR</span></div>
-        </div>
-
       </div>
-    </div>
-  </section>
-</div>
-
-<!-- ─── PANEL 2: BUILDING WORLDS ─────────────────────────────── -->
-<div id="panel-bw" class="panel">
-  <section class="bw-section">
-    <div class="bw-word-wrap">
-      <span class="bw-word" id="bwBuilding">BUILDING</span>
-    </div>
-    <div class="bw-word-wrap">
-      <span class="bw-word" id="bwWorlds">WORLDS</span>
-    </div>
-    <div class="bw-rule" id="bwRule"></div>
-    <div class="bw-tagline" id="bwTagline">BRAND &nbsp;&middot;&nbsp; DIGITAL &nbsp;&middot;&nbsp; EXPERIENTIAL</div>
-  </section>
-</div>
-
-<!-- ─── PANEL 3: CONTENT ──────────────────────────────────────── -->
-<div id="panel-content" class="panel">
-  <section id="work" class="content-section work-section">
-  <div class="work-header">
-    <span class="work-eyebrow">Selected Work</span>
+    </section>
   </div>
-  <div class="work-cards-grid">
-    <div class="work-card-wrap">
-      <div class="work-card wx-card wx-1">
-        <div class="work-card-bg"></div>
-        <div class="work-card-overlay"></div>
-        <div class="work-card-body">
-          <div class="work-card-num">01</div>
-          <div class="work-card-cat">Brand Identity</div>
-          <div class="work-card-title">Maison<br>Collective</div>
-          <div class="work-card-arrow">&#8599;</div>
-        </div>
-      </div>
-    </div>
-    <div class="work-card-wrap">
-      <div class="work-card wx-card wx-2">
-        <div class="work-card-bg"></div>
-        <div class="work-card-overlay"></div>
-        <div class="work-card-body">
-          <div class="work-card-num">02</div>
-          <div class="work-card-cat">Digital Experience</div>
-          <div class="work-card-title">Lumière<br>Studio</div>
-          <div class="work-card-arrow">&#8599;</div>
-        </div>
-      </div>
-    </div>
-    <div class="work-card-wrap">
-      <div class="work-card wx-card wx-3">
-        <div class="work-card-bg"></div>
-        <div class="work-card-overlay"></div>
-        <div class="work-card-body">
-          <div class="work-card-num">03</div>
-          <div class="work-card-cat">Campaign</div>
-          <div class="work-card-title">Noir<br>Avant</div>
-          <div class="work-card-arrow">&#8599;</div>
-        </div>
-      </div>
-    </div>
+
+  <!-- âââ PANEL 2: BUILDING WORLDS âââââââââââââââââââââââââââââ -->
+  <div id="panel-bw" class="panel">
+    <section class="bw-section">
+      <div class="bw-word-wrap"><span class="bw-word" id="bwBuilding">BUILDING</span></div>
+      <div class="bw-word-wrap"><span class="bw-word" id="bwWorlds">WORLDS</span></div>
+      <div class="bw-rule" id="bwRule"></div>
+      <div class="bw-tagline" id="bwTagline">BRAND &nbsp;&middot;&nbsp; DIGITAL &nbsp;&middot;&nbsp; EXPERIENTIAL</div>
+    </section>
   </div>
-</section>
-  <section id="about"   class="content-section"></section>
-  <section id="contact" class="content-section"></section>
-</div>
 
-<div id="cursorSpotlight"></div>
+  <!-- âââ PANEL 3: CONTENT âââââââââââââââââââââââââââââââââââââââ -->
+  <div id="panel-content" class="panel">
+    <section id="work" class="content-section work-section">
+      <div class="work-header">
+        <span class="work-eyebrow">Selected Work</span>
+      </div>
+      <div class="work-cards-grid">
+        <div class="work-card-wrap">
+          <div class="work-card wx-card wx-1">
+            <div class="work-card-bg"></div>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-body">
+              <div class="work-card-num">01</div>
+              <div class="work-card-cat">Brand Identity</div>
+              <div class="work-card-title">Maison<br>Collective</div>
+              <div class="work-card-arrow">&#8599;</div>
+            </div>
+          </div>
+        </div>
+        <div class="work-card-wrap">
+          <div class="work-card wx-card wx-2">
+            <div class="work-card-bg"></div>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-body">
+              <div class="work-card-num">02</div>
+              <div class="work-card-cat">Digital Experience</div>
+              <div class="work-card-title">Lumi&egrave;re<br>Studio</div>
+              <div class="work-card-arrow">&#8599;</div>
+            </div>
+          </div>
+        </div>
+        <div class="work-card-wrap">
+          <div class="work-card wx-card wx-3">
+            <div class="work-card-bg"></div>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-body">
+              <div class="work-card-num">03</div>
+              <div class="work-card-cat">Campaign</div>
+              <div class="work-card-title">Noir<br>Avant</div>
+              <div class="work-card-arrow">&#8599;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="about" class="content-section"></section>
+    <section id="contact" class="content-section"></section>
+  </div>
 
-<script>
-// ── Cursor spotlight ──────────────────────────────────────────────
-(function () {
-  const spotlight = document.getElementById('cursorSpotlight');
-  const shadowEl  = document.getElementById('groundShadow');
-  let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-  let curX = mouseX, curY = mouseY;
-  let hasEntered = false;
-  const LERP = 0.08;
+  <!-- âââ CASE STUDY OVERLAY ââââââââââââââââââââââââââââââââââââ -->
+  <div id="cs-overlay" class="cs-overlay">
+    <div id="cs-inner" class="cs-inner">
+      <section class="cs-hero">
+        <div class="cs-hero-bg" id="cs-hero-bg"></div>
+        <div class="cs-hero-content">
+          <div class="cs-hero-meta" id="cs-hero-meta">
+            <span id="cs-hero-num"></span>
+            <span id="cs-hero-cat"></span>
+            <span id="cs-hero-year"></span>
+          </div>
+          <h1 class="cs-hero-title" id="cs-hero-title"></h1>
+          <p class="cs-hero-statement" id="cs-hero-statement"></p>
+        </div>
+        <span class="cs-scroll-hint" id="cs-scroll-hint">Scroll to explore</span>
+      </section>
+      <div class="cs-body" id="cs-body"></div>
+    </div>
+    <button class="cs-close" id="cs-close">&#8592; Close</button>
+  </div>
 
-  document.addEventListener('mousemove', e => {
-    mouseX = e.clientX; mouseY = e.clientY; hasEntered = true;
-  });
-
-  function tick() {
-    curX += (mouseX - curX) * LERP;
-    curY += (mouseY - curY) * LERP;
-    if (!hasEntered) { requestAnimationFrame(tick); return; }
-    const W = window.innerWidth, H = window.innerHeight;
-    const dx = (curX - W * 0.5) / (W * 0.5);
-    const dy = (curY - H * 0.5) / (H * 0.5);
-    const dist = Math.min(Math.sqrt(dx * dx + dy * dy), 1.0);
-    const blend = dist * 0.8;
-    if (blend < 0.02) {
-      spotlight.style.opacity = '0';
-    } else {
-      spotlight.style.opacity = blend.toFixed(3);
-      spotlight.style.background = `
-        radial-gradient(320px circle at ${curX}px ${curY}px,
-          rgba(255,242,210,0.10) 0%, rgba(255,238,195,0.04) 50%, transparent 100%),
-        radial-gradient(800px circle at ${curX}px ${curY}px,
-          transparent 0%, transparent 25%,
-          rgba(12,10,6,0.05) 60%, rgba(12,10,6,0.13) 100%)`;
-    }
-    if (shadowEl) {
-      const cx = mouseX / W - 0.5;
-      const adist = Math.abs(cx);
-      shadowEl.style.transform = `translateX(calc(-50% + ${(-cx*120).toFixed(1)}px)) scaleX(${(0.8+adist*2).toFixed(3)})`;
-      shadowEl.style.filter    = `blur(${(8+adist*20).toFixed(1)}px)`;
-      shadowEl.style.opacity   = Math.min(0.08+adist*0.25, 0.4).toFixed(3);
-    }
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-
-// ── Bust reveal ───────────────────────────────────────────────────
-(function () {
-  var PAGE_START = Date.now();
-  var BUST_DELAY = 1700;
-  var MAX_WAIT   = 2500;
-  var bustEl  = document.querySelector('.rx-bust');
-  var bustImg = document.querySelector('.hero-bust-img');
-  var fired = false;
-  function revealBust() {
-    if (fired) return; fired = true;
-    var elapsed = Date.now() - PAGE_START;
-    var delay   = Math.max(0, BUST_DELAY - elapsed);
-    bustEl.style.animation = 'revealBust 2.4s cubic-bezier(0.16,1,0.3,1) ' + delay + 'ms forwards';
-  }
-  var cap = setTimeout(revealBust, MAX_WAIT);
-  if (bustImg.complete && bustImg.naturalWidth > 0) { clearTimeout(cap); revealBust(); }
-  else {
-    bustImg.addEventListener('load',  function() { clearTimeout(cap); revealBust(); });
-    bustImg.addEventListener('error', function() { clearTimeout(cap); revealBust(); });
-  }
-})();
-
-// ── Panel scroll system ───────────────────────────────────────────
-(function () {
-  var panelBW      = document.getElementById('panel-bw');
-  var panelContent = document.getElementById('panel-content');
-
-  var DURATION  = 880;   // ms — panel slide duration
-  var THRESHOLD = 220;   // wheel px needed to trigger a transition
-  var COOLDOWN  = DURATION + 200; // lock period after transition starts
-
-  var state     = 'hero'; // 'hero' | 'bw' | 'content'
-  var animating = false;
-  var accum     = 0;
-  var lastWheel = 0;
-  var bwFired   = false;
-
-  // ── BW reveal animations ──
-  var bwBuilding = document.getElementById('bwBuilding');
-  var bwWorlds   = document.getElementById('bwWorlds');
-  var bwRule     = document.getElementById('bwRule');
-  var bwTagline  = document.getElementById('bwTagline');
-
-  function fireBW() {
-    if (bwFired) return; bwFired = true;
-    setTimeout(function() { bwBuilding.classList.add('revealed'); }, 80);
-    setTimeout(function() { bwWorlds.classList.add('revealed');   }, 520);
-    setTimeout(function() { bwRule.classList.add('revealed');     }, 980);
-    setTimeout(function() { bwTagline.classList.add('revealed');  }, 1260);
-  }
-
-  function resetBW() {
-    bwFired = false;
-    [bwBuilding, bwWorlds, bwRule, bwTagline].forEach(function(el) {
-      el.classList.remove('revealed');
-    });
-  }
-
-  // ── Panel slide ──
-  var wxCards = document.querySelectorAll('.wx-card');
-  var wxWraps = document.querySelectorAll('.work-card-wrap');
-  var wxFired = false;
-  var wxAnims = [];
-  var WX_CLIP_DUR = 900, WX_CLIP_EASE = 'cubic-bezier(0.76,0,0.24,1)';
-  var WX_STAGGER = 200;
-
-  function splitTextToChars(el) {
-    var innerSpans = [];
-    var nodes = Array.from(el.childNodes);
-    el.innerHTML = '';
-    nodes.forEach(function(node) {
-      if (node.nodeType === 3) {
-        var text = node.textContent;
-        for (var i = 0; i < text.length; i++) {
-          var outer = document.createElement('span');
-          outer.style.cssText = 'overflow:hidden;display:inline-block;vertical-align:top;';
-          var inner = document.createElement('span');
-          inner.style.cssText = 'display:inline-block;';
-          inner.textContent = text[i];
-          outer.appendChild(inner);
-          el.appendChild(outer);
-          innerSpans.push(inner);
+  <div id="cursorSpotlight"></div>
+  <script>
+    // ââ Cursor spotlight ââââââââââââââââââââââââââââââââââââââââââââââ
+    (function () {
+      const spotlight = document.getElementById('cursorSpotlight');
+      const shadowEl = document.getElementById('groundShadow');
+      let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+      let curX = mouseX, curY = mouseY;
+      let hasEntered = false;
+      const LERP = 0.08;
+      document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; hasEntered = true; });
+      function tick() {
+        curX += (mouseX - curX) * LERP;
+        curY += (mouseY - curY) * LERP;
+        if (!hasEntered) { requestAnimationFrame(tick); return; }
+        const W = window.innerWidth, H = window.innerHeight;
+        const dx = (curX - W * 0.5) / (W * 0.5);
+        const dy = (curY - H * 0.5) / (H * 0.5);
+        const dist = Math.min(Math.sqrt(dx * dx + dy * dy), 1.0);
+        const blend = dist * 0.8;
+        if (blend < 0.02) {
+          spotlight.style.opacity = '0';
+        } else {
+          spotlight.style.opacity = blend.toFixed(3);
+          spotlight.style.background = `
+            radial-gradient(320px circle at ${curX}px ${curY}px, rgba(255,242,210,0.10) 0%, rgba(255,238,195,0.04) 50%, transparent 100%),
+            radial-gradient(800px circle at ${curX}px ${curY}px, transparent 0%, transparent 25%, rgba(12,10,6,0.05) 60%, rgba(12,10,6,0.13) 100%)`;
         }
-      } else if (node.nodeType === 1) {
-        el.appendChild(node.cloneNode(true));
+        if (shadowEl) {
+          const cx = mouseX / W - 0.5;
+          const adist = Math.abs(cx);
+          shadowEl.style.transform = `translateX(calc(-50% + ${(-cx*120).toFixed(1)}px)) scaleX(${(0.8+adist*2).toFixed(3)})`;
+          shadowEl.style.filter = `blur(${(8+adist*20).toFixed(1)}px)`;
+          shadowEl.style.opacity = Math.min(0.08+adist*0.25, 0.4).toFixed(3);
+        }
+        requestAnimationFrame(tick);
       }
-    });
-    return innerSpans;
-  }
+      tick();
+    })();
 
-  function fireWork() {
-    if (wxFired) return; wxFired = true;
-    wxWraps.forEach(function(wrap) {
-      var card = wrap.querySelector('.wx-card');
-      card.style.clipPath = 'inset(100% 0 0 0)';
-      wrap.style.opacity = '1';
-      wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
-        .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; });
-      var titleEl = wrap.querySelector('.work-card-title');
-      titleEl.style.opacity = '0';
-      var chars;
-      if (titleEl._charSpans && titleEl._charSpans.length > 0) {
-        chars = titleEl._charSpans;
-      } else {
-        chars = splitTextToChars(titleEl);
-        titleEl._charSpans = chars;
+    // ââ Bust reveal âââââââââââââââââââââââââââââââââââââââââââââââââââ
+    (function () {
+      var PAGE_START = Date.now();
+      var BUST_DELAY = 1700;
+      var MAX_WAIT = 2500;
+      var bustEl = document.querySelector('.rx-bust');
+      var bustImg = document.querySelector('.hero-bust-img');
+      var fired = false;
+      function revealBust() {
+        if (fired) return; fired = true;
+        var elapsed = Date.now() - PAGE_START;
+        var delay = Math.max(0, BUST_DELAY - elapsed);
+        bustEl.style.animation = 'revealBust 2.4s cubic-bezier(0.16,1,0.3,1) ' + delay + 'ms forwards';
       }
-      chars.forEach(function(ch) { ch.style.transform = 'translateY(110%)'; });
-    });
-    wxWraps.forEach(function(wrap, i) {
-      var card = wrap.querySelector('.wx-card');
-      var delay = i * WX_STAGGER;
-      var a = card.animate([
-        { clipPath: 'inset(100% 0 0 0)' },
-        { clipPath: 'inset(0% 0 0 0)' }
-      ], { duration: WX_CLIP_DUR, delay: delay, easing: WX_CLIP_EASE, fill: 'forwards' });
-      a.onfinish = function() {
-        card.style.clipPath = 'none';
-        wrap.querySelectorAll('.work-card-num, .work-card-cat')
-          .forEach(function(t, j) {
-            t.animate([
-              { transform: 'translateY(20px)', opacity: '0' },
-              { transform: 'translateY(0px)', opacity: '1' }
-            ], { duration: 550, delay: j * 90, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+      var cap = setTimeout(revealBust, MAX_WAIT);
+      if (bustImg.complete && bustImg.naturalWidth > 0) { clearTimeout(cap); revealBust(); }
+      else {
+        bustImg.addEventListener('load', function() { clearTimeout(cap); revealBust(); });
+        bustImg.addEventListener('error', function() { clearTimeout(cap); revealBust(); });
+      }
+    })();
+
+    // ââ Panel scroll system âââââââââââââââââââââââââââââââââââââââââââ
+    (function () {
+      var panelBW = document.getElementById('panel-bw');
+      var panelContent = document.getElementById('panel-content');
+      var DURATION = 880;
+      var THRESHOLD = 220;
+      var COOLDOWN = DURATION + 200;
+      var state = 'hero';
+      var animating = false;
+      var accum = 0;
+      var lastWheel = 0;
+      var bwFired = false;
+
+      var bwBuilding = document.getElementById('bwBuilding');
+      var bwWorlds = document.getElementById('bwWorlds');
+      var bwRule = document.getElementById('bwRule');
+      var bwTagline = document.getElementById('bwTagline');
+
+      function fireBW() {
+        if (bwFired) return; bwFired = true;
+        setTimeout(function() { bwBuilding.classList.add('revealed'); }, 80);
+        setTimeout(function() { bwWorlds.classList.add('revealed'); }, 520);
+        setTimeout(function() { bwRule.classList.add('revealed'); }, 980);
+        setTimeout(function() { bwTagline.classList.add('revealed'); }, 1260);
+      }
+      function resetBW() {
+        bwFired = false;
+        [bwBuilding, bwWorlds, bwRule, bwTagline].forEach(function(el) { el.classList.remove('revealed'); });
+      }
+
+      var wxCards = document.querySelectorAll('.wx-card');
+      var wxWraps = document.querySelectorAll('.work-card-wrap');
+      var wxFired = false;
+      var wxAnims = [];
+      var WX_CLIP_DUR = 900, WX_CLIP_EASE = 'cubic-bezier(0.76,0,0.24,1)';
+      var WX_STAGGER = 200;
+
+      function splitTextToChars(el) {
+        var innerSpans = [];
+        var nodes = Array.from(el.childNodes);
+        el.innerHTML = '';
+        nodes.forEach(function(node) {
+          if (node.nodeType === 3) {
+            var text = node.textContent;
+            for (var i = 0; i < text.length; i++) {
+              var outer = document.createElement('span');
+              outer.style.cssText = 'overflow:hidden;display:inline-block;vertical-align:top;';
+              var inner = document.createElement('span');
+              inner.style.cssText = 'display:inline-block;';
+              inner.textContent = text[i];
+              outer.appendChild(inner);
+              el.appendChild(outer);
+              innerSpans.push(inner);
+            }
+          } else if (node.nodeType === 1) {
+            el.appendChild(node.cloneNode(true));
+          }
+        });
+        return innerSpans;
+      }
+
+      function fireWork() {
+        if (wxFired) return; wxFired = true;
+        wxWraps.forEach(function(wrap) {
+          var card = wrap.querySelector('.wx-card');
+          card.style.clipPath = 'inset(100% 0 0 0)';
+          wrap.style.opacity = '1';
+          wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
+            .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; });
+          var titleEl = wrap.querySelector('.work-card-title');
+          titleEl.style.opacity = '0';
+          var chars;
+          if (titleEl._charSpans && titleEl._charSpans.length > 0) {
+            chars = titleEl._charSpans;
+          } else {
+            chars = splitTextToChars(titleEl);
+            titleEl._charSpans = chars;
+          }
+          chars.forEach(function(ch) { ch.style.transform = 'translateY(110%)'; });
+        });
+        wxWraps.forEach(function(wrap, i) {
+          var card = wrap.querySelector('.wx-card');
+          var delay = i * WX_STAGGER;
+          var a = card.animate([
+            { clipPath: 'inset(100% 0 0 0)' },
+            { clipPath: 'inset(0% 0 0 0)' }
+          ], { duration: WX_CLIP_DUR, delay: delay, easing: WX_CLIP_EASE, fill: 'forwards' });
+          a.onfinish = function() {
+            card.style.clipPath = 'none';
+            wrap.querySelectorAll('.work-card-num, .work-card-cat')
+              .forEach(function(t, j) {
+                t.animate([
+                  { transform: 'translateY(20px)', opacity: '0' },
+                  { transform: 'translateY(0px)', opacity: '1' }
+                ], { duration: 550, delay: j * 90, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+              });
+            var titleEl = wrap.querySelector('.work-card-title');
+            titleEl.style.opacity = '1';
+            var chars = titleEl._charSpans || [];
+            chars.forEach(function(ch, j) {
+              ch.animate([
+                { transform: 'translateY(110%)' },
+                { transform: 'translateY(0%)' }
+              ], { duration: 600, delay: j * 22, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+            });
+            var arrow = wrap.querySelector('.work-card-arrow');
+            if (arrow) {
+              var arrowDelay = Math.floor(chars.length * 22 * 0.4);
+              arrow.animate([
+                { transform: 'translateY(20px)', opacity: '0' },
+                { transform: 'translateY(0px)', opacity: '1' }
+              ], { duration: 500, delay: arrowDelay, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+            }
+          };
+          wxAnims.push(a);
+        });
+        initWxParallax();
+      }
+
+      function resetWork() {
+        wxFired = false;
+        wxAnims.forEach(function(a) { try { a.cancel(); } catch(e) {} }); wxAnims = [];
+        wxWraps.forEach(function(wrap) {
+          wrap.style.opacity = '0';
+          wrap.style.transform = '';
+          var card = wrap.querySelector('.wx-card');
+          if (card) {
+            card.getAnimations().forEach(function(a) { a.cancel(); });
+            card.style.clipPath = '';
+            card.style.transform = '';
+            card.style.boxShadow = '';
+            card.style.filter = '';
+          }
+          wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
+            .forEach(function(t) {
+              t.getAnimations().forEach(function(a) { a.cancel(); });
+              t.style.opacity = '0'; t.style.transform = 'translateY(20px)';
+            });
+          var titleEl = wrap.querySelector('.work-card-title');
+          if (titleEl) {
+            titleEl.style.opacity = '0';
+            if (titleEl._charSpans) {
+              titleEl._charSpans.forEach(function(ch) {
+                try { ch.getAnimations().forEach(function(a) { a.cancel(); }); ch.style.transform = 'translateY(110%)'; } catch(e) {}
+              });
+            }
+          }
+        });
+      }
+
+      var wxParallaxInit = false;
+      function initWxParallax() {
+        if (wxParallaxInit) return; wxParallaxInit = true;
+        wxWraps.forEach(function(wrap) {
+          var card = wrap.querySelector('.wx-card');
+          wrap.addEventListener('mouseenter', function() {
+            card.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.45s ease';
+            card.style.transform = 'scale(1.04)';
+            card.style.boxShadow = '0 40px 100px rgba(0,0,0,0.5), 0 15px 35px rgba(0,0,0,0.25)';
+            wxWraps.forEach(function(other) {
+              if (other !== wrap) {
+                var otherCard = other.querySelector('.wx-card');
+                otherCard.style.transition = 'filter 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)';
+                otherCard.style.filter = 'blur(3px) brightness(0.7)';
+                otherCard.style.transform = 'scale(0.97)';
+              }
+            });
           });
-        var titleEl = wrap.querySelector('.work-card-title');
-        titleEl.style.opacity = '1';
-        var chars = titleEl._charSpans || [];
+          wrap.addEventListener('mousemove', function(e) {
+            var rect = wrap.getBoundingClientRect();
+            var dx = (e.clientX - rect.left) / rect.width - 0.5;
+            var dy = (e.clientY - rect.top) / rect.height - 0.5;
+            card.style.transition = 'transform 0.1s ease-out';
+            card.style.transform = 'scale(1.04) rotateY(' + (dx * 14) + 'deg) rotateX(' + (-dy * 8) + 'deg)';
+          });
+          wrap.addEventListener('mouseleave', function() {
+            card.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1), box-shadow 0.6s ease';
+            card.style.transform = '';
+            card.style.boxShadow = '';
+            wxWraps.forEach(function(other) {
+              if (other !== wrap) {
+                var otherCard = other.querySelector('.wx-card');
+                otherCard.style.transition = 'filter 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
+                otherCard.style.filter = '';
+                otherCard.style.transform = '';
+              }
+            });
+          });
+          wrap.addEventListener('click', function() {
+            if (!wxFired) return;
+            openCaseStudy(Array.from(wxWraps).indexOf(wrap));
+          });
+        });
+      }
+
+      // ââ Case Study âââââââââââââââââââââââââââââââââââââââââââââââââââ
+      var CS_DATA = [
+        {
+          num: '01', cat: 'Brand Identity', year: '2024',
+          title: 'Maison\nCollective',
+          statement: 'A brand identity rooted in quiet luxury.',
+          brief: 'Maison Collective needed an identity as considered as the spaces they curate. The challenge: create a visual language that communicates discernment without coldness\u2014warmth without approachability.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Art Direction\u00a0\u00b7\u00a0Design',
+          year_full: '2024',
+          outcome: 'Rolled out across 6 markets. 40% lift in brand recognition within the first quarter. Featured in Wallpaper\u2018s annual design review.',
+          bg: 'linear-gradient(160deg,#ddd6c8 0%,#a89278 45%,#3e2d1e 100%)',
+          c1: '#c4b99a', c2: '#8a7d68', c3: '#2e2318'
+        },
+        {
+          num: '02', cat: 'Digital Experience', year: '2024',
+          title: 'Lumi\u00e8re\nStudio',
+          statement: 'Where physical space meets digital presence.',
+          brief: 'A photography studio redefining how creative practitioners present work online. We built a digital environment that mirrors their spatial philosophy\u2014light, restraint, intention.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Digital Design\u00a0\u00b7\u00a0Motion',
+          year_full: '2024',
+          outcome: 'Booking enquiries increased 65% in the first two months post-launch. Shortlisted for the FWA Site of the Day.',
+          bg: 'linear-gradient(155deg,#c8cdd0 0%,#7a8a94 45%,#18252e 100%)',
+          c1: '#9ba8b0', c2: '#5c6b75', c3: '#18252e'
+        },
+        {
+          num: '03', cat: 'Campaign', year: '2024',
+          title: 'Noir\nAvant',
+          statement: 'A campaign that moved fashion forward.',
+          brief: 'For an emerging label positioned between concept and commerce, we built a campaign that refused easy categorisation. Shot across three cities over ten days.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Campaign\u00a0\u00b7\u00a0Photography Direction',
+          year_full: '2024',
+          outcome: 'Featured in Wallpaper*, Dezeen, and It\'s Nice That. Campaign content reached 4.2M impressions across channels.',
+          bg: 'linear-gradient(150deg,#e0d8cc 0%,#b4a490 45%,#1a1008 100%)',
+          c1: '#6b6560', c2: '#3a3530', c3: '#080705'
+        }
+      ];
+
+      var csStoredRects = [];
+      var csActiveIdx = -1;
+      var csObserver = null;
+
+      function openCaseStudy(idx) {
+        var data = CS_DATA[idx];
+        var csOverlay = document.getElementById('cs-overlay');
+        var csInner = document.getElementById('cs-inner');
+
+        // Store card rect for close animation
+        var wrap = wxWraps[idx];
+        var card = wrap.querySelector('.wx-card');
+        var r = card.getBoundingClientRect();
+        csStoredRects[idx] = r;
+        csActiveIdx = idx;
+
+        // Compute starting clip-path from card position
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var top    = r.top;
+        var right  = vw - r.right;
+        var bottom = vh - r.bottom;
+        var left   = r.left;
+        var startClip = 'inset(' + top.toFixed(1) + 'px ' + right.toFixed(1) + 'px ' + bottom.toFixed(1) + 'px ' + left.toFixed(1) + 'px round 3px)';
+        var endClip   = 'inset(0px 0px 0px 0px round 0px)';
+
+        // Set hero bg
+        var heroBg = document.getElementById('cs-hero-bg');
+        heroBg.style.background = data.bg;
+
+        // Populate static hero fields
+        document.getElementById('cs-hero-num').textContent = data.num;
+        document.getElementById('cs-hero-cat').textContent = data.cat;
+        document.getElementById('cs-hero-year').textContent = data.year;
+
+        // Reset hero chrome
+        var heroMeta = document.getElementById('cs-hero-meta');
+        var heroTitle = document.getElementById('cs-hero-title');
+        var heroStmt = document.getElementById('cs-hero-statement');
+        var scrollHint = document.getElementById('cs-scroll-hint');
+        var csClose = document.getElementById('cs-close');
+        heroMeta.classList.remove('revealed');
+        heroTitle.classList.remove('cs-title-ready');
+        heroTitle.innerHTML = '';
+        heroTitle._charSpans = null;
+        heroStmt.classList.remove('revealed');
+        heroStmt.textContent = data.statement;
+        scrollHint.classList.remove('revealed');
+        csClose.classList.remove('revealed');
+
+        // Lock scroll during animation
+        csInner.classList.remove('cs-scrollable');
+        csInner.scrollTop = 0;
+
+        // Dim sibling cards
+        wxWraps.forEach(function(w, j) {
+          if (j !== idx) {
+            var c = w.querySelector('.wx-card');
+            c.animate([{ opacity: '1' }, { opacity: '0' }],
+              { duration: 400, easing: 'ease', fill: 'forwards' });
+          }
+        });
+
+        // Reveal overlay â expand from card position
+        csOverlay.classList.add('cs-open');
+        var expandAnim = csOverlay.animate([
+          { clipPath: startClip },
+          { clipPath: endClip }
+        ], { duration: 800, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+
+        expandAnim.finished.then(function() {
+          csOverlay.style.clipPath = endClip;
+          csInner.classList.add('cs-scrollable');
+          buildCsBody(idx);
+          fireCsHero(data);
+        });
+      }
+
+      function fireCsHero(data) {
+        var heroMeta = document.getElementById('cs-hero-meta');
+        var heroTitle = document.getElementById('cs-hero-title');
+        var heroStmt = document.getElementById('cs-hero-statement');
+        var scrollHint = document.getElementById('cs-scroll-hint');
+        var csClose = document.getElementById('cs-close');
+
+        // Meta reveal
+        setTimeout(function() { heroMeta.classList.add('revealed'); }, 80);
+
+        // Title: char-by-char
+        var titleLines = data.title.split('\n');
+        heroTitle.innerHTML = '';
+        titleLines.forEach(function(line, li) {
+          if (li > 0) heroTitle.appendChild(document.createElement('br'));
+          var lineEl = document.createElement('span');
+          lineEl.style.cssText = 'display:inline;';
+          lineEl.textContent = line;
+          heroTitle.appendChild(lineEl);
+        });
+        heroTitle.classList.add('cs-title-ready');
+
+        var chars;
+        if (heroTitle._charSpans && heroTitle._charSpans.length > 0) {
+          chars = heroTitle._charSpans;
+          chars.forEach(function(ch) {
+            ch.getAnimations().forEach(function(a) { a.cancel(); });
+            ch.style.transform = 'translateY(110%)';
+          });
+        } else {
+          chars = splitTextToChars(heroTitle);
+          heroTitle._charSpans = chars;
+        }
+
+        var BASE_DELAY = 180;
         chars.forEach(function(ch, j) {
           ch.animate([
             { transform: 'translateY(110%)' },
             { transform: 'translateY(0%)' }
-          ], { duration: 600, delay: j * 22, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+          ], { duration: 700, delay: BASE_DELAY + j * 20, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
         });
-        var arrow = wrap.querySelector('.work-card-arrow');
-        if (arrow) {
-          var arrowDelay = Math.floor(chars.length * 22 * 0.4);
-          arrow.animate([
-            { transform: 'translateY(20px)', opacity: '0' },
-            { transform: 'translateY(0px)', opacity: '1' }
-          ], { duration: 500, delay: arrowDelay, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
-        }
-      };
-      wxAnims.push(a);
-    });
-    initWxParallax();
-  }
 
-  function resetWork() {
-    wxFired = false;
-    wxAnims.forEach(function(a) { try { a.cancel(); } catch(e) {} }); wxAnims = [];
-    wxWraps.forEach(function(wrap) {
-      wrap.style.opacity = '0';
-      wrap.style.transform = '';
-      var card = wrap.querySelector('.wx-card');
-      if (card) {
-        card.getAnimations().forEach(function(a) { a.cancel(); });
-        card.style.clipPath = '';
-        card.style.transform = '';
-        card.style.boxShadow = '';
-        card.style.filter = '';
+        var stmtDelay = BASE_DELAY + chars.length * 20 * 0.5 + 100;
+        setTimeout(function() { heroStmt.classList.add('revealed'); }, stmtDelay);
+        setTimeout(function() { scrollHint.classList.add('revealed'); csClose.classList.add('revealed'); }, 500);
       }
-      wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
-        .forEach(function(t) {
-          t.getAnimations().forEach(function(a) { a.cancel(); });
-          t.style.opacity = '0'; t.style.transform = 'translateY(20px)';
-        });
-      var titleEl = wrap.querySelector('.work-card-title');
-      if (titleEl) {
-        titleEl.style.opacity = '0';
-        if (titleEl._charSpans) {
-          titleEl._charSpans.forEach(function(ch) {
-            try { ch.getAnimations().forEach(function(a) { a.cancel(); }); ch.style.transform = 'translateY(110%)'; } catch(e) {}
+
+      function buildCsBody(idx) {
+        var data = CS_DATA[idx];
+        var csBody = document.getElementById('cs-body');
+        csBody.innerHTML = '';
+
+        // Section 1: Brief + Details
+        var sec1 = document.createElement('div');
+        sec1.className = 'cs-section cs-reveal';
+        sec1.innerHTML = '<span class="cs-section-label">Brief</span>' +
+          '<p class="cs-brief">' + data.brief + '</p>' +
+          '<div class="cs-details">' +
+            '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
+            '<div><div class="cs-detail-label">Year</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
+          '</div>';
+        csBody.appendChild(sec1);
+
+        // Full-bleed image placeholder
+        var imgFull = document.createElement('div');
+        imgFull.className = 'cs-img-full cs-reveal';
+        imgFull.innerHTML = '<div class="cs-img-full-inner" style="background:' + data.bg + ';"></div>';
+        csBody.appendChild(imgFull);
+
+        // Large typographic statement
+        var stmt = document.createElement('div');
+        stmt.className = 'cs-statement-large cs-reveal';
+        stmt.textContent = '\u201c' + data.statement.replace('.','') + '.\u201d';
+        csBody.appendChild(stmt);
+
+        // Two-up images
+        var imgRow = document.createElement('div');
+        imgRow.className = 'cs-img-row cs-reveal';
+        imgRow.innerHTML =
+          '<div class="cs-img-half"><div class="cs-img-half-inner" style="background:' + data.bg + ';filter:brightness(0.85);"></div></div>' +
+          '<div class="cs-img-half"><div class="cs-img-half-inner" style="background:' + data.bg + ';filter:brightness(1.1) saturate(0.8);"></div></div>';
+        csBody.appendChild(imgRow);
+
+        // Outcome
+        var outcome = document.createElement('div');
+        outcome.className = 'cs-section cs-reveal';
+        outcome.innerHTML = '<span class="cs-section-label">Outcome</span>' +
+          '<div class="cs-outcome"><p class="cs-outcome-text">' + data.outcome + '</p></div>';
+        csBody.appendChild(outcome);
+
+        // IntersectionObserver for reveals
+        if (csObserver) { csObserver.disconnect(); }
+        csObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              csObserver.unobserve(entry.target);
+            }
           });
+        }, { threshold: 0.12, root: document.getElementById('cs-inner') });
+
+        csBody.querySelectorAll('.cs-reveal').forEach(function(el) {
+          csObserver.observe(el);
+        });
+
+        // Hero bg parallax on scroll
+        var csInner = document.getElementById('cs-inner');
+        var heroBg = document.getElementById('cs-hero-bg');
+        csInner.addEventListener('scroll', function() {
+          var scrollY = csInner.scrollTop;
+          heroBg.style.transform = 'translateY(' + (scrollY * 0.25) + 'px)';
+        }, { passive: true });
+      }
+
+      function closeCaseStudy() {
+        var csOverlay = document.getElementById('cs-overlay');
+        var csInner = document.getElementById('cs-inner');
+        var heroMeta = document.getElementById('cs-hero-meta');
+        var heroStmt = document.getElementById('cs-hero-statement');
+        var scrollHint = document.getElementById('cs-scroll-hint');
+        var csClose = document.getElementById('cs-close');
+
+        // Remove hero chrome
+        heroMeta.classList.remove('revealed');
+        heroStmt.classList.remove('revealed');
+        scrollHint.classList.remove('revealed');
+        csClose.classList.remove('revealed');
+
+        // Lock scroll instantly
+        csInner.classList.remove('cs-scrollable');
+        csInner.scrollTop = 0;
+
+        // Restore hero bg parallax
+        var heroBg = document.getElementById('cs-hero-bg');
+        heroBg.style.transform = '';
+
+        // Collapse back to card rect
+        var idx = csActiveIdx;
+        var r = csStoredRects[idx];
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var endClip = 'inset(' + r.top.toFixed(1) + 'px ' + (vw - r.right).toFixed(1) + 'px ' + (vh - r.bottom).toFixed(1) + 'px ' + r.left.toFixed(1) + 'px round 3px)';
+
+        var collapseAnim = csOverlay.animate([
+          { clipPath: 'inset(0px 0px 0px 0px round 0px)' },
+          { clipPath: endClip }
+        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+
+        collapseAnim.finished.then(function() {
+          csOverlay.classList.remove('cs-open');
+          csOverlay.style.clipPath = 'inset(100% 0 0 0 round 0px)';
+          csActiveIdx = -1;
+          // Cancel sibling card opacity animations and restore
+          wxWraps.forEach(function(w) {
+            var c = w.querySelector('.wx-card');
+            c.getAnimations().forEach(function(a) { a.cancel(); });
+            c.style.opacity = '';
+          });
+        });
+      }
+
+      document.getElementById('cs-close').addEventListener('click', closeCaseStudy);
+
+      // ââ Delta handler ââââââââââââââââââââââââââââââââââââââââââââââââ
+      function slidePanel(panel, target, cb) {
+        var from = getComputedStyle(panel).transform;
+        var a = panel.animate(
+          [{ transform: from }, { transform: 'translateY(' + target + ')' }],
+          { duration: 900, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' }
+        );
+        a.onfinish = function() { panel.style.transform = 'translateY(' + target + ')'; if (cb) cb(); };
+      }
+
+      function goToBW() {
+        animating = true; accum = 0;
+        slidePanel(panelBW, '0%', function() { state = 'bw'; animating = false; fireBW(); });
+      }
+      function goToContent() {
+        animating = true; accum = 0;
+        slidePanel(panelContent, '0%', function() { state = 'content'; animating = false; fireWork(); });
+      }
+      function goToHero() {
+        animating = true; accum = 0;
+        resetBW();
+        slidePanel(panelBW, '100%', function() { state = 'hero'; animating = false; });
+      }
+      function goToBWFromContent() {
+        animating = true; accum = 0;
+        resetWork();
+        slidePanel(panelContent, '100%', function() { state = 'bw'; animating = false; });
+      }
+
+      function handleDelta(dy) {
+        if (animating) return;
+        var now = Date.now();
+        if (now - lastWheel > 500) accum = 0;
+        lastWheel = now;
+        if (state === 'content') {
+          if (dy > 0) { panelContent.scrollTop += dy; accum = 0; return; }
+          if (panelContent.scrollTop > 0) { panelContent.scrollTop += dy; accum = 0; return; }
+          accum += dy;
+          if (accum < -THRESHOLD) goToBWFromContent();
+          return;
         }
+        accum += dy;
+        if (state === 'hero' && accum > THRESHOLD) goToBW();
+        if (state === 'bw' && accum > THRESHOLD) goToContent();
+        if (state === 'bw' && accum < -THRESHOLD) goToHero();
       }
-    });
-  }
 
-  var wxParallaxInit = false;
-  function initWxParallax() {
-    if (wxParallaxInit) return; wxParallaxInit = true;
-    wxWraps.forEach(function(wrap) {
-      var card = wrap.querySelector('.wx-card');
-      wrap.addEventListener('mouseenter', function() {
-        card.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.45s ease';
-        card.style.transform = 'scale(1.04)';
-        card.style.boxShadow = '0 40px 100px rgba(0,0,0,0.5), 0 15px 35px rgba(0,0,0,0.25)';
-        wxWraps.forEach(function(other) {
-          if (other !== wrap) {
-            var otherCard = other.querySelector('.wx-card');
-            otherCard.style.transition = 'filter 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)';
-            otherCard.style.filter = 'blur(3px) brightness(0.7)';
-            otherCard.style.transform = 'scale(0.97)';
-          }
-        });
+      window.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        var dy = e.deltaMode === 1 ? e.deltaY * 20 : e.deltaY;
+        handleDelta(dy);
+      }, { passive: false });
+
+      window.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault(); handleDelta(THRESHOLD + 10);
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+          e.preventDefault(); handleDelta(-(THRESHOLD + 10));
+        }
       });
-      wrap.addEventListener('mousemove', function(e) {
-        var rect = wrap.getBoundingClientRect();
-        var dx = (e.clientX - rect.left) / rect.width - 0.5;
-        var dy = (e.clientY - rect.top) / rect.height - 0.5;
-        card.style.transition = 'transform 0.1s ease-out';
-        card.style.transform = 'scale(1.04) rotateY(' + (dx * 14) + 'deg) rotateX(' + (-dy * 8) + 'deg)';
-      });
-      wrap.addEventListener('mouseleave', function() {
-        card.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1), box-shadow 0.6s ease';
-        card.style.transform = '';
-        card.style.boxShadow = '';
-        wxWraps.forEach(function(other) {
-          if (other !== wrap) {
-            var otherCard = other.querySelector('.wx-card');
-            otherCard.style.transition = 'filter 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
-            otherCard.style.filter = '';
-            otherCard.style.transform = '';
-          }
-        });
-      });
-    });
-  }
 
-  // ── Delta handler ──
-    function slidePanel(panel, target, cb) {
-    var from = getComputedStyle(panel).transform;
-    var a = panel.animate(
-      [{ transform: from }, { transform: 'translateY(' + target + ')' }],
-      { duration: 900, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' }
-    );
-    a.onfinish = function() {
-      panel.style.transform = 'translateY(' + target + ')';
-      if (cb) cb();
-    };
-  }
-  function goToBW() {
-    animating = true; accum = 0;
-    slidePanel(panelBW, '0%', function() {
-      state = 'bw'; animating = false;
-      fireBW();
-    });
-  }
-  function goToContent() {
-    animating = true; accum = 0;
-    slidePanel(panelContent, '0%', function() {
-      state = 'content'; animating = false;
-      fireWork();
-    });
-  }
-  function goToHero() {
-    animating = true; accum = 0;
-    resetBW();
-    slidePanel(panelBW, '100%', function() {
-      state = 'hero'; animating = false;
-    });
-  }
-  function goToBWFromContent() {
-    animating = true; accum = 0;
-    resetWork();
-    slidePanel(panelContent, '100%', function() {
-      state = 'bw'; animating = false;
-    });
-  }
-  function handleDelta(dy) {
-    if (animating) return;
-
-    var now = Date.now();
-    // Reset accumulator if the user paused (stale intent)
-    if (now - lastWheel > 500) accum = 0;
-    lastWheel = now;
-
-    // Content panel: scroll internally, only intercept at edge
-    if (state === 'content') {
-      if (dy > 0) {
-        panelContent.scrollTop += dy;
-        accum = 0;
-        return;
-      }
-      if (panelContent.scrollTop > 0) {
-        panelContent.scrollTop += dy;
-        accum = 0;
-        return;
-      }
-      // At the top of content, scrolling up — accumulate
-      accum += dy;
-      if (accum < -THRESHOLD) goToBWFromContent();
-      return;
-    }
-
-    accum += dy;
-
-    if (state === 'hero'  && accum >  THRESHOLD) goToBW();
-    if (state === 'bw'    && accum >  THRESHOLD) goToContent();
-    if (state === 'bw'    && accum < -THRESHOLD) goToHero();
-  }
-
-  // ── Event listeners ──
-  window.addEventListener('wheel', function(e) {
-    e.preventDefault();
-    var dy = e.deltaMode === 1 ? e.deltaY * 20 : e.deltaY; // normalize lines→px
-    handleDelta(dy);
-  }, { passive: false });
-
-  window.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-      e.preventDefault(); handleDelta(THRESHOLD + 10);
-    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-      e.preventDefault(); handleDelta(-(THRESHOLD + 10));
-    }
-  });
-
-  var touchStartY = 0;
-  window.addEventListener('touchstart', function(e) {
-    touchStartY = e.touches[0].clientY;
-  }, { passive: true });
-  window.addEventListener('touchend', function(e) {
-    var dy = touchStartY - e.changedTouches[0].clientY;
-    if (Math.abs(dy) > 40) handleDelta(dy * 3.5);
-  }, { passive: true });
-
-})();
-</script>
-
+      var touchStartY = 0;
+      window.addEventListener('touchstart', function(e) { touchStartY = e.touches[0].clientY; }, { passive: true });
+      window.addEventListener('touchend', function(e) {
+        var dy = touchStartY - e.changedTouches[0].clientY;
+        if (Math.abs(dy) > 40) handleDelta(dy * 3.5);
+      }, { passive: true });
+    })();
+  </script>
 </body>
 </html>
