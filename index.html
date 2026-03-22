@@ -298,11 +298,8 @@ body { font-family: 'Montserrat', sans-serif; }
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  transform: translateY(100vh);
-  transition: transform 1.3s cubic-bezier(0.16,1,0.3,1);
   overflow: hidden;
 }
-.work-card.wx-revealed { transform: translateY(0); }
 .work-card-bg {
   position: absolute;
   inset: 0;
@@ -573,44 +570,26 @@ body { font-family: 'Montserrat', sans-serif; }
 
   // ── Panel slide ──
          var wxCards = document.querySelectorAll('.wx-card');
-       var wxFired = false;
-       function fireWork() {
-         if (wxFired) return; wxFired = true;
-         setTimeout(function(){ if(wxCards[0]) wxCards[0].classList.add('wx-revealed'); }, 60);
-         setTimeout(function(){ if(wxCards[1]) wxCards[1].classList.add('wx-revealed'); }, 260);
-         setTimeout(function(){ if(wxCards[2]) wxCards[2].classList.add('wx-revealed'); }, 460);
-       }
-       function resetWork() {
-         wxFired = false;
-         wxCards.forEach(function(c){ c.classList.remove('wx-revealed'); });
-       }
-       
-function slidePanel(panel, toY, onDone) {
-    panel.classList.add('panel-moving');
-    panel.style.transform = 'translateY(' + toY + ')';
-    var t = setTimeout(function() {
-      panel.classList.remove('panel-moving');
-      if (onDone) onDone();
-    }, DURATION);
-  }
-
-  // ── Transitions ──
-  function goToBW() {
-    animating = true; accum = 0;
-    slidePanel(panelBW, '0%', function() {
-      state = 'bw'; animating = false;
-      fireBW();
-    });
-  }
-
-  function goToHero() {
-    animating = true; accum = 0;
-    resetBW();
-    slidePanel(panelBW, '100%', function() {
-      state = 'hero'; animating = false;
-    });
-  }
-
+var wxFired = false;
+var wxAnims = [];
+var WX_DUR = 1300, WX_EASE = 'cubic-bezier(0.16,1,0.3,1)';
+function animCard(el, delay) {
+  el.style.transform = 'translateY(100vh)';
+  var a = el.animate(
+    [{ transform: 'translateY(100vh)' }, { transform: 'translateY(0)' }],
+    { duration: WX_DUR, delay: delay, easing: WX_EASE, fill: 'forwards' }
+  );
+  wxAnims.push(a);
+}
+function fireWork() {
+  if (wxFired) return; wxFired = true;
+  wxCards.forEach(function(c,i){ animCard(c, 60 + i*200); });
+}
+function resetWork() {
+  wxFired = false;
+  wxAnims.forEach(function(a){ a.cancel(); }); wxAnims = [];
+  wxCards.forEach(function(c){ c.style.transform = 'translateY(100vh)'; });
+}
   function goToContent() {
     animating = true; accum = 0;
     slidePanel(panelContent, '0%', function() {
