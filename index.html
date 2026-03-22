@@ -590,7 +590,25 @@ function resetWork() {
   wxAnims.forEach(function(a){ a.cancel(); }); wxAnims = [];
   wxCards.forEach(function(c){ c.style.transform = 'translateY(100vh)'; });
 }
-  function goToContent() {
+  function slidePanel(panel, target, cb) {
+  var from = getComputedStyle(panel).transform;
+  var a = panel.animate(
+    [{ transform: from }, { transform: 'translateY(' + target + ')' }],
+    { duration: 900, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' }
+  );
+  a.onfinish = function() {
+    panel.style.transform = 'translateY(' + target + ')';
+    if (cb) cb();
+  };
+}
+function goToBW() {
+  animating = true; accum = 0;
+  slidePanel(panelBW, '0%', function() {
+    state = 'bw'; animating = false;
+    fireBW();
+  });
+}
+function goToContent() {
     animating = true; accum = 0;
     slidePanel(panelContent, '0%', function() {
       state = 'content'; animating = false;
