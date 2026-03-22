@@ -674,18 +674,24 @@ body { font-family: 'Montserrat', sans-serif; }
       wrap.style.transform = '';
       var card = wrap.querySelector('.wx-card');
       if (card) {
+        card.getAnimations().forEach(function(a) { a.cancel(); });
         card.style.clipPath = '';
         card.style.transform = '';
         card.style.boxShadow = '';
         card.style.filter = '';
       }
       wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
-        .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; });
+        .forEach(function(t) {
+          t.getAnimations().forEach(function(a) { a.cancel(); });
+          t.style.opacity = '0'; t.style.transform = 'translateY(20px)';
+        });
       var titleEl = wrap.querySelector('.work-card-title');
       if (titleEl) {
         titleEl.style.opacity = '0';
         if (titleEl._charSpans) {
-          titleEl._charSpans.forEach(function(ch) { try { ch.style.transform = 'translateY(110%)'; } catch(e) {} });
+          titleEl._charSpans.forEach(function(ch) {
+            try { ch.getAnimations().forEach(function(a) { a.cancel(); }); ch.style.transform = 'translateY(110%)'; } catch(e) {}
+          });
         }
       }
     });
