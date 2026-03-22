@@ -618,9 +618,14 @@ body { font-family: 'Montserrat', sans-serif; }
         .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; });
       var titleEl = wrap.querySelector('.work-card-title');
       titleEl.style.opacity = '0';
-      var chars = splitTextToChars(titleEl);
+      var chars;
+      if (titleEl._charSpans && titleEl._charSpans.length > 0) {
+        chars = titleEl._charSpans;
+      } else {
+        chars = splitTextToChars(titleEl);
+        titleEl._charSpans = chars;
+      }
       chars.forEach(function(ch) { ch.style.transform = 'translateY(110%)'; });
-      titleEl._charSpans = chars;
     });
     wxWraps.forEach(function(wrap, i) {
       var card = wrap.querySelector('.wx-card');
