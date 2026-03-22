@@ -641,14 +641,6 @@ body { font-family: 'Montserrat', sans-serif; }
         card.style.transform = 'rotateY(0deg) rotateX(0deg)';
       });
     });
-  }romContent() {
-    animating = true; accum = 0;
-    panelContent.style.overflowY = 'hidden';
-    panelContent.scrollTop = 0;
-    resetWork();
-    slidePanel(panelContent, '100%', function() {
-      state = 'bw'; animating = false;
-    });
   }
 
   // ── Delta handler ──
