@@ -267,7 +267,7 @@ body { font-family: 'Montserrat', sans-serif; }
   padding: 0;
 }
 .work-header {
-  padding: clamp(28px,4vh,52px) clamp(32px,5vw,80px) clamp(20px,2.5vh,36px);
+  padding: clamp(88px,10vh,108px) clamp(32px,5vw,80px) clamp(14px,1.8vh,24px);
   flex-shrink: 0;
 }
 .work-eyebrow {
@@ -288,9 +288,11 @@ body { font-family: 'Montserrat', sans-serif; }
 .work-card-wrap {
   flex: 1;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .work-card {
-  height: 100%;
+  flex: 1;
   position: relative;
   cursor: pointer;
   display: flex;
