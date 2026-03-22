@@ -293,6 +293,7 @@ body { font-family: 'Montserrat', sans-serif; }
   display: flex;
   flex-direction: column;
   opacity: 0;
+  perspective: 800px;
 }
 .work-card {
   flex: 1;
@@ -627,16 +628,17 @@ body { font-family: 'Montserrat', sans-serif; }
   function initWxParallax() {
     if (wxParallaxInit) return; wxParallaxInit = true;
     wxWraps.forEach(function(wrap) {
+      var card = wrap.querySelector('.wx-card');
       wrap.addEventListener('mousemove', function(e) {
         var rect = wrap.getBoundingClientRect();
         var dx = (e.clientX - rect.left) / rect.width - 0.5;
         var dy = (e.clientY - rect.top) / rect.height - 0.5;
-        wrap.style.transition = '';
-        wrap.style.transform = 'rotateY(' + (dx * 8) + 'deg) rotateX(' + (-dy * 5) + 'deg)';
+        card.style.transition = '';
+        card.style.transform = 'rotateY(' + (dx * 10) + 'deg) rotateX(' + (-dy * 6) + 'deg)';
       });
       wrap.addEventListener('mouseleave', function() {
-        wrap.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1)';
-        wrap.style.transform = 'rotateY(0deg) rotateX(0deg)';
+        card.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1)';
+        card.style.transform = 'rotateY(0deg) rotateX(0deg)';
       });
     });
   }romContent() {
