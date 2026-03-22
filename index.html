@@ -692,12 +692,13 @@ body { font-family: 'Montserrat', sans-serif; }
     wxWraps.forEach(function(wrap) {
       var card = wrap.querySelector('.wx-card');
       wrap.addEventListener('mouseenter', function() {
-        card.style.transition = 'box-shadow 0.4s ease';
+        card.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.45s ease';
+        card.style.transform = 'scale(1.04)';
         card.style.boxShadow = '0 40px 100px rgba(0,0,0,0.5), 0 15px 35px rgba(0,0,0,0.25)';
         wxWraps.forEach(function(other) {
           if (other !== wrap) {
             var otherCard = other.querySelector('.wx-card');
-            otherCard.style.transition = 'filter 0.35s ease, transform 0.35s ease';
+            otherCard.style.transition = 'filter 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)';
             otherCard.style.filter = 'blur(3px) brightness(0.7)';
             otherCard.style.transform = 'scale(0.97)';
           }
@@ -707,17 +708,17 @@ body { font-family: 'Montserrat', sans-serif; }
         var rect = wrap.getBoundingClientRect();
         var dx = (e.clientX - rect.left) / rect.width - 0.5;
         var dy = (e.clientY - rect.top) / rect.height - 0.5;
-        card.style.transition = '';
+        card.style.transition = 'transform 0.1s ease-out';
         card.style.transform = 'scale(1.04) rotateY(' + (dx * 14) + 'deg) rotateX(' + (-dy * 8) + 'deg)';
       });
       wrap.addEventListener('mouseleave', function() {
-        card.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s ease';
+        card.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1), box-shadow 0.6s ease';
         card.style.transform = '';
         card.style.boxShadow = '';
         wxWraps.forEach(function(other) {
           if (other !== wrap) {
             var otherCard = other.querySelector('.wx-card');
-            otherCard.style.transition = 'filter 0.5s ease, transform 0.5s ease';
+            otherCard.style.transition = 'filter 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
             otherCard.style.filter = '';
             otherCard.style.transform = '';
           }
