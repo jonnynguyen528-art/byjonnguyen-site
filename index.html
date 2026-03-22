@@ -22,16 +22,35 @@
   font-display: block;
 }
 
-/* ─── SCROLL SNAP ────────────────────────────────────────────────── */
+/* ─── FULL-PAGE PANEL SYSTEM ─────────────────────────────────────
+   html/body locked to viewport. Three fixed panels stacked by z-index.
+   JS drives all transitions — no CSS scroll-snap.
+──────────────────────────────────────────────────────────────────*/
 
-html {
-  scroll-snap-type: y mandatory;
-  overflow-y: scroll;
+html, body {
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
 }
 
-body { font-family: 'Montserrat', sans-serif; }
+.panel {
+  position: fixed;
+  inset: 0;
+  will-change: transform;
+}
 
-/* ─── NAV ────────────────────────────────────────────────────────── */
+#panel-hero    { z-index: 1; }
+#panel-bw      { z-index: 2; transform: translateY(100%); background: rgb(244,241,234); }
+#panel-content { z-index: 3; transform: translateY(100%); background: rgb(244,241,234); overflow-y: hidden; }
+
+/* Transition class applied by JS during moves */
+.panel-moving {
+  transition: transform 0.88s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── NAV ────────────────────────────────────────────────────────*/
+
+body { font-family: 'Montserrat', sans-serif; }
 
 .brand {
   font-family: 'Cinema Sunday', serif;
@@ -50,11 +69,10 @@ body { font-family: 'Montserrat', sans-serif; }
   font-size: 0.75rem;
 }
 
-/* ─── HERO ───────────────────────────────────────────────────────── */
+/* ─── HERO ───────────────────────────────────────────────────────*/
 
 .hero-center {
-  height: 100vh;
-  scroll-snap-align: start;
+  height: 100%;
   overflow: hidden;
   position: relative;
   align-items: flex-start;
@@ -139,28 +157,20 @@ body { font-family: 'Montserrat', sans-serif; }
   width: 52%;
   height: 28px;
   background: radial-gradient(ellipse at center,
-    rgba(0,0,0,0.32) 0%,
-    rgba(0,0,0,0.12) 45%,
-    transparent 70%);
+    rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.12) 45%, transparent 70%);
   transform: translateX(-50%);
   opacity: 0;
   pointer-events: none;
   will-change: transform, opacity, filter;
 }
 
-/* ─── HERO REVEAL ANIMATIONS ─────────────────────────────────────── */
+/* ─── HERO REVEAL ANIMATIONS ─────────────────────────────────────*/
 
 .rx { opacity: 0; }
 
-.rx-creative {
-  animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
-}
-
-.rx-director {
-  animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.85s forwards;
-}
-
-.rx-bust { /* triggered by JS */ }
+.rx-creative { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards; }
+.rx-director { animation: revealWord 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.85s forwards; }
+.rx-bust     { /* triggered by JS */ }
 
 @keyframes revealWord {
   0%   { opacity: 0; transform: translateY(110%); }
@@ -178,17 +188,15 @@ body { font-family: 'Montserrat', sans-serif; }
   .rx-bust     { animation: revealBust 2.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards; }
 }
 
-/* ─── BUILDING WORLDS SECTION ────────────────────────────────────── */
+/* ─── BUILDING WORLDS PANEL ──────────────────────────────────────*/
 
 .bw-section {
-  height: 100vh;
-  scroll-snap-align: start;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: rgb(244, 241, 234);
 }
 
 .bw-word-wrap {
@@ -212,10 +220,7 @@ body { font-family: 'Montserrat', sans-serif; }
   will-change: transform, opacity;
 }
 
-.bw-word.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
+.bw-word.revealed { opacity: 1; transform: translateY(0); }
 
 .bw-rule {
   width: 0;
@@ -225,9 +230,7 @@ body { font-family: 'Montserrat', sans-serif; }
   transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.bw-rule.revealed {
-  width: clamp(100px, 20vw, 280px);
-}
+.bw-rule.revealed { width: clamp(100px, 20vw, 280px); }
 
 .bw-tagline {
   font-family: 'Montserrat', sans-serif;
@@ -242,29 +245,23 @@ body { font-family: 'Montserrat', sans-serif; }
               transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.bw-tagline.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
+.bw-tagline.revealed { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 600px) {
   .bw-word { font-size: clamp(38px, 13vw, 76px); }
   .bw-rule { margin: 28px auto; }
 }
 
-/* ─── WORK / ABOUT / CONTACT SECTIONS ───────────────────────────── */
+/* ─── CONTENT PANEL ──────────────────────────────────────────────*/
 
-.content-section {
-  height: 100vh;
-  scroll-snap-align: start;
-}
+.content-section { min-height: 100vh; }
 
   </style>
 </head>
 
 <body>
 
-<header class="site-header">
+<header class="site-header" style="position:fixed;z-index:200;">
   <div class="nav-wrap">
     <a class="brand" href="#">JON NGUYEN</a>
     <nav class="nav">
@@ -275,12 +272,10 @@ body { font-family: 'Montserrat', sans-serif; }
   </div>
 </header>
 
-<main>
-
-  <!-- ─── HERO ─────────────────────────────────────────────────── -->
+<!-- ─── PANEL 1: HERO ─────────────────────────────────────────── -->
+<div id="panel-hero" class="panel">
   <section class="hero-center">
     <div class="hero-inner">
-
       <div class="hero-composition">
 
         <div class="hero-word-col left">
@@ -303,11 +298,12 @@ body { font-family: 'Montserrat', sans-serif; }
         </div>
 
       </div>
-
     </div>
   </section>
+</div>
 
-  <!-- ─── BUILDING WORLDS ──────────────────────────────────────── -->
+<!-- ─── PANEL 2: BUILDING WORLDS ─────────────────────────────── -->
+<div id="panel-bw" class="panel">
   <section class="bw-section">
     <div class="bw-word-wrap">
       <span class="bw-word" id="bwBuilding">BUILDING</span>
@@ -318,17 +314,19 @@ body { font-family: 'Montserrat', sans-serif; }
     <div class="bw-rule" id="bwRule"></div>
     <div class="bw-tagline" id="bwTagline">BRAND &nbsp;&middot;&nbsp; DIGITAL &nbsp;&middot;&nbsp; EXPERIENTIAL</div>
   </section>
+</div>
 
+<!-- ─── PANEL 3: CONTENT ──────────────────────────────────────── -->
+<div id="panel-content" class="panel">
   <section id="work"    class="content-section"></section>
   <section id="about"   class="content-section"></section>
   <section id="contact" class="content-section"></section>
-
-</main>
+</div>
 
 <div id="cursorSpotlight"></div>
 
 <script>
-// ── Cursor spotlight ──
+// ── Cursor spotlight ──────────────────────────────────────────────
 (function () {
   const spotlight = document.getElementById('cursorSpotlight');
   const shadowEl  = document.getElementById('groundShadow');
@@ -344,15 +342,12 @@ body { font-family: 'Montserrat', sans-serif; }
   function tick() {
     curX += (mouseX - curX) * LERP;
     curY += (mouseY - curY) * LERP;
-
     if (!hasEntered) { requestAnimationFrame(tick); return; }
-
     const W = window.innerWidth, H = window.innerHeight;
     const dx = (curX - W * 0.5) / (W * 0.5);
     const dy = (curY - H * 0.5) / (H * 0.5);
     const dist = Math.min(Math.sqrt(dx * dx + dy * dy), 1.0);
     const blend = dist * 0.8;
-
     if (blend < 0.02) {
       spotlight.style.opacity = '0';
     } else {
@@ -364,21 +359,19 @@ body { font-family: 'Montserrat', sans-serif; }
           transparent 0%, transparent 25%,
           rgba(12,10,6,0.05) 60%, rgba(12,10,6,0.13) 100%)`;
     }
-
     if (shadowEl) {
-      const cx    = mouseX / W - 0.5;
+      const cx = mouseX / W - 0.5;
       const adist = Math.abs(cx);
       shadowEl.style.transform = `translateX(calc(-50% + ${(-cx*120).toFixed(1)}px)) scaleX(${(0.8+adist*2).toFixed(3)})`;
       shadowEl.style.filter    = `blur(${(8+adist*20).toFixed(1)}px)`;
       shadowEl.style.opacity   = Math.min(0.08+adist*0.25, 0.4).toFixed(3);
     }
-
     requestAnimationFrame(tick);
   }
   tick();
 })();
 
-// ── Bust reveal ──
+// ── Bust reveal ───────────────────────────────────────────────────
 (function () {
   var PAGE_START = Date.now();
   var BUST_DELAY = 1700;
@@ -387,50 +380,157 @@ body { font-family: 'Montserrat', sans-serif; }
   var bustImg = document.querySelector('.hero-bust-img');
   var fired = false;
   function revealBust() {
-    if (fired) return;
-    fired = true;
+    if (fired) return; fired = true;
     var elapsed = Date.now() - PAGE_START;
     var delay   = Math.max(0, BUST_DELAY - elapsed);
     bustEl.style.animation = 'revealBust 2.4s cubic-bezier(0.16,1,0.3,1) ' + delay + 'ms forwards';
   }
   var cap = setTimeout(revealBust, MAX_WAIT);
-  if (bustImg.complete && bustImg.naturalWidth > 0) {
-    clearTimeout(cap); revealBust();
-  } else {
+  if (bustImg.complete && bustImg.naturalWidth > 0) { clearTimeout(cap); revealBust(); }
+  else {
     bustImg.addEventListener('load',  function() { clearTimeout(cap); revealBust(); });
     bustImg.addEventListener('error', function() { clearTimeout(cap); revealBust(); });
   }
 })();
 
-// ── BUILDING WORLDS — IntersectionObserver reveal ──
+// ── Panel scroll system ───────────────────────────────────────────
 (function () {
-  var bwSection  = document.querySelector('.bw-section');
+  var panelBW      = document.getElementById('panel-bw');
+  var panelContent = document.getElementById('panel-content');
+
+  var DURATION  = 880;   // ms — panel slide duration
+  var THRESHOLD = 220;   // wheel px needed to trigger a transition
+  var COOLDOWN  = DURATION + 200; // lock period after transition starts
+
+  var state     = 'hero'; // 'hero' | 'bw' | 'content'
+  var animating = false;
+  var accum     = 0;
+  var lastWheel = 0;
+  var bwFired   = false;
+
+  // ── BW reveal animations ──
   var bwBuilding = document.getElementById('bwBuilding');
   var bwWorlds   = document.getElementById('bwWorlds');
   var bwRule     = document.getElementById('bwRule');
   var bwTagline  = document.getElementById('bwTagline');
-  var triggered  = false;
 
-  function fireReveal() {
-    if (triggered) return;
-    triggered = true;
-    // Staggered: BUILDING → WORLDS → rule → tagline
+  function fireBW() {
+    if (bwFired) return; bwFired = true;
     setTimeout(function() { bwBuilding.classList.add('revealed'); }, 80);
     setTimeout(function() { bwWorlds.classList.add('revealed');   }, 520);
     setTimeout(function() { bwRule.classList.add('revealed');     }, 980);
     setTimeout(function() { bwTagline.classList.add('revealed');  }, 1260);
   }
 
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        fireReveal();
-        observer.unobserve(bwSection);
-      }
+  function resetBW() {
+    bwFired = false;
+    [bwBuilding, bwWorlds, bwRule, bwTagline].forEach(function(el) {
+      el.classList.remove('revealed');
     });
-  }, { threshold: 0.6 });
+  }
 
-  observer.observe(bwSection);
+  // ── Panel slide ──
+  function slidePanel(panel, toY, onDone) {
+    panel.classList.add('panel-moving');
+    panel.style.transform = 'translateY(' + toY + ')';
+    var t = setTimeout(function() {
+      panel.classList.remove('panel-moving');
+      if (onDone) onDone();
+    }, DURATION);
+  }
+
+  // ── Transitions ──
+  function goToBW() {
+    animating = true; accum = 0;
+    slidePanel(panelBW, '0%', function() {
+      state = 'bw'; animating = false;
+      fireBW();
+    });
+  }
+
+  function goToHero() {
+    animating = true; accum = 0;
+    resetBW();
+    slidePanel(panelBW, '100%', function() {
+      state = 'hero'; animating = false;
+    });
+  }
+
+  function goToContent() {
+    animating = true; accum = 0;
+    slidePanel(panelContent, '0%', function() {
+      state = 'content'; animating = false;
+      panelContent.style.overflowY = 'auto';
+    });
+  }
+
+  function goToBWFromContent() {
+    animating = true; accum = 0;
+    panelContent.style.overflowY = 'hidden';
+    panelContent.scrollTop = 0;
+    slidePanel(panelContent, '100%', function() {
+      state = 'bw'; animating = false;
+    });
+  }
+
+  // ── Delta handler ──
+  function handleDelta(dy) {
+    if (animating) return;
+
+    var now = Date.now();
+    // Reset accumulator if the user paused (stale intent)
+    if (now - lastWheel > 500) accum = 0;
+    lastWheel = now;
+
+    // Content panel: scroll internally, only intercept at edge
+    if (state === 'content') {
+      if (dy > 0) {
+        panelContent.scrollTop += dy;
+        accum = 0;
+        return;
+      }
+      if (panelContent.scrollTop > 0) {
+        panelContent.scrollTop += dy;
+        accum = 0;
+        return;
+      }
+      // At the top of content, scrolling up — accumulate
+      accum += dy;
+      if (accum < -THRESHOLD) goToBWFromContent();
+      return;
+    }
+
+    accum += dy;
+
+    if (state === 'hero'  && accum >  THRESHOLD) goToBW();
+    if (state === 'bw'    && accum >  THRESHOLD) goToContent();
+    if (state === 'bw'    && accum < -THRESHOLD) goToHero();
+  }
+
+  // ── Event listeners ──
+  window.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var dy = e.deltaMode === 1 ? e.deltaY * 20 : e.deltaY; // normalize lines→px
+    handleDelta(dy);
+  }, { passive: false });
+
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault(); handleDelta(THRESHOLD + 10);
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault(); handleDelta(-(THRESHOLD + 10));
+    }
+  });
+
+  var touchStartY = 0;
+  window.addEventListener('touchstart', function(e) {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  window.addEventListener('touchend', function(e) {
+    var dy = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 40) handleDelta(dy * 3.5);
+  }, { passive: true });
+
 })();
 </script>
 
