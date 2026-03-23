@@ -863,6 +863,7 @@
         ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
 
         collapseAnim.finished.then(function() {
+          csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
           csOverlay.classList.remove('cs-open');
           csOverlay.style.clipPath = 'inset(100% 0 0 0 round 0px)';
           csActiveIdx = -1;
