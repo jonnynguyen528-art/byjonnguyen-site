@@ -191,7 +191,7 @@
       margin-bottom: 10px;
     }
     .cs-detail-val {
-      font-family: 'Montserrat', sans-serif; font-size: clamp(11px,0.9vw,14px);
+      font-family: 'Montserrat', sans-serif; font-size: clamp(11px,1.3vw,15px);
       letter-spacing: 0.08em; color: rgba(18,18,18,0.7); line-height: 1.6;
     }
     .cs-img-full {
@@ -857,13 +857,20 @@
         var vw = window.innerWidth, vh = window.innerHeight;
         var endClip = 'inset(' + r.top.toFixed(1) + 'px ' + (vw - r.right).toFixed(1) + 'px ' + (vh - r.bottom).toFixed(1) + 'px ' + r.left.toFixed(1) + 'px round 3px)';
 
+        // Cancel any lingering fills (expandAnim etc.) before collapse starts,
+        // then pin the inline style so the starting position is unambiguous.
+        csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
+        csOverlay.style.clipPath = 'inset(0px 0px 0px 0px round 0px)';
+
         var collapseAnim = csOverlay.animate([
           { clipPath: 'inset(0px 0px 0px 0px round 0px)' },
           { clipPath: endClip }
-        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'none' });
 
-        collapseAnim.finished.then(function() {
-          csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
+        // onfinish fires synchronously in the same animation frame, before the
+        // browser paints â so there is no visible full-screen flash between
+        // the animation ending and the overlay being hidden.
+        collapseAnim.onfinish = function() {
           csOverlay.classList.remove('cs-open');
           csOverlay.style.clipPath = 'inset(100% 0 0 0 round 0px)';
           csActiveIdx = -1;
@@ -873,7 +880,7 @@
             c.getAnimations().forEach(function(a) { a.cancel(); });
             c.style.opacity = '';
           });
-        });
+        };
       }
 
       document.getElementById('cs-close').addEventListener('click', closeCaseStudy);
