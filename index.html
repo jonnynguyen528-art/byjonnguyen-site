@@ -229,6 +229,74 @@
     }
     .cs-reveal.revealed { opacity: 1; transform: translateY(0); }
 
+    /* ─── HERO SUBTEXT ───────────────────────────────────────── */
+    .hero-sub {
+      position: absolute;
+      bottom: 22%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      white-space: nowrap;
+      opacity: 0;
+      animation: revealHeroSub 1.2s cubic-bezier(0.16,1,0.3,1) 1.9s forwards;
+      pointer-events: none;
+    }
+    .hero-sub-role {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: clamp(7px, 0.58vw, 10px);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(18,18,18,0.42);
+      margin: 0 0 7pz;
+    }
+    .hero-sub-discipline {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: clamp(7px, 0.62vw, 10px);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(18,18,18,0.28);
+      margin: 0;
+    }
+    @keyframes revealHeroSub {
+      0%   { opacity: 0; transform: translateX(-50%) translateY(8px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ─── SCROLL CUE ──────────────────────────────────────────── */
+    .hero-scroll-cue {
+      position: absolute;
+      bottom: clamp(24px, 4vh, 44px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: clamp(7px, 0.62vw, 10px);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(18,18,18,0.32);
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 12px;
+      opacity: 0;
+      animation: revealCue 1s cubic-bezier(0.16,1,0.3,1) 0.8s forwards,
+                 driftCue 3.2s ease-in-out 1.8s infinite;
+    }
+    .hero-scroll-cue:hover { color: rgba(18,18,18,0.6); }
+    @keyframes revealCue {
+      0%   { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes driftCue {
+      0%, 100% { transform: translateX(-50%) translateY(0px); }
+      50%       { transform: translateX(-50%) translateY(3px); }
+    }
+
+    /* ─── 4TH CARD BACKGROUND ────────────────────────────────── */
+    .wx-4 .work-card-bg { background: linear-gradient(145deg,#d4d0c8 0%,#9890a0 45%,#2c2438 100%); }
+
     /* ─── MOBILE OVERRIDES ────────────────────────────────────── */
     @media (max-width: 600px) {
       /* Nav brand — keep it tight */
@@ -290,6 +358,11 @@
           </div>
         </div>
       </div>
+      <div class="hero-sub">
+        <p class="hero-sub-role">CREATIVE DIRECTOR BUILDING BRAND SYSTEMS THAT SHIP AND SCALE</p>
+        <p class="hero-sub-discipline">BRAND &nbsp;&middot;&nbsp; DIGITAL &nbsp;&middot;&nbsp; EXPERIENTIAL</p>
+      </div>
+      <button class="hero-scroll-cue" id="heroScrollCue">SELECTED WORK ↓</button>
     </section>
   </div>
 
@@ -316,8 +389,8 @@
             <div class="work-card-overlay"></div>
             <div class="work-card-body">
               <div class="work-card-num">01</div>
-              <div class="work-card-cat">Brand Identity</div>
-              <div class="work-card-title">Maison<br>Collective</div>
+              <div class="work-card-cat">Brand</div>
+              <div class="work-card-title">In The<br>Event</div>
               <div class="work-card-arrow">&#8599;</div>
             </div>
           </div>
@@ -328,8 +401,8 @@
             <div class="work-card-overlay"></div>
             <div class="work-card-body">
               <div class="work-card-num">02</div>
-              <div class="work-card-cat">Digital Experience</div>
-              <div class="work-card-title">Lumi&egrave;re<br>Studio</div>
+              <div class="work-card-cat">Brand / Digital</div>
+              <div class="work-card-title">Mannequin<br>Rent Co</div>
               <div class="work-card-arrow">&#8599;</div>
             </div>
           </div>
@@ -340,8 +413,20 @@
             <div class="work-card-overlay"></div>
             <div class="work-card-body">
               <div class="work-card-num">03</div>
-              <div class="work-card-cat">Campaign</div>
-              <div class="work-card-title">Noir<br>Avant</div>
+              <div class="work-card-cat">Experiential</div>
+              <div class="work-card-title">Best Ever<br>Conference</div>
+              <div class="work-card-arrow">&#8599;</div>
+            </div>
+          </div>
+        </div>
+        <div class="work-card-wrap">
+          <div class="work-card wx-card wx-4">
+            <div class="work-card-bg"></div>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-body">
+              <div class="work-card-num">04</div>
+              <div class="work-card-cat">Experiential</div>
+              <div class="work-card-title">47G Zero<br>Gravity Summit</div>
               <div class="work-card-arrow">&#8599;</div>
             </div>
           </div>
@@ -633,37 +718,48 @@
       // ── Case Study ───────────────────────────────────────────────────
       var CS_DATA = [
         {
-          num: '01', cat: 'Brand Identity', year: '2024',
-          title: 'Maison\nCollective',
-          statement: 'A brand identity rooted in quiet luxury.',
-          brief: 'Maison Collective needed an identity as considered as the spaces they curate. The challenge: create a visual language that communicates discernment without coldness\u2014warmth without approachability.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Art Direction\u00a0\u00b7\u00a0Design',
+          num: '01', cat: 'Brand', year: '2024',
+          title: 'In The\nEvent',
+          statement: 'Building and scaling a brand, marketing system, and revenue engine.',
+          brief: 'In The Event needed more than a logo\u2014they needed an entire brand architecture, marketing infrastructure, and revenue framework built to scale. We built it from the ground up: identity, messaging, campaigns, and the systems to make all of it run.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Marketing Systems',
           year_full: '2024',
-          outcome: 'Rolled out across 6 markets. 40% lift in brand recognition within the first quarter. Featured in Wallpaper\u2018s annual design review.',
-          bg: 'linear-gradient(160deg,#ddd6c8 0%,#a89278 45%,#3e2d1e 100%)',
+          outcome: 'A complete brand and marketing system built to scale\u2014from visual identity to revenue-driving campaigns, all working together.',
+          bg: 'linear-gradient(160deg,#ddd6c8 0%,#b8a88a 45%,#6e5c48 100%)',
           c1: '#c4b99a', c2: '#8a7d68', c3: '#2e2318'
         },
         {
-          num: '02', cat: 'Digital Experience', year: '2024',
-          title: 'Lumi\u00e8re\nStudio',
-          statement: 'Where physical space meets digital presence.',
-          brief: 'A photography studio redefining how creative practitioners present work online. We built a digital environment that mirrors their spatial philosophy\u2014light, restraint, intention.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Digital Design\u00a0\u00b7\u00a0Motion',
+          num: '02', cat: 'Brand / Digital', year: '2024',
+          title: 'Mannequin\nRent Co',
+          statement: 'Repositioning and scaling a brand through campaigns, web, and sales tools.',
+          brief: 'Mannequin Rent Co had the product\u2014they needed the brand. We repositioned them for a new market tier, built a web presence engineered to convert, and created a suite of sales tools that close deals.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Repositioning\u00a0\u00b7\u00a0Digital Design',
           year_full: '2024',
-          outcome: 'Booking enquiries increased 65% in the first two months post-launch. Shortlisted for the FWA Site of the Day.',
-          bg: 'linear-gradient(155deg,#c8cdd0 0%,#7a8a94 45%,#18252e 100%)',
-          c1: '#9ba8b0', c2: '#5c6b75', c3: '#18252e'
+          outcome: 'Full brand repositioning, web redesign, and sales enablement toolkit\u2014a complete commercial infrastructure that accelerated growth.',
+          bg: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
+          c1: '#b0a898', c2: '#7a7060', c3: '#2e2820'
         },
         {
-          num: '03', cat: 'Campaign', year: '2024',
-          title: 'Noir\nAvant',
-          statement: 'A campaign that moved fashion forward.',
-          brief: 'For an emerging label positioned between concept and commerce, we built a campaign that refused easy categorisation. Shot across three cities over ten days.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Campaign\u00a0\u00b7\u00a0Photography Direction',
-          year_full: '2024',
-          outcome: 'Featured in Wallpaper*, Dezeen, and It\'s Nice That. Campaign content reached 4.2M impressions across channels.',
-          bg: 'linear-gradient(150deg,#e0d8cc 0%,#b4a490 45%,#1a1008 100%)',
-          c1: '#6b6560', c2: '#3a3530', c3: '#080705'
+          num: '03', cat: 'Experiential', year: '2025',
+          title: 'Best Ever\nConference',
+          statement: 'Building and evolving a conference brand year over year.',
+          brief: 'Best Ever Conference isn\u2019t just an event\u2014it\u2019s a growing institution. We built a brand system flexible enough to evolve with each year\u2019s theme while maintaining a consistent visual identity that compounds in recognition.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Systems\u00a0\u00b7\u00a0Experiential Design',
+          year_full: '2025',
+          outcome: 'A living brand system that grows year over year\u2014building cumulative recognition and community with every edition.',
+          bg: 'linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%)',
+          c1: '#c8b8a0', c2: '#907860', c3: '#483828'
+        },
+        {
+          num: '04', cat: 'Experiential', year: '2025',
+          title: '47G Zero\nGravity Summit',
+          statement: 'Scaling a conference experience across multiple years.',
+          brief: 'The Zero Gravity Summit demanded a brand that felt as elevated as its subject matter. We built an experiential identity that scaled across multi-year programming, partner activations, and premium attendee touchpoints\u2014a brand that kept pace with the ambition.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Experiential Design\u00a0\u00b7\u00a0Brand Strategy',
+          year_full: '2025',
+          outcome: 'An experiential brand platform built to scale\u2014across years of programming, activations, and a growing audience of senior leaders.',
+          bg: 'linear-gradient(145deg,#d4d0c8 0%,#9890a0 45%,#2c2438 100%)',
+          c1: '#aca8b4', c2: '#7a7088', c3: '#1a1228'
         }
       ];
 
@@ -689,7 +785,7 @@
         var right  = vw - r.right;
         var bottom = vh - r.bottom;
         var left   = r.left;
-        var startClip = 'inset(' + top.toFixed(1) + 'px ' + right.toFixed(1) + 'px ' + bottom.toFixed(1) + 'px ' + left.toFixed(1) + 'px round 3px)';
+        var startCl	p = 'inset(' + top.toFixed(1) + 'px ' + right.toFixed(1) + 'px ' + bottom.toFixed(1) + 'px ' + left.toFixed(1) + 'px round 3px)';
         var endClip   = 'inset(0px 0px 0px 0px round 0px)';
 
         // Set hero bg
@@ -736,12 +832,14 @@
           { clipPath: endClip }
         ], { duration: 800, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
 
-        expandAnim.finished.then(function() {
+        expandAnim.onfinish = function() {
+          // Guard: if user closed before expand finished, don't restore
+          if (csActiveIdx !== idx) return;
           csOverlay.style.clipPath = endClip;
           csInner.classList.add('cs-scrollable');
           buildCsBody(idx);
           fireCsHero(data);
-        });
+        };
       }
 
       function fireCsHero(data) {
@@ -803,7 +901,7 @@
           '<p class="cs-brief">' + data.brief + '</p>' +
           '<div class="cs-details">' +
             '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
-            '<div><div class="cs-detail-label">Year</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
+            '<div><div class="cs-detail-label">Iear</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
           '</div>';
         csBody.appendChild(sec1);
 
@@ -915,6 +1013,14 @@
 
       document.getElementById('cs-close').addEventListener('click', closeCaseStudy);
 
+      // ── Scroll cue click → jump to work ──────────────────────────────
+      var heroScrollCue = document.getElementById('heroScrollCue');
+      if (heroScrollCue) {
+        heroScrollCue.addEventListener('click', function() {
+          if (!animating && state === 'hero') goToContent();
+        });
+      }
+
       // ── Delta handler ────────────────────────────────────────────────
       function slidePanel(panel, target, cb) {
         var from = getComputedStyle(panel).transform;
@@ -938,10 +1044,10 @@
         resetBW();
         slidePanel(panelBW, '100%', function() { state = 'hero'; animating = false; });
       }
-      function goToBWFromContent() {
+      function goToHeroFromContent() {
         animating = true; accum = 0;
         resetWork();
-        slidePanel(panelContent, '100%', function() { state = 'bw'; animating = false; });
+        slidePanel(panelContent, '100%', function() { state = 'hero'; animating = false; });
       }
 
       function handleDelta(dy) {
@@ -953,11 +1059,11 @@
           if (dy > 0) { panelContent.scrollTop += dy; accum = 0; return; }
           if (panelContent.scrollTop > 0) { panelContent.scrollTop += dy; accum = 0; return; }
           accum += dy;
-          if (accum < -THRESHOLD) goToBWFromContent();
+          if (accum < -THRESHOLD) goToHeroFromContent();
           return;
         }
         accum += dy;
-        if (state === 'hero' && accum > THRESHOLD) goToBW();
+        if (state === 'hero' && accum > THRESHOLD) goToContent();
         if (state === 'bw' && accum > THRESHOLD) goToContent();
         if (state === 'bw' && accum < -THRESHOLD) goToHero();
       }
