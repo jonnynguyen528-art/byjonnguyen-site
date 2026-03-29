@@ -85,7 +85,7 @@
     .content-section { min-height: 100vh; }
     .work-section { height: 100vh; display: flex; flex-direction: column; overflow: hidden; padding: 0; }
     .work-header { padding: clamp(88px,10vh,108px) clamp(32px,5vw,80px) clamp(14px,1.8vh,24px); flex-shrink: 0; }
-    .work-eyebrow { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: clamp(9px,0.75vw,11px); letter-spacing: 0.38em; text-transform: uppercase; color: rgba(18,18,18,0.38); }
+    .work-eyebrow { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: clamp(9px,0.75vw,11px); letter-spacing: 0.38em; text-transform: uppercase; color: rgb(31, 87, 255); }
     .work-cards-grid { flex: 1; display: flex; gap: 3px; padding: 0 3px 3px; min-height: 0; perspective: 1400px; perspective-origin: 50% -25%; }
     .work-card-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; opacity: 0; perspective: 800px; }
     .work-card { flex: 1; position: relative; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
@@ -229,6 +229,22 @@
     }
     .cs-reveal.revealed { opacity: 1; transform: translateY(0); }
 
+    /* ─── PANEL LOGO WATERMARK ──────────────────────────────── */
+    .panel-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(180px, 32vh, 400px);
+      height: auto;
+      opacity: 0.065;
+      pointer-events: none;
+      user-select: none;
+      filter: brightness(0);
+      z-index: 0;
+      display: block;
+    }
+
     /* ─── HERO SUBTEXT ───────────────────────────────────────── */
     .hero-sub {
       position: absolute;
@@ -247,8 +263,9 @@
       font-size: clamp(7px, 0.58vw, 10px);
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(18,18,18,0.72);
-      margin: 0 0 7pz;
+      color: rgba(18,18,18,0.82);
+      text-shadow: 0 0 10px rgba(244,241,234,0.9), 0 1px 4px rgba(244,241,234,0.7);
+      margin: 0 0 7px;
     }
     .hero-sub-discipline {
       font-family: 'Montserrat', sans-serif;
@@ -256,7 +273,8 @@
       font-size: clamp(7px, 0.62vw, 10px);
       letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: rgba(18,18,18,0.52);
+      color: rgba(18,18,18,0.62);
+      text-shadow: 0 0 10px rgba(244,241,234,0.9), 0 1px 4px rgba(244,241,234,0.7);
       margin: 0;
     }
     @keyframes revealHeroSub {
@@ -275,12 +293,13 @@
       font-size: clamp(7px, 0.62vw, 10px);
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(18,18,18,0.32);
+      color: rgb(31, 87, 255);
       cursor: pointer;
       border: none;
       background: none;
       padding: 12px;
       opacity: 0;
+      z-index: 5;
       animation: revealCue 1s cubic-bezier(0.16,1,0.3,1) 0.8s forwards,
                  driftCue 3.2s ease-in-out 1.8s infinite;
     }
@@ -341,6 +360,7 @@
 
   <!-- ─── PANEL 1: HERO ──────────────────────────────────────── -->
   <div id="panel-hero" class="panel">
+    <img src="assets/jn_logo.svg" class="panel-logo" aria-hidden="true" draggable="false" />
     <section class="hero-center">
       <div class="hero-inner">
         <div class="hero-composition">
@@ -359,7 +379,7 @@
         </div>
       </div>
       <div class="hero-sub">
-        <p class="hero-sub-role">CREATIVE DIRECTOR BUILDING BRAND SYSTEMS THAT SHIP AND SCALE</p>
+        <p class="hero-sub-role">BUILDING BRAND SYSTEMS THAT SHIP AND SCALE</p>
         <p class="hero-sub-discipline">BRAND &nbsp;&middot;&nbsp; DIGITAL &nbsp;&middot;&nbsp; EXPERIENTIAL</p>
       </div>
       <button class="hero-scroll-cue" id="heroScrollCue">SELECTED WORK ↓</button>
@@ -368,6 +388,7 @@
 
   <!-- ─── PANEL 2: BUILDING WORLDS ───────────────────────────── -->
   <div id="panel-bw" class="panel">
+    <img src="assets/jn_logo.svg" class="panel-logo" aria-hidden="true" draggable="false" />
     <section class="bw-section">
       <div class="bw-word-wrap"><span class="bw-word" id="bwBuilding">BUILDING</span></div>
       <div class="bw-word-wrap"><span class="bw-word" id="bwWorlds">WORLDS</span></div>
@@ -378,6 +399,7 @@
 
   <!-- ─── PANEL 3: CONTENT ─────────────────────────────────────── -->
   <div id="panel-content" class="panel">
+    <img src="assets/jn_logo.svg" class="panel-logo" aria-hidden="true" draggable="false" />
     <section id="work" class="content-section work-section">
       <div class="work-header">
         <span class="work-eyebrow">Selected Work</span>
@@ -520,243 +542,196 @@
       }
     })();
 
-    // ── Panel scroll system ───────────────────────────────────────────
+    // ── Panel scroll system ────────────────────────────────────�    wrap.style.opacity = '0';
+                wrap.style.transform = 'translateY(32px) rotateX(8deg)';
+                wrap.style.transition = 'none';
+              });
+            });
+          }
+        });
+      })();
+
+    // ── Case study overlay ───────────────────────────────────────────────
     (function () {
-      var panelBW = document.getElementById('panel-bw');
-      var panelContent = document.getElementById('panel-content');
-      var DURATION = 880;
-      var THRESHOLD = 220;
-      var COOLDOWN = DURATION + 200;
-      var state = 'hero';
-      var animating = false;
-      var accum = 0;
-      var lastWheel = 0;
-      var bwFired = false;
+      var csOverlay = document.getElementById('cs-overlay');
+      var csInner = document.getElementById('cs-inner');
+      var csBody = document.getElementById('cs-body');
+      var csClose = document.getElementById('cs-close');
+      var wxWraps = document.querySelectorAll('.wx-card');
+      var csActiveIdx = -1;
 
-      var bwBuilding = document.getElementById('bwBuilding');
-      var bwWorlds = document.getElementById('bwWorlds');
-      var bwRule = document.getElementById('bwRule');
-      var bwTagline = document.getElementById('bwTagline');
-
-      function fireBW() {
-        if (bwFired) return; bwFired = true;
-        setTimeout(function() { bwBuilding.classList.add('revealed'); }, 80);
-        setTimeout(function() { bwWorlds.classList.add('revealed'); }, 520);
-        setTimeout(function() { bwRule.classList.add('revealed'); }, 980);
-        setTimeout(function() { bwTagline.classList.add('revealed'); }, 1260);
-      }
-      function resetBW() {
-        bwFired = false;
-        [bwBuilding, bwWorlds, bwRule, bwTagline].forEach(function(el) { el.classList.remove('revealed'); });
-      }
-
-      var wxCards = document.querySelectorAll('.wx-card');
-      var wxWraps = document.querySelectorAll('.work-card-wrap');
-      var wxFired = false;
-      var wxAnims = [];
-      var WX_CLIP_DUR = 900, WX_CLIP_EASE = 'cubic-bezier(0.76,0,0.24,1)';
-      var WX_STAGGER = 200;
-
-      function splitTextToChars(el) {
-        var innerSpans = [];
-        var nodes = Array.from(el.childNodes);
-        el.innerHTML = '';
-        nodes.forEach(function(node) {
-          if (node.nodeType === 3) {
-            var text = node.textContent;
-            for (var i = 0; i < text.length; i++) {
-              var outer = document.createElement('span');
-              outer.style.cssText = 'overflow:hidden;display:inline-block;vertical-align:top;';
-              var inner = document.createElement('span');
-              inner.style.cssText = 'display:inline-block;';
-              inner.textContent = text[i];
-              outer.appendChild(inner);
-              el.appendChild(outer);
-              innerSpans.push(inner);
-            }
-          } else if (node.nodeType === 1) {
-            el.appendChild(node.cloneNode(true));
-          }
-        });
-        return innerSpans;
-      }
-
-      function fireWork() {
-        if (wxFired) return; wxFired = true;
-        wxWraps.forEach(function(wrap) {
-          var card = wrap.querySelector('.wx-card');
-          card.style.clipPath = 'inset(100% 0 0 0)';
-          wrap.style.opacity = '1';
-          wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
-            .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; });
-          var titleEl = wrap.querySelector('.work-card-title');
-          titleEl.style.opacity = '0';
-          var chars;
-          if (titleEl._charSpans && titleEl._charSpans.length > 0) {
-            chars = titleEl._charSpans;
-          } else {
-            chars = splitTextToChars(titleEl);
-            titleEl._charSpans = chars;
-          }
-          chars.forEach(function(ch) { ch.style.transform = 'translateY(110%)'; });
-        });
-        wxWraps.forEach(function(wrap, i) {
-          var card = wrap.querySelector('.wx-card');
-          var delay = i * WX_STAGGER;
-          var a = card.animate([
-            { clipPath: 'inset(100% 0 0 0)' },
-            { clipPath: 'inset(0% 0 0 0)' }
-          ], { duration: WX_CLIP_DUR, delay: delay, easing: WX_CLIP_EASE, fill: 'forwards' });
-          a.onfinish = function() {
-            card.style.clipPath = 'none';
-            wrap.querySelectorAll('.work-card-num, .work-card-cat')
-              .forEach(function(t, j) {
-                t.animate([
-                  { transform: 'translateY(20px)', opacity: '0' },
-                  { transform: 'translateY(0px)', opacity: '1' }
-                ], { duration: 550, delay: j * 90, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
-              });
-            var titleEl = wrap.querySelector('.work-card-title');
-            titleEl.style.opacity = '1';
-            var chars = titleEl._charSpans || [];
-            chars.forEach(function(ch, j) {
-              ch.animate([
-                { transform: 'translateY(110%)' },
-                { transform: 'translateY(0%)' }
-              ], { duration: 600, delay: j * 22, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
-            });
-            var arrow = wrap.querySelector('.work-card-arrow');
-            if (arrow) {
-              var arrowDelay = Math.floor(chars.length * 22 * 0.4);
-              arrow.animate([
-                { transform: 'translateY(20px)', opacity: '0' },
-                { transform: 'translateY(0px)', opacity: '1' }
-              ], { duration: 500, delay: arrowDelay, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
-            }
-          };
-          wxAnims.push(a);
-        });
-        initWxParallax();
-      }
-
-      function resetWork() {
-        wxFired = false;
-        wxAnims.forEach(function(a) { try { a.cancel(); } catch(e) {} }); wxAnims = [];
-        wxWraps.forEach(function(wrap) {
-          wrap.style.opacity = '0';
-          wrap.style.transform = '';
-          var card = wrap.querySelector('.wx-card');
-          if (card) {
-            card.getAnimations().forEach(function(a) { a.cancel(); });
-            card.style.clipPath = '';
-            card.style.transform = '';
-            card.style.boxShadow = '';
-            card.style.filter = '';
-          }
-          wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
-            .forEach(function(t) {
-              t.getAnimations().forEach(function(a) { a.cancel(); });
-              t.style.opacity = '0'; t.style.transform = 'translateY(20px)';
-            });
-          var titleEl = wrap.querySelector('.work-card-title');
-          if (titleEl) {
-            titleEl.style.opacity = '0';
-            if (titleEl._charSpans) {
-              titleEl._charSpans.forEach(function(ch) {
-                try { ch.getAnimations().forEach(function(a) { a.cancel(); }); ch.style.transform = 'translateY(110%)'; } catch(e) {}
-              });
-            }
-          }
-        });
-      }
-
-      var wxParallaxInit = false;
-      function initWxParallax() {
-        if (wxParallaxInit) return; wxParallaxInit = true;
-        wxWraps.forEach(function(wrap) {
-          var card = wrap.querySelector('.wx-card');
-          wrap.addEventListener('mouseenter', function() {
-            card.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.45s ease';
-            card.style.transform = 'scale(1.04)';
-            card.style.boxShadow = '0 40px 100px rgba(0,0,0,0.5), 0 15px 35px rgba(0,0,0,0.25)';
-            wxWraps.forEach(function(other) {
-              if (other !== wrap) {
-                var otherCard = other.querySelector('.wx-card');
-                otherCard.style.transition = 'filter 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)';
-                otherCard.style.filter = 'blur(3px) brightness(0.7)';
-                otherCard.style.transform = 'scale(0.97)';
-              }
-            });
-          });
-          wrap.addEventListener('mousemove', function(e) {
-            var rect = wrap.getBoundingClientRect();
-            var dx = (e.clientX - rect.left) / rect.width - 0.5;
-            var dy = (e.clientY - rect.top) / rect.height - 0.5;
-            card.style.transition = 'transform 0.1s ease-out';
-            card.style.transform = 'scale(1.04) rotateY(' + (dx * 14) + 'deg) rotateX(' + (-dy * 8) + 'deg)';
-          });
-          wrap.addEventListener('mouseleave', function() {
-            card.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1), box-shadow 0.6s ease';
-            card.style.transform = '';
-            card.style.boxShadow = '';
-            wxWraps.forEach(function(other) {
-              if (other !== wrap) {
-                var otherCard = other.querySelector('.wx-card');
-                otherCard.style.transition = 'filter 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
-                otherCard.style.filter = '';
-                otherCard.style.transform = '';
-              }
-            });
-          });
-          wrap.addEventListener('click', function() {
-            if (!wxFired) return;
-            openCaseStudy(Array.from(wxWraps).indexOf(wrap));
-          });
-        });
-      }
-
-      // ── Case Study ───────────────────────────────────────────────────
-      var CS_DATA = [
+      // Case study data
+      var CASES = [
         {
-          num: '01', cat: 'Brand', year: '2024',
-          title: 'In The\nEvent',
-          statement: 'Building and scaling a brand, marketing system, and revenue engine.',
-          brief: 'In The Event needed more than a logo\u2014they needed an entire brand architecture, marketing infrastructure, and revenue framework built to scale. We built it from the ground up: identity, messaging, campaigns, and the systems to make all of it run.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Marketing Systems',
+          num: '01',
+          title: 'In The Event',
+          cat: 'Brand',
+          year: '2024',
+          statement: 'A complete brand overhaul for a growing events company.',
+          bg_color: 'linear-gradient(160deg,#ddd6c8 0%,#b8a88a 45%,#6e5c48 100%)',
+          brief: 'In The Event needed a visual identity that could scale across digital and physical touchpoints.',
+          role: 'Creative Director',
+          scope: 'Brand System, Identity, Digital',
           year_full: '2024',
-          outcome: 'A complete brand and marketing system built to scale\u2014from visual identity to revenue-driving campaigns, all working together.',
-          bg: 'linear-gradient(160deg,#ddd6c8 0%,#b8a88a 45%,#6e5c48 100%)',
-          c1: '#c4b99a', c2: '#8a7d68', c3: '#2e2318'
+          outcome: 'A modern, scalable brand system ready for multi-channel deployment.',
+          imgs: ['assets/placeholder.svg', 'assets/placeholder.svg', 'assets/placeholder.svg']
         },
         {
-          num: '02', cat: 'Brand / Digital', year: '2024',
-          title: 'Mannequin\nRent Co',
-          statement: 'Repositioning and scaling a brand through campaigns, web, and sales tools.',
-          brief: 'Mannequin Rent Co had the product\u2014they needed the brand. We repositioned them for a new market tier, built a web presence engineered to convert, and created a suite of sales tools that close deals.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Repositioning\u00a0\u00b7\u00a0Digital Design',
-          year_full: '2024',
-          outcome: 'Full brand repositioning, web redesign, and sales enablement toolkit\u2014a complete commercial infrastructure that accelerated growth.',
-          bg: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
-          c1: '#b0a898', c2: '#7a7060', c3: '#2e2820'
+          num: '02',
+          title: 'Mannequin Rent Co',
+          cat: 'Brand / Digital',
+          year: '2023',
+          statement: 'Rebranding a rental company for the modern fashion market.',
+          bg_color: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
+          brief: 'Mannequin Rent Co needed a new identity to appeal to stylists and production houses.',
+          role: 'Creative Director / Designer',
+          scope: 'Brand, Web, Marketing',
+          year_full: '2023',
+          outcome: 'Elevated brand perception and increased inbound inquiries within 90 days.',
+          imgs: ['assets/placeholder.svg', 'assets/placeholder.svg', 'assets/placeholder.svg']
         },
         {
-          num: '03', cat: 'Experiential', year: '2025',
-          title: 'Best Ever\nConference',
-          statement: 'Building and evolving a conference brand year over year.',
-          brief: 'Best Ever Conference isn\u2019t just an event\u2014it\u2019s a growing institution. We built a brand system flexible enough to evolve with each year\u2019s theme while maintaining a consistent visual identity that compounds in recognition.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Systems\u00a0\u00b7\u00a0Experiential Design',
-          year_full: '2025',
-          outcome: 'A living brand system that grows year over year\u2014building cumulative recognition and community with every edition.',
-          bg: 'linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%)',
-          c1: '#c8b8a0', c2: '#907860', c3: '#483828'
+          num: '03',
+          title: 'Best Ever Conference',
+          cat: 'Experiential',
+          year: '2023',
+          statement: 'Designing an immersive experience for an annual conference.',
+          bg_color: 'linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%)',
+          brief: 'Best Ever Conference needed a full-spectrum experiential program that kicked off with a keynote opening.',
+          role: 'Experiential Director',
+          scope: 'Experiential, Environmental Design',
+          year_full: '2023',
+          outcome: 'Fully sell-through and high post-event NPS.',
+          imgs: ['assets/placeholder.svg', 'assets/placeholder.svg', 'assets/placeholder.svg']
         },
         {
-          num: '04', cat: 'Experiential', year: '2025',
-          title: '47G Zero\nGravity Summit',
-          statement: 'Scaling a conference experience across multiple years.',
-          brief: 'The Zero Gravity Summit demanded a brand that felt as elevated as its subject matter. We built an experiential identity that scaled across multi-year programming, partner activations, and premium attendee touchpoints\u2014a brand that kept pace with the ambition.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Experiential Design\u00a0\u00b7\u00a0Brand Strategy',
-          year_full: '2025',
+          num: '04',
+          title: '47G Zero Gravity Summit',
+          cat: 'Experiential',
+          year: '2022',
+          statement: 'A zero-gravity activation for a next-generation beverage brand.',
+          bg_color: 'linear-gradient(145deg,#d4d0c8 0%,#9890a0 45%,#2c2438 100%)',
+          brief: '47G needed an activation experience that could embody their next-gen beverage story.',
+          role: 'Creative Director / XD',
+          scope: 'Experiential, Brand Activation',
+          year_full: '2022',
+          outcome: '47G reported highest-ever sampling velocity and social impressions at the event.',
+          imgs: ['assets/placeholder.svg', 'assets/placeholder.svg', 'assets/placeholder.svg']
+        }
+      ];
+
+      function buildCaseStudyBody(c) {
+        var html = '';
+        // Brief section
+        html += '<div class="cs-section cs-reveal"><span class="cs-section-label">Overview</span>';
+        html += '<p class="cs-brief">' + c.brief + '</p>';
+        html += '<div class="cs-details">';
+        html += '<div><span class="cs-detail-label">Role</span><p class="cs-detail-val">' + c.role + '</p></div>';
+        html += '<div><span class="cs-detail-label">Scope</span><p class="cs-detail-val">' + c.scope + '</p></div>';
+        html += '<div><span class="cs-detail-label">Year</span><p class="cs-detail-val">' + c.year_full + '</p></div>';
+        html += '</div></div>';
+        // Image sections
+        html += '<div class="cs-img-full cs-reveal"><div class="cs-img-full-inner" style="background-image:url(' + c.imgs[0] + ')"></div></div>';
+        html += '<div class="cs-statement-large cs-reveal">' + c.statement + '</div>';
+        html += '<div class="cs-img-row cs-reveal">';
+        html += '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(' + c.imgs[1] + ')"></div></div>';
+        html += '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(' + c.imgs[2] + ')"></div></div>';
+        html += '</div>';
+        // Outcome
+        html += '<div class="cs-section cs-reveal"><span class="cs-section-label">Outcome</span>';
+        html += '<div class="cs-outcome"><p class="cs-outcome-text">' + c.outcome + '</p></div></div>';
+        return html;
+      }
+
+      function openCaseStudy(idx) {
+        if (csActiveIdx === idx) return;
+        csActiveIdx = idx;
+        var c = CASES[idx];
+
+        // Populate hero
+        var bg = document.getElementById('cs-hero-bg');
+        bg.style.background = c.bg_color;
+        document.getElementById('cs-hero-num').textContent = c.num;
+        document.getElementById('cs-hero-cat').textContent = c.cat;
+        document.getElementById('cs-hero-year').textContent = c.year;
+        document.getElementById('cs-hero-title').textContent = c.title;
+        document.getElementById('cs-hero-statement').textContent = c.statement;
+        csBody.innerHTML = buildCaseStudyBody(c);
+
+        // Reset scroll
+        csInner.classList.remove('cs-scrollable');
+        csInner.scrollTop = 0;
+
+        // Animate open
+        csOverlay.classList.add('cs-open');
+        // Find the clicked card's position for startClip
+        var wraps = document.querySelectorAll('.wx-card-wrap');
+        var cardWrap = wraps[idx];
+        var r = cardWrap.getBoundingClientRect();
+        var vW = window.innerWidth, vH = window.innerHeight;
+        var t = Math.round(r.top / vH * 100);
+        var b = Math.round((1 - r.bottom / vH) * 100);
+        var l = Math.round(r.left / vW * 100);
+        var rt = Math.round((1 - r.right / vW) * 100);
+        var startClip = 'inset(' + t + '% ' + rt + '% ' + b + '% ' + l + '% round 4px)';
+        var endClip = 'inset(0% 0% 0% 0% round 0px)';
+        csOverlay.style.clipPath = startClip;
+        var openAnim = csOverlay.animate([
+          { clipPath: startClip },
+          { clipPath: endClip }
+        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+        openAnim.onfinish = function() { csOverlay.style.clipPath = endClip; openAnim.cancel(); };
+
+        // Reveal title with text anim
+        var titleEl = document.getElementById('cs-hero-title');
+        var metaEl = document.getElementById('cs-hero-meta');
+        var statEl = document.getElementById('cs-hero-statement');
+        var scrollHintEl = document.getElementById('cs-scroll-hint');
+        var closeEl = document.getElementById('cs-close');
+        titleEl.classList.remove('cs-title-ready');
+        metaEl.classList.remove('revealed');
+        statEl.classList.remove('revealed');
+        scrollHintEl.classList.remove('revealed');
+        closeEl.classList.remove('revealed');
+        setTimeout(function() {
+          titleEl.classList.add('cs-title-ready');
+          metaEl.classList.add('revealed');
+          statEl.classList.add('revealed');
+          scrollHintEl.classList.add('revealed');
+          closeEl.classList.add('revealed');
+        }, 300);
+        setTimeout(function() {
+          csInner.classList.add('cs-scrollable');
+          csInner.scrollTop = 0;
+          var revealEls = csBody.querySelectorAll('.cs-reveal');
+          revealEls.forEach(function(el) { el.classList.remove('revealed'); });
+          var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) { entry.target.classList.add('revealed'); obs.unobserve(entry.target); }
+            });
+          }, { root: csInner, threshold: 0.1 });
+          revealEls.forEach(function(el) { obs.observe(el); });
+        }, 700);
+      }
+
+      function closeCaseStudy() {
+        if (csActiveIdx === -1) return;
+        var idx = csActiveIdx;
+        var wraps = document.querySelectorAll('.wx-card-wrap');
+        var cardWrap = wraps[idx];
+        var r = cardWrap.getBoundingClientRect();
+        var vW = window.innerWidth, vH = window.innerHeight;
+        var t = Math.round(r.top / vH * 100);
+        var b = Math.round((1 - r.bottom / vH) * 100);
+        var l = Math.round(r.left / vW * 100);
+        var rt = Math.round((1 - r.right / vW) * 100);
+        var endClip = 'inset(' + t + '% ' + rt + '% ' + b + '% ' + l + '% round 4px)';
+        csNumInner.classList.remove('revealed');
+        document.getElementById('cs-hero-meta').classList.remove('revealed');
+        document.getElementById('cs-hero-statement').classList.remove('revealed');
+        document.getElementById('cs-scroll-hint').classList.remove('revealed');
+        document.getElementById('cs-close').classList.remove('revealed');
+        csInner.classList.remove('cs-scrollable')year_full: '2025',
           outcome: 'An experiential brand platform built to scale\u2014across years of programming, activations, and a growing audience of senior leaders.',
           bg: 'linear-gradient(145deg,#d4d0c8 0%,#9890a0 45%,#2c2438 100%)',
           c1: '#aca8b4', c2: '#7a7088', c3: '#1a1228'
@@ -901,7 +876,7 @@
           '<p class="cs-brief">' + data.brief + '</p>' +
           '<div class="cs-details">' +
             '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
-            '<div><div class="cs-detail-label">Iear</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
+            '<div><div class="cs-detail-label">Year</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
           '</div>';
         csBody.appendChild(sec1);
 
@@ -992,17 +967,16 @@
         var collapseAnim = csOverlay.animate([
           { clipPath: 'inset(0px 0px 0px 0px round 0px)' },
           { clipPath: endClip }
-        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)' });
 
-        // fill:'forwards' holds the element at endClip so there is no snap-back
-        // flash if onfinish fires a tick late. cancel() in the callback removes
-        // the fill cleanly once the inline style has been committed.
+        // No fill — when animation ends the CSS rule (inset 100%) reasserts.
+        // Clearing the inline style in onfinish lets the CSS rule take over
+        // cleanly without the cancel()-inside-onfinish Chrome snap-back bug.
         collapseAnim.onfinish = function() {
-          csOverlay.style.clipPath = 'inset(100% 0 0 0 round 0px)';
-          collapseAnim.cancel();
+          csOverlay.style.clipPath = '';
           csOverlay.classList.remove('cs-open');
           csActiveIdx = -1;
-          // Cancel sibling card opacity animations and restore
+          // Restore sibling card opacity
           wxWraps.forEach(function(w) {
             var c = w.querySelector('.wx-card');
             c.getAnimations().forEach(function(a) { a.cancel(); });
