@@ -542,196 +542,285 @@
       }
     })();
 
-    // ── Panel scroll system ────────────────────────────────────�    wrap.style.opacity = '0';
-                wrap.style.transform = 'translateY(32px) rotateX(8deg)';
-                wrap.style.transition = 'none';
-              });
-            });
+    // ── Panel scroll system ───────────────────────────────────────────
+    (function () {
+      var panelBW = document.getElementById('panel-bw');
+      var panelContent = document.getElementById('panel-content');
+      var DURATION = 880;
+      var THRESHOLD = 220;
+      var COOLDOWN = DURATION + 200;
+      var state = 'hero';
+      var animating = false;
+      var accum = 0;
+      var lastWheel = 0;
+      var bwFired = false;
+
+      var bwBuilding = document.getElementById('bwBuilding');
+      var bwWorlds = document.getElementById('bwWorlds');
+      var bwRule = document.getElementById('bwRule');
+      var bwTagline = document.getElementById('bwTagline');
+
+      function fireBW() {
+        if (bwFired) return; bwFired = true;
+        setTimeout(function() { bwBuilding.classList.add('revealed'); }, 80);
+        setTimeout(function() { bwWorlds.classList.add('revealed'); }, 520);
+        setTimeout(function() { bwRule.classList.add('revealed'); }, 980);
+        setTimeout(function() { bwTagline.classList.add('revealed'); }, 1260);
+      }
+      function resetBW() {
+        bwFired = false;
+        [bwBuilding, bwWorlds, bwRule, bwTagline].forEach(function(el) { el.classList.remove('revealed'); });
+      }
+
+      var wxCards = document.querySelectorAll('.wx-card');
+      var wxWraps = document.querySelectorAll('.work-card-wrap');
+      var wxFired = false;
+      var wxAnims = [];
+      var WX_CLIP_DUR = 900, WX_CLIP_EASE = 'cubic-bezier(0.76,0,0.24,1)';
+      var WX_STAGGER = 200;
+
+      function splitTextToChars(el) {
+        var innerSpans = [];
+        var nodes = Array.from(el.childNodes);
+        el.innerHTML = '';
+        nodes.forEach(function(node) {
+          if (node.nodeType === 3) {
+            var text = node.textContent;
+            for (var i = 0; i < text.length; i++) {
+              var outer = document.createElement('span');
+              outer.style.cssText = 'overflow:hidden;display:inline-block;vertical-align:top;';
+              var inner = document.createElement('span');
+              inner.style.cssText = 'display:inline-block;';
+              inner.textContent = text[i];
+              outer.appendChild(inner);
+              el.appendChild(outer);
+              innerSpans.push(inner);
+            }
+          } else if (node.nodeType === 1) {
+            el.appendChild(node.cloneNode(true));
           }
         });
-      })();
-
-    // ── Case study overlay ───────────────────────────────────────────────
-    (function () {
-      var csOverlay = document.getElementById('cs-overlay');
-      var csInner = document.getElementById('cs-inner');
-      var csBody = document.getElementById('cs-body');
-      var csClose = document.getElementById('cs-close');
-      var wxWraps = document.querySelectorAll('.wx-card');
-      var csActiveIdx = -1;
-
-      // Case study data
-      var CASES = [
-        {
-          num: '01',
-          title: 'In The Event',
-          cat: 'Brand',
-          year: '2024',
-          statement: 'A complete brand overhaul for a growing events company.',
-          bg_color: 'linear-gradient(160deg,#ddd6c8 0%,#b8a88a 45%,#6e5c48 100%)',
-          brief: 'In The Event needed a visual identity that could scale across digital and physical touchpoints.',
-          role: 'Creative Director',
-          scope: 'Brand System, Identity, Digital',
-          year_full: '2024',
-          outcome: 'A modern, scalable brand system ready for multi-channel deployment.',
-          imgs: ['assets/placeholder.svg', 'assets/placeholder.svg', 'assets/placeholder.svg']
-        },
-        {
-          num: '02',
-          title: 'Mannequin Rent Co',
-          cat: 'Brand / Digital',
-          year: '2023',
-          statement: 'Rebranding a rental company for the modern fashion market.',
-          bg_color: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
-          brief: 'Mannequin Rent Co needed a new identity to appeal to stylists and production houses.',
-          role: 'Creative Director / Designer',
-          scope: 'Brand, Web, Marketing',
-          year_full: '2023',
-          outcome: 'Elevated brand perception and increased inbound inquiries within 90 days.',
-          imgs: ['assets/placeholder.svg', 'assets/placeholder.svg', 'assets/placeholder.svg']
-        },
-        {
-          num: '03',
-          title: 'Best Ever Conference',
-          cat: 'Experiential',
-          year: '2023',
-          statement: 'Designing an immersive experience for an annual conference.',
-          bg_color: 'linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%)',
-          brief: 'Best Ever Conference needed a full-spectrum experiential program that kicked off with a keynote opening.',
-          role: 'Experiential Director',
-          scope: 'Experiential, Environmental Design',
-          year_full: '2023',
-          outcome: 'Fully sell-through and high post-event NPS.',
-          imgs: ['assets/placeholder.svg', 'assets/placeholder.svg', 'assets/placeholder.svg']
-        },
-        {
-          num: '04',
-          title: '47G Zero Gravity Summit',
-          cat: 'Experiential',
-          year: '2022',
-          statement: 'A zero-gravity activation for a next-generation beverage brand.',
-          bg_color: 'linear-gradient(145deg,#d4d0c8 0%,#9890a0 45%,#2c2438 100%)',
-          brief: '47G needed an activation experience that could embody their next-gen beverage story.',
-          role: 'Creative Director / XD',
-          scope: 'Experiential, Brand Activation',
-          year_full: '2022',
-          outcome: '47G reported highest-ever sampling velocity and social impressions at the event.',
-          imgs: ['assets/placeholder.svg', 'assets/placeholder.svg', 'assets/placeholder.svg']
-        }
-      ];
-
-      function buildCaseStudyBody(c) {
-        var html = '';
-        // Brief section
-        html += '<div class="cs-section cs-reveal"><span class="cs-section-label">Overview</span>';
-        html += '<p class="cs-brief">' + c.brief + '</p>';
-        html += '<div class="cs-details">';
-        html += '<div><span class="cs-detail-label">Role</span><p class="cs-detail-val">' + c.role + '</p></div>';
-        html += '<div><span class="cs-detail-label">Scope</span><p class="cs-detail-val">' + c.scope + '</p></div>';
-        html += '<div><span class="cs-detail-label">Year</span><p class="cs-detail-val">' + c.year_full + '</p></div>';
-        html += '</div></div>';
-        // Image sections
-        html += '<div class="cs-img-full cs-reveal"><div class="cs-img-full-inner" style="background-image:url(' + c.imgs[0] + ')"></div></div>';
-        html += '<div class="cs-statement-large cs-reveal">' + c.statement + '</div>';
-        html += '<div class="cs-img-row cs-reveal">';
-        html += '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(' + c.imgs[1] + ')"></div></div>';
-        html += '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(' + c.imgs[2] + ')"></div></div>';
-        html += '</div>';
-        // Outcome
-        html += '<div class="cs-section cs-reveal"><span class="cs-section-label">Outcome</span>';
-        html += '<div class="cs-outcome"><p class="cs-outcome-text">' + c.outcome + '</p></div></div>';
-        return html;
+        return innerSpans;
       }
 
-      function openCaseStudy(idx) {
-        if (csActiveIdx === idx) return;
-        csActiveIdx = idx;
-        var c = CASES[idx];
-
-        // Populate hero
-        var bg = document.getElementById('cs-hero-bg');
-        bg.style.background = c.bg_color;
-        document.getElementById('cs-hero-num').textContent = c.num;
-        document.getElementById('cs-hero-cat').textContent = c.cat;
-        document.getElementById('cs-hero-year').textContent = c.year;
-        document.getElementById('cs-hero-title').textContent = c.title;
-        document.getElementById('cs-hero-statement').textContent = c.statement;
-        csBody.innerHTML = buildCaseStudyBody(c);
-
-        // Reset scroll
-        csInner.classList.remove('cs-scrollable');
-        csInner.scrollTop = 0;
-
-        // Animate open
-        csOverlay.classList.add('cs-open');
-        // Find the clicked card's position for startClip
-        var wraps = document.querySelectorAll('.wx-card-wrap');
-        var cardWrap = wraps[idx];
-        var r = cardWrap.getBoundingClientRect();
-        var vW = window.innerWidth, vH = window.innerHeight;
-        var t = Math.round(r.top / vH * 100);
-        var b = Math.round((1 - r.bottom / vH) * 100);
-        var l = Math.round(r.left / vW * 100);
-        var rt = Math.round((1 - r.right / vW) * 100);
-        var startClip = 'inset(' + t + '% ' + rt + '% ' + b + '% ' + l + '% round 4px)';
-        var endClip = 'inset(0% 0% 0% 0% round 0px)';
-        csOverlay.style.clipPath = startClip;
-        var openAnim = csOverlay.animate([
-          { clipPath: startClip },
-          { clipPath: endClip }
-        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
-        openAnim.onfinish = function() { csOverlay.style.clipPath = endClip; openAnim.cancel(); };
-
-        // Reveal title with text anim
-        var titleEl = document.getElementById('cs-hero-title');
-        var metaEl = document.getElementById('cs-hero-meta');
-        var statEl = document.getElementById('cs-hero-statement');
-        var scrollHintEl = document.getElementById('cs-scroll-hint');
-        var closeEl = document.getElementById('cs-close');
-        titleEl.classList.remove('cs-title-ready');
-        metaEl.classList.remove('revealed');
-        statEl.classList.remove('revealed');
-        scrollHintEl.classList.remove('revealed');
-        closeEl.classList.remove('revealed');
-        setTimeout(function() {
-          titleEl.classList.add('cs-title-ready');
-          metaEl.classList.add('revealed');
-          statEl.classList.add('revealed');
-          scrollHintEl.classList.add('revealed');
-          closeEl.classList.add('revealed');
-        }, 300);
-        setTimeout(function() {
-          csInner.classList.add('cs-scrollable');
-          csInner.scrollTop = 0;
-          var revealEls = csBody.querySelectorAll('.cs-reveal');
-          revealEls.forEach(function(el) { el.classList.remove('revealed'); });
-          var obs = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-              if (entry.isIntersecting) { entry.target.classList.add('revealed'); obs.unobserve(entry.target); }
+      function fireWork() {
+        if (wxFired) return; wxFired = true;
+        wxWraps.forEach(function(wrap) {
+          var card = wrap.querySelector('.wx-card');
+          card.style.clipPath = 'inset(100% 0 0 0)';
+          wrap.style.opacity = '1';
+          wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
+            .forEach(function(t) { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; });
+          var titleEl = wrap.querySelector('.work-card-title');
+          titleEl.style.opacity = '0';
+          var chars;
+          if (titleEl._charSpans && titleEl._charSpans.length > 0) {
+            chars = titleEl._charSpans;
+          } else {
+            chars = splitTextToChars(titleEl);
+            titleEl._charSpans = chars;
+          }
+          chars.forEach(function(ch) { ch.style.transform = 'translateY(110%)'; });
+        });
+        wxWraps.forEach(function(wrap, i) {
+          var card = wrap.querySelector('.wx-card');
+          var delay = i * WX_STAGGER;
+          var a = card.animate([
+            { clipPath: 'inset(100% 0 0 0)' },
+            { clipPath: 'inset(0% 0 0 0)' }
+          ], { duration: WX_CLIP_DUR, delay: delay, easing: WX_CLIP_EASE, fill: 'forwards' });
+          a.onfinish = function() {
+            card.style.clipPath = 'none';
+            wrap.querySelectorAll('.work-card-num, .work-card-cat')
+              .forEach(function(t, j) {
+                t.animate([
+                  { transform: 'translateY(20px)', opacity: '0' },
+                  { transform: 'translateY(0px)', opacity: '1' }
+                ], { duration: 550, delay: j * 90, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+              });
+            var titleEl = wrap.querySelector('.work-card-title');
+            titleEl.style.opacity = '1';
+            var chars = titleEl._charSpans || [];
+            chars.forEach(function(ch, j) {
+              ch.animate([
+                { transform: 'translateY(110%)' },
+                { transform: 'translateY(0%)' }
+              ], { duration: 600, delay: j * 22, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
             });
-          }, { root: csInner, threshold: 0.1 });
-          revealEls.forEach(function(el) { obs.observe(el); });
-        }, 700);
+            var arrow = wrap.querySelector('.work-card-arrow');
+            if (arrow) {
+              var arrowDelay = Math.floor(chars.length * 22 * 0.4);
+              arrow.animate([
+                { transform: 'translateY(20px)', opacity: '0' },
+                { transform: 'translateY(0px)', opacity: '1' }
+              ], { duration: 500, delay: arrowDelay, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+            }
+          };
+          wxAnims.push(a);
+        });
+        initWxParallax();
       }
 
-      function closeCaseStudy() {
-        if (csActiveIdx === -1) return;
-        var idx = csActiveIdx;
-        var wraps = document.querySelectorAll('.wx-card-wrap');
-        var cardWrap = wraps[idx];
-        var r = cardWrap.getBoundingClientRect();
-        var vW = window.innerWidth, vH = window.innerHeight;
-        var t = Math.round(r.top / vH * 100);
-        var b = Math.round((1 - r.bottom / vH) * 100);
-        var l = Math.round(r.left / vW * 100);
-        var rt = Math.round((1 - r.right / vW) * 100);
-        var endClip = 'inset(' + t + '% ' + rt + '% ' + b + '% ' + l + '% round 4px)';
-        csNumInner.classList.remove('revealed');
-        document.getElementById('cs-hero-meta').classList.remove('revealed');
-        document.getElementById('cs-hero-statement').classList.remove('revealed');
-        document.getElementById('cs-scroll-hint').classList.remove('revealed');
-        document.getElementById('cs-close').classList.remove('revealed');
-        csInner.classList.remove('cs-scrollable')year_full: '2025',
+      function resetWork() {
+        wxFired = false;
+        wxAnims.forEach(function(a) { try { a.cancel(); } catch(e) {} }); wxAnims = [];
+        wxWraps.forEach(function(wrap) {
+          wrap.style.opacity = '0';
+          wrap.style.transform = '';
+          var card = wrap.querySelector('.wx-card');
+          if (card) {
+            card.getAnimations().forEach(function(a) { a.cancel(); });
+            card.style.clipPath = '';
+            card.style.transform = '';
+            card.style.boxShadow = '';
+            card.style.filter = '';
+          }
+          wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
+            .forEach(function(t) {
+              t.getAnimations().forEach(function(a) { a.cancel(); });
+              t.style.opacity = '0'; t.style.transform = 'translateY(20px)';
+            });
+          var titleEl = wrap.querySelector('.work-card-title');
+          if (titleEl) {
+            titleEl.style.opacity = '0';
+            if (titleEl._charSpans) {
+              titleEl._charSpans.forEach(function(ch) {
+                try { ch.getAnimations().forEach(function(a) { a.cancel(); }); ch.style.transform = 'translateY(110%)'; } catch(e) {}
+              });
+            }
+          }
+        });
+      }
+
+      var wxParallaxInit = false;
+      function initWxParallax() {
+        if (wxParallaxInit) return; wxParallaxInit = true;
+        wxWraps.forEach(function(wrap) {
+          var card = wrap.querySelector('.wx-card');
+          wrap.addEventListener('mouseenter', function() {
+            card.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.45s ease';
+            card.style.transform = 'scale(1.04)';
+            card.style.boxShadow = '0 40px 100px rgba(0,0,0,0.5), 0 15px 35px rgba(0,0,0,0.25)';
+            wxWraps.forEach(function(other) {
+              if (other !== wrap) {
+                var otherCard = other.querySelector('.wx-card');
+                otherCard.style.transition = 'filter 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)';
+                otherCard.style.filter = 'blur(3px) brightness(0.7)';
+                otherCard.style.transform = 'scale(0.97)';
+              }
+            });
+          });
+          wrap.addEventListener('mousemove', function(e) {
+            var rect = wrap.getBoundingClientRect();
+            var dx = (e.clientX - rect.left) / rect.width - 0.5;
+            var dy = (e.clientY - rect.top) / rect.height - 0.5;
+            card.style.transition = 'transform 0.1s ease-out';
+            card.style.transform = 'scale(1.04) rotateY(' + (dx * 14) + 'deg) rotateX(' + (-dy * 8) + 'deg)';
+          });
+          wrap.addEventListener('mouseleave', function() {
+            card.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1), box-shadow 0.6s ease';
+            card.style.transform = '';
+            card.style.boxShadow = '';
+            wxWraps.forEach(function(other) {
+              if (other !== wrap) {
+                var otherCard = other.querySelector('.wx-card');
+                otherCard.style.transition = 'filter 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
+                otherCard.style.filter = '';
+                otherCard.style.transform = '';
+              }
+            });
+          });
+          wrap.addEventListener('click', function() {
+            if (!wxFired) return;
+            openCaseStudy(Array.from(wxWraps).indexOf(wrap));
+          });
+        });
+      }
+
+      // ── Case Study ───────────────────────────────────────────────────
+      var CS_DATA = [
+        {
+          num: '01', cat: 'Brand', year: '2024',
+          title: 'In The\nEvent',
+          statement: 'Building and scaling a brand, marketing system, and revenue engine.',
+          brief: 'In The Event operated primarily through referrals, with no structured marketing or digital presence. The brand lacked consistency, and the website did not reflect the full scope of services or capabilities.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Marketing Systems',
+          year_full: '2024',
+          outcome: 'A complete brand and marketing system built to scale\u2014from visual identity to revenue-driving campaigns, all working together.',
+          bg: 'linear-gradient(160deg,#ddd6c8 0%,#b8a88a 45%,#6e5c48 100%)',
+          c1: '#c4b99a', c2: '#8a7d68', c3: '#2e2318',
+          sections: [
+            {
+              label: 'Context',
+              body: 'In The Event operated primarily through referrals, with no structured marketing or digital presence. The brand lacked consistency, and the website did not reflect the full scope of services or capabilities.'
+            },
+            {
+              label: 'The Problem',
+              body: 'The business could not scale.\n\nThere was no clear positioning, no discoverability in search, and no system for generating or converting leads. The brand and digital experience undersold the level of production the company was capable of delivering.'
+            },
+            {
+              label: 'The Approach',
+              body: 'The focus was to rebuild the company from the ground up as a cohesive system.\n\nThis included redefining the brand, redesigning the website for clarity and conversion, and creating a foundation that could support ongoing marketing and growth. Every touchpoint, digital and physical, was aligned to present a clear and scalable identity.'
+            },
+            {
+              label: 'The Transformation',
+              subsections: [
+                {
+                  label: 'Brand System',
+                  body: 'The identity was simplified and modernized while retaining familiarity for existing clients. The result is a flexible system that works across digital platforms, printed materials, and large-scale physical applications.'
+                },
+                {
+                  label: 'Digital Experience',
+                  body: 'The website was redesigned to clearly communicate services, showcase capabilities, and support discovery.\n\nContent structure was rebuilt to highlight the full scope of work, with expanded galleries and service pages that allow users to explore the depth of production. A webshop was also introduced to improve usability and create a more intuitive user experience.'
+                },
+                {
+                  label: 'Marketing + Physical Presence',
+                  body: 'The brand was extended across all physical touchpoints, creating consistency from digital to real-world environments.\n\nThis included printed materials, presentation assets, and large-scale applications such as vehicle branding and building signage.'
+                },
+                {
+                  label: 'Real-World Execution',
+                  body: 'The system was designed to function beyond screens, supporting complex live event environments.\n\nThis work reflects someone who knows what it takes to build and deliver complex live events from venue infrastructure and vendor management to onsite operations and execution. Brand, lighting, staging, and spatial design all work together to create cohesive, high-impact experiences.'
+                }
+              ]
+            }
+          ],
+          outcomeItems: [
+            'Increased visibility and clarity in the market',
+            'Stronger positioning as a full-service event production company',
+            'Improved ability to showcase capabilities across digital and physical channels',
+            'More consistent brand experience across all touchpoints',
+            'Established a scalable foundation for ongoing marketing and growth'
+          ]
+        },
+        {
+          num: '02', cat: 'Brand / Digital', year: '2024',
+          title: 'Mannequin\nRent Co',
+          statement: 'Repositioning and scaling a brand through campaigns, web, and sales tools.',
+          brief: 'Mannequin Rent Co had the product\u2014they needed the brand. We repositioned them for a new market tier, built a web presence engineered to convert, and created a suite of sales tools that close deals.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Repositioning\u00a0\u00b7\u00a0Digital Design',
+          year_full: '2024',
+          outcome: 'Full brand repositioning, web redesign, and sales enablement toolkit\u2014a complete commercial infrastructure that accelerated growth.',
+          bg: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
+          c1: '#b0a898', c2: '#7a7060', c3: '#2e2820'
+        },
+        {
+          num: '03', cat: 'Experiential', year: '2025',
+          title: 'Best Ever\nConference',
+          statement: 'Building and evolving a conference brand year over year.',
+          brief: 'Best Ever Conference isn\u2019t just an event\u2014it\u2019s a growing institution. We built a brand system flexible enough to evolve with each year\u2019s theme while maintaining a consistent visual identity that compounds in recognition.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Systems\u00a0\u00b7\u00a0Experiential Design',
+          year_full: '2025',
+          outcome: 'A living brand system that grows year over year\u2014building cumulative recognition and community with every edition.',
+          bg: 'linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%)',
+          c1: '#c8b8a0', c2: '#907860', c3: '#483828'
+        },
+        {
+          num: '04', cat: 'Experiential', year: '2025',
+          title: '47G Zero\nGravity Summit',
+          statement: 'Scaling a conference experience across multiple years.',
+          brief: 'The Zero Gravity Summit demanded a brand that felt as elevated as its subject matter. We built an experiential identity that scaled across multi-year programming, partner activations, and premium attendee touchpoints\u2014a brand that kept pace with the ambition.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Experiential Design\u00a0\u00b7\u00a0Brand Strategy',
+          year_full: '2025',
           outcome: 'An experiential brand platform built to scale\u2014across years of programming, activations, and a growing audience of senior leaders.',
           bg: 'linear-gradient(145deg,#d4d0c8 0%,#9890a0 45%,#2c2438 100%)',
           c1: '#aca8b4', c2: '#7a7088', c3: '#1a1228'
@@ -869,43 +958,109 @@
         var csBody = document.getElementById('cs-body');
         csBody.innerHTML = '';
 
-        // Section 1: Brief + Details
-        var sec1 = document.createElement('div');
-        sec1.className = 'cs-section cs-reveal';
-        sec1.innerHTML = '<span class="cs-section-label">Brief</span>' +
-          '<p class="cs-brief">' + data.brief + '</p>' +
-          '<div class="cs-details">' +
-            '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
-            '<div><div class="cs-detail-label">Year</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
-          '</div>';
-        csBody.appendChild(sec1);
+        function makeImgFull(brighten) {
+          var el = document.createElement('div');
+          el.className = 'cs-img-full cs-reveal';
+          el.innerHTML = '<div class="cs-img-full-inner" style="background:' + data.bg + ';' + (brighten ? 'filter:brightness(' + brighten + ');' : '') + '"></div>';
+          return el;
+        }
 
-        // Full-bleed image placeholder
-        var imgFull = document.createElement('div');
-        imgFull.className = 'cs-img-full cs-reveal';
-        imgFull.innerHTML = '<div class="cs-img-full-inner" style="background:' + data.bg + ';"></div>';
-        csBody.appendChild(imgFull);
+        function makeImgRow() {
+          var el = document.createElement('div');
+          el.className = 'cs-img-row cs-reveal';
+          el.innerHTML =
+            '<div class="cs-img-half"><div class="cs-img-half-inner" style="background:' + data.bg + ';filter:brightness(0.85);"></div></div>' +
+            '<div class="cs-img-half"><div class="cs-img-half-inner" style="background:' + data.bg + ';filter:brightness(1.1) saturate(0.8);"></div></div>';
+          return el;
+        }
 
-        // Large typographic statement
-        var stmt = document.createElement('div');
-        stmt.className = 'cs-statement-large cs-reveal';
-        stmt.textContent = '\u201c' + data.statement.replace('.','') + '.\u201d';
-        csBody.appendChild(stmt);
+        if (data.sections) {
+          // Rich sections layout
 
-        // Two-up images
-        var imgRow = document.createElement('div');
-        imgRow.className = 'cs-img-row cs-reveal';
-        imgRow.innerHTML =
-          '<div class="cs-img-half"><div class="cs-img-half-inner" style="background:' + data.bg + ';filter:brightness(0.85);"></div></div>' +
-          '<div class="cs-img-half"><div class="cs-img-half-inner" style="background:' + data.bg + ';filter:brightness(1.1) saturate(0.8);"></div></div>';
-        csBody.appendChild(imgRow);
+          // Brief + Details
+          var sec1 = document.createElement('div');
+          sec1.className = 'cs-section cs-reveal';
+          sec1.innerHTML = '<span class="cs-section-label">Brief</span>' +
+            '<p class="cs-brief">' + data.brief + '</p>' +
+            '<div class="cs-details">' +
+              '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
+              '<div><div class="cs-detail-label">Year</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
+            '</div>';
+          csBody.appendChild(sec1);
+          csBody.appendChild(makeImgFull());
 
-        // Outcome
-        var outcome = document.createElement('div');
-        outcome.className = 'cs-section cs-reveal';
-        outcome.innerHTML = '<span class="cs-section-label">Outcome</span>' +
-          '<div class="cs-outcome"><p class="cs-outcome-text">' + data.outcome + '</p></div>';
-        csBody.appendChild(outcome);
+          // Narrative sections
+          data.sections.forEach(function(section) {
+            if (section.subsections) {
+              // Section header
+              var secHead = document.createElement('div');
+              secHead.className = 'cs-section cs-reveal';
+              secHead.innerHTML = '<span class="cs-section-label">' + section.label + '</span>';
+              csBody.appendChild(secHead);
+
+              section.subsections.forEach(function(sub, si) {
+                var subEl = document.createElement('div');
+                subEl.className = 'cs-section cs-reveal';
+                var bodyHtml = sub.body.replace(/\n\n/g, '</p><p class="cs-brief" style="margin-top:1.2em;">');
+                subEl.innerHTML = '<span class="cs-section-label">' + sub.label + '</span>' +
+                  '<p class="cs-brief">' + bodyHtml + '</p>';
+                csBody.appendChild(subEl);
+                // alternate full vs row images to break up the rhythm
+                csBody.appendChild(si % 2 === 0 ? makeImgFull('0.9') : makeImgRow());
+              });
+
+            } else {
+              var sec = document.createElement('div');
+              sec.className = 'cs-section cs-reveal';
+              var bodyHtml = section.body.replace(/\n\n/g, '</p><p class="cs-brief" style="margin-top:1.2em;">');
+              sec.innerHTML = '<span class="cs-section-label">' + section.label + '</span>' +
+                '<p class="cs-brief">' + bodyHtml + '</p>';
+              csBody.appendChild(sec);
+            }
+          });
+
+          // Outcome
+          var outcomeInner = data.outcomeItems
+            ? data.outcomeItems.map(function(item) {
+                return '<p class="cs-outcome-text" style="margin-bottom:14px;">' + item + '</p>';
+              }).join('')
+            : '<p class="cs-outcome-text">' + data.outcome + '</p>';
+          var outcome = document.createElement('div');
+          outcome.className = 'cs-section cs-reveal';
+          outcome.innerHTML = '<span class="cs-section-label">Outcome</span>' +
+            '<div class="cs-outcome">' + outcomeInner + '</div>';
+          csBody.appendChild(outcome);
+
+        } else {
+          // Default template for other case studies
+
+          // Section 1: Brief + Details
+          var sec1 = document.createElement('div');
+          sec1.className = 'cs-section cs-reveal';
+          sec1.innerHTML = '<span class="cs-section-label">Brief</span>' +
+            '<p class="cs-brief">' + data.brief + '</p>' +
+            '<div class="cs-details">' +
+              '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
+              '<div><div class="cs-detail-label">Year</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
+            '</div>';
+          csBody.appendChild(sec1);
+          csBody.appendChild(makeImgFull());
+
+          // Large typographic statement
+          var stmt = document.createElement('div');
+          stmt.className = 'cs-statement-large cs-reveal';
+          stmt.textContent = '\u201c' + data.statement.replace('.','') + '.\u201d';
+          csBody.appendChild(stmt);
+
+          csBody.appendChild(makeImgRow());
+
+          // Outcome
+          var outcome = document.createElement('div');
+          outcome.className = 'cs-section cs-reveal';
+          outcome.innerHTML = '<span class="cs-section-label">Outcome</span>' +
+            '<div class="cs-outcome"><p class="cs-outcome-text">' + data.outcome + '</p></div>';
+          csBody.appendChild(outcome);
+        }
 
         // IntersectionObserver for reveals
         if (csObserver) { csObserver.disconnect(); }
