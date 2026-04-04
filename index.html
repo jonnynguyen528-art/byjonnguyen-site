@@ -216,11 +216,13 @@
       color: rgba(18,18,18,0.85); max-width: 900px;
       margin-bottom: clamp(80px,10vw,160px);
     }
-    .cs-outcome { padding: clamp(48px,6vw,96px); background: rgba(18,18,18,0.04); border-radius: 4px; }
+    .cs-outcome { padding: 0; background: none; border-radius: 0; }
+    .cs-outcome-section { text-align: center; padding: clamp(80px,10vw,160px) 0; border-top: 1px solid rgba(18,18,18,0.10); }
+    .cs-outcome-section .cs-section-label { text-align: center; }
     .cs-outcome-text {
       font-family: 'Montserrat', sans-serif; font-weight: 300;
-      font-size: clamp(14px,1.2vw,18px); line-height: 1.7; color: rgba(18,18,18,0.65);
-      max-width: 560px;
+      font-size: clamp(16px,1.5vw,22px); line-height: 1.75; color: rgba(18,18,18,0.75);
+      max-width: 640px; margin: 0 auto 14px;
     }
     .cs-reveal {
       opacity: 0; transform: translateY(32px);
@@ -724,13 +726,13 @@
           brief: 'In The Event operated primarily through referrals, with no structured marketing or digital presence. The brand lacked consistency, and the website did not reflect the full scope of services or capabilities.',
           role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Marketing Systems',
           year_full: '2024',
-          outcome: 'A complete brand and marketing system built to scale\u2014from visual identity to revenue-driving campaigns, all working together.',
+          outcome: 'A complete brand and marketing system built to scale,from visual identity to revenue-driving campaigns, all working together.',
           bg: 'linear-gradient(160deg,#ddd6c8 0%,#b8a88a 45%,#6e5c48 100%)',
           c1: '#c4b99a', c2: '#8a7d68', c3: '#2e2318',
           sections: [
             {
               label: 'Context',
-              body: 'In The Event operated primarily through referrals, with no structured marketing or digital presence. The brand lacked consistency, and the website did not reflect the full scope of services or capabilities.'
+              body: 'In The Event is a full-service event production company specializing in corporate events, conferences, and large-scale experiential activations. With a client roster built almost entirely through word of mouth, the company had proven its capabilities, but hadn\u2019t yet built the brand infrastructure to match its ambition.'
             },
             {
               label: 'The Problem',
@@ -749,7 +751,7 @@
                 },
                 {
                   label: 'Digital Experience',
-                  body: 'The website was redesigned to clearly communicate services, showcase capabilities, and support discovery.\n\nContent structure was rebuilt to highlight the full scope of work, with expanded galleries and service pages that allow users to explore the depth of production. A webshop was also introduced to improve usability and create a more intuitive user experience.'
+                  body: 'The website was redesigned to clearly communicate services, showcase capabilities, and support discovery.\n\nContent structure was rebuilt to highlight the full scope of work, with expanded galleries and service pages that allow users to explore the depth of production. A wishlist feature was also introduced, allowing clients and customers to curate lists of rental items directly on the site, streamlining the inquiry process and improving the overall user experience.'
                 },
                 {
                   label: 'Marketing + Physical Presence',
@@ -757,7 +759,7 @@
                 },
                 {
                   label: 'Real-World Execution',
-                  body: 'The system was designed to function beyond screens, supporting complex live event environments.\n\nThis work reflects someone who knows what it takes to build and deliver complex live events from venue infrastructure and vendor management to onsite operations and execution. Brand, lighting, staging, and spatial design all work together to create cohesive, high-impact experiences.'
+                  body: 'The system was designed to function beyond screens, supporting complex live event environments.\n\nFrom venue infrastructure and vendor coordination to onsite operations and spatial design, every element was considered as part of a unified whole. Brand, lighting, staging, and environment worked in concert, creating experiences that felt intentional from every angle.'
                 }
               ]
             }
@@ -774,10 +776,10 @@
           num: '02', cat: 'Brand / Digital', year: '2024',
           title: 'Mannequin\nRent Co',
           statement: 'Repositioning and scaling a brand through campaigns, web, and sales tools.',
-          brief: 'Mannequin Rent Co had the product\u2014they needed the brand. We repositioned them for a new market tier, built a web presence engineered to convert, and created a suite of sales tools that close deals.',
+          brief: 'Mannequin Rent Co had the product,they needed the brand. We repositioned them for a new market tier, built a web presence engineered to convert, and created a suite of sales tools that close deals.',
           role: 'Creative Direction\u00a0\u00b7\u00a0Brand Repositioning\u00a0\u00b7\u00a0Digital Design',
           year_full: '2024',
-          outcome: 'Full brand repositioning, web redesign, and sales enablement toolkit\u2014a complete commercial infrastructure that accelerated growth.',
+          outcome: 'Full brand repositioning, web redesign, and sales enablement toolkit,a complete commercial infrastructure that accelerated growth.',
           bg: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
           c1: '#b0a898', c2: '#7a7060', c3: '#2e2820'
         },
@@ -785,10 +787,10 @@
           num: '03', cat: 'Experiential', year: '2025',
           title: 'Best Ever\nConference',
           statement: 'Building and evolving a conference brand year over year.',
-          brief: 'Best Ever Conference isn\u2019t just an event\u2014it\u2019s a growing institution. We built a brand system flexible enough to evolve with each year\u2019s theme while maintaining a consistent visual identity that compounds in recognition.',
+          brief: 'Best Ever Conference isn\u2019t just an event,it\u2019s a growing institution. We built a brand system flexible enough to evolve with each year\u2019s theme while maintaining a consistent visual identity that compounds in recognition.',
           role: 'Creative Direction\u00a0\u00b7\u00a0Brand Systems\u00a0\u00b7\u00a0Experiential Design',
           year_full: '2025',
-          outcome: 'A living brand system that grows year over year\u2014building cumulative recognition and community with every edition.',
+          outcome: 'A living brand system that grows year over year,building cumulative recognition and community with every edition.',
           bg: 'linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%)',
           c1: '#c8b8a0', c2: '#907860', c3: '#483828'
         },
@@ -796,10 +798,10 @@
           num: '04', cat: 'Experiential', year: '2025',
           title: '47G Zero\nGravity Summit',
           statement: 'Scaling a conference experience across multiple years.',
-          brief: 'The Zero Gravity Summit demanded a brand that felt as elevated as its subject matter. We built an experiential identity that scaled across multi-year programming, partner activations, and premium attendee touchpoints\u2014a brand that kept pace with the ambition.',
+          brief: 'The Zero Gravity Summit demanded a brand that felt as elevated as its subject matter. We built an experiential identity that scaled across multi-year programming, partner activations, and premium attendee touchpoints,a brand that kept pace with the ambition.',
           role: 'Creative Direction\u00a0\u00b7\u00a0Experiential Design\u00a0\u00b7\u00a0Brand Strategy',
           year_full: '2025',
-          outcome: 'An experiential brand platform built to scale\u2014across years of programming, activations, and a growing audience of senior leaders.',
+          outcome: 'An experiential brand platform built to scale,across years of programming, activations, and a growing audience of senior leaders.',
           bg: 'linear-gradient(145deg,#d4d0c8 0%,#9890a0 45%,#2c2438 100%)',
           c1: '#aca8b4', c2: '#7a7088', c3: '#1a1228'
         }
@@ -993,7 +995,7 @@
               }).join('')
             : '<p class="cs-outcome-text">' + data.outcome + '</p>';
           var outcome = document.createElement('div');
-          outcome.className = 'cs-section cs-reveal';
+          outcome.className = 'cs-section cs-outcome-section cs-reveal';
           outcome.innerHTML = '<span class="cs-section-label">Outcome</span>' +
             '<div class="cs-outcome">' + outcomeInner + '</div>';
           csBody.appendChild(outcome);
@@ -1018,7 +1020,7 @@
           csBody.appendChild(makeImgRow());
           // Outcome
           var outcome = document.createElement('div');
-          outcome.className = 'cs-section cs-reveal';
+          outcome.className = 'cs-section cs-outcome-section cs-reveal';
           outcome.innerHTML = '<span class="cs-section-label">Outcome</span>' +
             '<div class="cs-outcome"><p class="cs-outcome-text">' + data.outcome + '</p></div>';
           csBody.appendChild(outcome);
@@ -1076,9 +1078,12 @@
         var collapseAnim = csOverlay.animate([
           { clipPath: 'inset(0px 0px 0px 0px round 0px)' },
           { clipPath: endClip }
-        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)' });
+        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+        // fill:forwards holds the collapsed position so the element doesn't
+        // snap back to the inline style before onfinish fires.
+        // We clear the inline style in onfinish so the next open() starts clean.
         collapseAnim.onfinish = function() {
-          csOverlay.style.clipPath = '';
+          csOverlay.style.clipPath = '';   // inline cleared; fill still holds endClip
           csOverlay.classList.remove('cs-open');
           csActiveIdx = -1;
           // Restore sibling card opacity
