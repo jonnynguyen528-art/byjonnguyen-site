@@ -1070,11 +1070,13 @@
           { clipPath: 'inset(0px 0px 0px 0px round 0px)' },
           { clipPath: endClip }
         ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
-        // fill:forwards holds the collapsed position so the element doesn't
-        // snap back to the inline style before onfinish fires.
-        // We clear the inline style in onfinish so the next open() starts clean.
         collapseAnim.onfinish = function() {
-          csOverlay.style.clipPath = '';   // inline cleared; fill still holds endClip
+          // commitStyles() writes the fill value (endClip) into the inline style,
+          // so cancel() removes the animation without snapping back.
+          // Then clearing the inline style lets the CSS inset(100%) rule take over.
+          try { collapseAnim.commitStyles(); } catch(e) {}
+          collapseAnim.cancel();
+          csOverlay.style.clipPath = '';
           csOverlay.classList.remove('cs-open');
           csActiveIdx = -1;
           // Restore sibling card opacity
