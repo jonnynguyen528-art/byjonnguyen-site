@@ -1078,10 +1078,15 @@
           csOverlay.style.clipPath = '';
           csOverlay.classList.remove('cs-open');
           csActiveIdx = -1;
+          accum = 0; // prevent accidental panel navigation after close
           wxWraps.forEach(function(w) {
+            // Restore wrap visibility (CSS default is opacity:0; fireWork sets it to 1)
+            w.style.opacity = '1';
             var c = w.querySelector('.wx-card');
             c.getAnimations().forEach(function(a) { a.cancel(); });
             c.style.opacity = '';
+            c.style.filter = '';
+            c.style.transform = '';
           });
         }, 750);
       }
