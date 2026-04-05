@@ -1066,26 +1066,24 @@
         // then pin the inline style so the starting position is unambiguous.
         csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
         csOverlay.style.clipPath = 'inset(0px 0px 0px 0px round 0px)';
-        var collapseAnim = csOverlay.animate([
+        csOverlay.animate([
           { clipPath: 'inset(0px 0px 0px 0px round 0px)' },
           { clipPath: endClip }
         ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
-        collapseAnim.onfinish = function() {
-          // commitStyles() writes the fill value (endClip) into the inline style,
-          // so cancel() removes the animation without snapping back.
-          // Then clearing the inline style lets the CSS inset(100%) rule take over.
-          try { collapseAnim.commitStyles(); } catch(e) {}
-          collapseAnim.cancel();
+        // Use setTimeout instead of onfinish to avoid Chrome's snap-back bug.
+        // After the animation completes, cancel it (removes fill) and clear the
+        // inline style in one synchronous block so CSS inset(100%) takes over cleanly.
+        setTimeout(function() {
+          csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
           csOverlay.style.clipPath = '';
           csOverlay.classList.remove('cs-open');
           csActiveIdx = -1;
-          // Restore sibling card opacity
           wxWraps.forEach(function(w) {
             var c = w.querySelector('.wx-card');
             c.getAnimations().forEach(function(a) { a.cancel(); });
             c.style.opacity = '';
           });
-        };
+        }, 750);
       }
       document.getElementById('cs-close').addEventListener('click', closeCaseStudy);
       // ── Scroll cue click → jump to work ──────────────────────────────
