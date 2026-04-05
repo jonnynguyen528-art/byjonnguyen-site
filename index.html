@@ -458,7 +458,6 @@
           <div class="cs-hero-meta" id="cs-hero-meta">
             <span id="cs-hero-num"></span>
             <span id="cs-hero-cat"></span>
-            <span id="cs-hero-year"></span>
           </div>
           <h1 class="cs-hero-title" id="cs-hero-title"></h1>
           <p class="cs-hero-statement" id="cs-hero-statement"></p>
@@ -742,6 +741,9 @@
               label: 'The Approach',
               body: 'The focus was to rebuild the company from the ground up as a cohesive system.\n\nThis included redefining the brand, redesigning the website for clarity and conversion, and creating a foundation that could support ongoing marketing and growth. Every touchpoint, digital and physical, was aligned to present a clear and scalable identity.'
             },
+            {
+              label: 'The Transformation',
+              subsections: [
                 {
                   label: 'Brand System',
                   body: 'The identity was simplified and modernized while retaining familiarity for existing clients. The result is a flexible system that works across digital platforms, printed materials, and large-scale physical applications.'
@@ -845,7 +847,6 @@
         // Populate static hero fields
         document.getElementById('cs-hero-num').textContent = data.num;
         document.getElementById('cs-hero-cat').textContent = data.cat;
-        document.getElementById('cs-hero-year').textContent = data.year;
         // Reset hero chrome
         var heroMeta = document.getElementById('cs-hero-meta');
         var heroTitle = document.getElementById('cs-hero-title');
@@ -954,18 +955,12 @@
             '<p class="cs-brief">' + data.brief + '</p>' +
             '<div class="cs-details">' +
               '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
-              '<div><div class="cs-detail-label">Year</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
             '</div>';
           csBody.appendChild(sec1);
           csBody.appendChild(makeImgFull());
           // Narrative sections
           data.sections.forEach(function(section) {
             if (section.subsections) {
-              // Section header
-              var secHead = document.createElement('div');
-              secHead.className = 'cs-section cs-reveal';
-              secHead.innerHTML = '<span class="cs-section-label">' + section.label + '</span>';
-              csBody.appendChild(secHead);
               section.subsections.forEach(function(sub, si) {
                 var subEl = document.createElement('div');
                 subEl.className = 'cs-section cs-reveal';
@@ -1005,7 +1000,6 @@
             '<p class="cs-brief">' + data.brief + '</p>' +
             '<div class="cs-details">' +
               '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
-              '<div><div class="cs-detail-label">Year</div><div class="cs-detail-val">' + data.year_full + '</div></div>' +
             '</div>';
           csBody.appendChild(sec1);
           csBody.appendChild(makeImgFull());
