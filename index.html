@@ -365,6 +365,56 @@
       .cs-hero-title { font-size: clamp(38px, 10vw, 72px); margin-bottom: 16px; }
       .cs-outcome { padding: clamp(28px, 6vw, 48px); }
     }
+    /* ─── LOGO EVOLUTION ─────────────────────────────────────────────── */
+    .logo-evolution {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      margin: clamp(40px,6vw,80px) 0;
+      padding: clamp(36px,5vw,64px) 0;
+      border-top: 1px solid rgba(18,18,18,0.08);
+      border-bottom: 1px solid rgba(18,18,18,0.08);
+    }
+    .logo-evo-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 0 clamp(12px,2.5vw,36px);
+    }
+    .logo-evo-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: rgba(18,18,18,0.03);
+    }
+    .logo-evo-img img {
+      max-width: 85%;
+      max-height: 85%;
+      object-fit: contain;
+      display: block;
+    }
+    .logo-evo-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(7px,0.6vw,9px);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(18,18,18,0.4);
+    }
+    .logo-evo-arrow {
+      font-size: clamp(14px,1.2vw,20px);
+      color: rgba(18,18,18,0.18);
+      padding: 0 clamp(4px,0.8vw,12px);
+      flex-shrink: 0;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 600px) {
+      .logo-evolution { grid-template-columns: 1fr auto 1fr auto 1fr; }
+      .logo-evo-img { aspect-ratio: 1/1; }
+    }
   </style>
 </head>
 <body>
@@ -777,6 +827,7 @@
                 },
                 {
                   label: 'Brand Direction & Growth Strategy',
+                  logoFlow: true,
                   body: 'ITE\u2019s identity had roots worth keeping, but a presentation that undersold the company. The original logo carried real character; what followed was a script wordmark that felt small and inconsistent. I led a complete rebrand to modernize the identity while keeping it recognizable to existing clients: a minimal, versatile mark drawn from the original figure, refined into something contemporary and ownable, paired with a clean typographic system set in ITC Avant Garde Gothic Pro and a cohesive green palette.\n\nThe rebrand touched every surface. New business cards, presentation folders, brochures, building signage, and vehicle wraps unified ITE\u2019s presence across physical touchpoints. The website was rebuilt from the ground up, shifting the positioning from \u201cYour Preferred Event Coordinator in Utah\u201d to \u201cFull-Service Event Production,\u201d and optimized for SEO to turn organic search into a consistent source of qualified leads.\n\nI built an in-house graphics department from the ground up, reducing reliance on external vendors and building a faster, more capable internal creative engine. Custom branding, environmental signage, branded vinyl wraps, motion graphics, and 3D rendering became core ITE capabilities rather than outsourced line items.\n\nThe growth strategy extended well beyond the graphics department. I expanded the service portfolio with dedicated offerings for tradeshows, audio/visual, lighting, display, floral, and decor. Each service was supported by a purpose-built landing page structured for conversion and optimized for SEO.\n\nThe brand system was built to scale: flexible enough to operate across digital platforms, printed materials, and the large-scale conference and tradeshow environments ITE produces for its clients. It gave ITE the infrastructure to pursue larger clients, command bigger productions, and grow without outpacing its own identity.'
                 },
                 {
@@ -1019,10 +1070,41 @@
               section.subsections.forEach(function(sub, si) {
                 var subEl = document.createElement('div');
                 subEl.className = 'cs-section cs-reveal';
-                var bodyHtml = sub.body.replace(/\n\n/g, '</p><p class="cs-brief" style="margin-top:1.2em;">');
-                subEl.innerHTML = '<span class="cs-section-label">' + sub.label + '</span>' +
-                  '<p class="cs-brief">' + bodyHtml + '</p>';
-                csBody.appendChild(subEl);
+                if (sub.logoFlow) {
+                  var parts = sub.body.split('\n\n');
+                  var firstPara = parts[0];
+                  var restHtml = parts.slice(1).join('</p><p class="cs-brief" style="margin-top:1.2em;">');
+                  subEl.innerHTML = '<span class="cs-section-label">' + sub.label + '</span>' +
+                    '<p class="cs-brief">' + firstPara + '</p>';
+                  csBody.appendChild(subEl);
+                  var evoEl = document.createElement('div');
+                  evoEl.className = 'logo-evolution cs-reveal';
+                  evoEl.innerHTML =
+                    '<div class="logo-evo-item">' +
+                      '<div class="logo-evo-img"><img src="assets/ITE_original_logo" alt="Original Logo"></div>' +
+                      '<span class="logo-evo-label">Original</span>' +
+                    '</div>' +
+                    '<div class="logo-evo-arrow">&#8594;</div>' +
+                    '<div class="logo-evo-item">' +
+                      '<div class="logo-evo-img"><img src="assets/ITE_old_logo" alt="Before Rebrand"></div>' +
+                      '<span class="logo-evo-label">Before Rebrand</span>' +
+                    '</div>' +
+                    '<div class="logo-evo-arrow">&#8594;</div>' +
+                    '<div class="logo-evo-item">' +
+                      '<div class="logo-evo-img"><img src="assets/ite_logo_23_big.png" alt="Final Logo"></div>' +
+                      '<span class="logo-evo-label">Final</span>' +
+                    '</div>';
+                  csBody.appendChild(evoEl);
+                  var restEl = document.createElement('div');
+                  restEl.className = 'cs-section cs-reveal';
+                  restEl.innerHTML = '<p class="cs-brief" style="margin-top:0;">' + restHtml + '</p>';
+                  csBody.appendChild(restEl);
+                } else {
+                  var bodyHtml = sub.body.replace(/\n\n/g, '</p><p class="cs-brief" style="margin-top:1.2em;">');
+                  subEl.innerHTML = '<span class="cs-section-label">' + sub.label + '</span>' +
+                    '<p class="cs-brief">' + bodyHtml + '</p>';
+                  csBody.appendChild(subEl);
+                }
                 // si=2 is Marketing + Physical Presence — use bento grid
                 // si=3 is Real World Execution — no image block
                 if (si === 2) {
