@@ -819,6 +819,7 @@
               subsections: [
                 {
                   label: 'Brand System',
+                  imgAfter: 'assets/ite_deck.png',
                   body: 'The identity was simplified and modernized while retaining familiarity for existing clients. The result is a flexible system that works across digital platforms, printed materials, and large-scale physical applications.'
                 },
                 {
@@ -1034,10 +1035,14 @@
             '<div class="cs-bento-cell cs-bento-placeholder"></div>';
           return el;
         }
-        function makeImgFull(brighten) {
+        function makeImgFull(brighten, src) {
           var el = document.createElement('div');
           el.className = 'cs-img-full cs-reveal';
-          el.innerHTML = '<div class="cs-img-full-inner" style="background:' + data.bg + ';' + (brighten ? 'filter:brightness(' + brighten + ');' : '') + '"></div>';
+          if (src) {
+            el.innerHTML = '<div class="cs-img-full-inner" style="background-image:url(\'' + src + '\');background-size:cover;background-position:center;"></div>';
+          } else {
+            el.innerHTML = '<div class="cs-img-full-inner" style="background:' + data.bg + ';' + (brighten ? 'filter:brightness(' + brighten + ');' : '') + '"></div>';
+          }
           return el;
         }
         function makeImgRow() {
@@ -1105,8 +1110,8 @@
                 // si=3 is Real World Execution — no image block
                 if (si === 2) {
                   csBody.appendChild(makeBento());
-                } else if (si !== 3) {
-                  csBody.appendChild(si % 2 === 0 ? makeImgFull('0.9') : makeImgRow());
+                } else if (si !== 3 && si !== 4) {
+                  csBody.appendChild(si % 2 === 0 ? makeImgFull('0.9', sub.imgAfter || null) : makeImgRow());
                 }
               });
             } else {
