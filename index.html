@@ -1108,8 +1108,10 @@
                 }
                 // si=2 is Marketing + Physical Presence — use bento grid
                 // si=3 is Real World Execution — no image block
-                if (si === 2) {
+                if (si === 1) {
                   csBody.appendChild(makeBento());
+                } else if (si === 2) {
+                  csBody.appendChild(makeImgRow());
                 } else if (si !== 3 && si !== 4) {
                   csBody.appendChild(si % 2 === 0 ? makeImgFull('0.9', sub.imgAfter || null) : makeImgRow());
                 }
