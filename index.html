@@ -1035,28 +1035,6 @@
             '<div class="cs-bento-cell cs-bento-placeholder"></div>';
           return el;
         }
-        function makeLandingPages() {
-          var el = document.createElement('div');
-          el.className = 'cs-section cs-reveal';
-          var imgs = [
-            { src: 'assets/ite_tradeshows.png', label: 'Tradeshows' },
-            { src: 'assets/ite_av.png', label: 'Audio / Visual' },
-            { src: 'assets/ite_decor.png', label: 'Decor' },
-            { src: 'assets/ite_contactus.png', label: 'Contact' }
-          ];
-          el.innerHTML = '<span class="cs-section-label">Landing Pages</span>' +
-            '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;width:calc(100% + clamp(64px,10vw,160px));margin-left:calc(-1 * clamp(32px,5vw,80px));">' +
-            imgs.map(function(img) {
-              return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-                '<div style="aspect-ratio:9/16;overflow:hidden;background:rgba(18,18,18,0.06);">' +
-                  '<img src="' + img.src + '" alt="' + img.label + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">' +
-                '</div>' +
-                '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;">' + img.label + '</span>' +
-              '</div>';
-            }).join('') +
-            '</div>';
-          return el;
-        }
         function makeImgFull(brighten, src) {
           var el = document.createElement('div');
           el.className = 'cs-img-full cs-reveal';
@@ -1140,7 +1118,6 @@
                   csBody.appendChild(makeBento());
                 } else if (si === 2) {
                   csBody.appendChild(makeImgRow());
-                  csBody.appendChild(makeLandingPages());
                 } else if (si !== 3 && si !== 4) {
                   csBody.appendChild(si % 2 === 0 ? makeImgFull('0.9', sub.imgAfter || null) : makeImgRow());
                 }
