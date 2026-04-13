@@ -1118,6 +1118,9 @@
                   csBody.appendChild(makeBento());
                 } else if (si === 2) {
                   csBody.appendChild(makeImgRow());
+                  } else if (si === 4) {
+  csBody.appendChild(makeImgFull(null, 'assets/ITE-Stage.png'));
+}
                 } else if (si !== 3 && si !== 4) {
                   csBody.appendChild(si % 2 === 0 ? makeImgFull('0.9', sub.imgAfter || null) : makeImgRow());
                 }
