@@ -1046,13 +1046,19 @@
           return el;
         }
         function makeImgRow() {
-          var el = document.createElement('div');
-          el.className = 'cs-img-row cs-reveal';
-          el.innerHTML =
-            '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website_2022.png\');background-size:cover;background-position:center;"></div></div>' +
-            '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website.png\');background-size:cover;background-position:center;"></div></div>';
-          return el;
-        }
+  var el = document.createElement('div');
+  el.className = 'cs-img-row cs-reveal';
+  el.innerHTML =
+    '<div style="display:flex;flex-direction:column;gap:12px;">' +
+      '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);">Before</span>' +
+      '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website_2022.png\');background-size:cover;background-position:center;"></div></div>' +
+    '</div>' +
+    '<div style="display:flex;flex-direction:column;gap:12px;">' +
+      '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);">After</span>' +
+      '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website.png\');background-size:cover;background-position:center;"></div></div>' +
+    '</div>';
+  return el;
+}
         if (data.sections) {
           // Rich sections layout
           // Brief + Details
