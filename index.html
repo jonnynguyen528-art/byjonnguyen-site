@@ -1022,19 +1022,19 @@
           el.appendChild(vid);
           return el;
         }
-function makeBento() {
-  var el = document.createElement('div');
-  el.className = 'cs-bento cs-reveal';
-  el.innerHTML =
-    '<div class="cs-bento-cell span2"><img src="assets/ite_building.png" alt="ITE Building" loading="eager"></div>' +
-    '<div class="cs-bento-cell"><img src="assets/ite_hat.png" alt="ITE Hat" loading="eager" style="object-position:center 5%;"></div>' +
-    '<div class="cs-bento-cell"><img src="assets/ite_polo.png" alt="ITE Polo" loading="lazy"></div>' +
-    '<div class="cs-bento-cell span2"><img src="assets/ite_vehicles.jpg" alt="ITE Vehicles" loading="eager"></div>' +
-    '<div class="cs-bento-cell"><img src="assets/ite_catalogbooks copy.png" alt="ITE Catalog" loading="lazy"></div>' +
-    '<div class="cs-bento-cell"><img src="assets/ite_businesscards.png" alt="ITE Business Cards" loading="lazy"></div>' +
-    '<div class="cs-bento-cell cs-bento-placeholder"></div>';
-  return el;
-}
+        function makeBento() {
+          var el = document.createElement('div');
+          el.className = 'cs-bento cs-reveal';
+          el.innerHTML =
+            '<div class="cs-bento-cell span2"><img src="assets/ite_building.png" alt="ITE Building" loading="eager"></div>' +
+            '<div class="cs-bento-cell"><img src="assets/ite_hat.png" alt="ITE Hat" loading="eager" style="object-position:center 95%;"></div>' +
+            '<div class="cs-bento-cell"><img src="assets/ite_polo.png" alt="ITE Polo" loading="lazy"></div>' +
+            '<div class="cs-bento-cell span2"><img src="assets/ite_vehicles.jpg" alt="ITE Vehicles" loading="eager"></div>' +
+            '<div class="cs-bento-cell"><img src="assets/ite_catalogbooks copy.png" alt="ITE Catalog" loading="lazy"></div>' +
+            '<div class="cs-bento-cell"><img src="assets/ite_businesscards.png" alt="ITE Business Cards" loading="lazy"></div>' +
+            '<div class="cs-bento-cell cs-bento-placeholder"></div>';
+          return el;
+        }
         function makeImgFull(brighten, src) {
           var el = document.createElement('div');
           el.className = 'cs-img-full cs-reveal';
@@ -1049,8 +1049,8 @@ function makeBento() {
           var el = document.createElement('div');
           el.className = 'cs-img-row cs-reveal';
           el.innerHTML =
-            '<div class="cs-img-half"><div class="cs-img-half-inner" style="background:' + data.bg + ';filter:brightness(0.85);"></div></div>' +
-            '<div class="cs-img-half"><div class="cs-img-half-inner" style="background:' + data.bg + ';filter:brightness(1.1) saturate(0.8);"></div></div>';
+            '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website_2022.png\');background-size:cover;background-position:center;"></div></div>' +
+            '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website.png\');background-size:cover;background-position:center;"></div></div>';
           return el;
         }
         if (data.sections) {
