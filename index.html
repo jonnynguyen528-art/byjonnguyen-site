@@ -838,6 +838,10 @@
                 {
                   label: 'Real-World Execution',
                   body: 'The brand was built to perform wherever ITE operates, extending from digital into the physical environments where their work is delivered.\n\nFrom venue infrastructure and vendor coordination to onsite operations and spatial design, every element was considered as part of a unified whole. Brand, lighting, staging, and environment worked in concert, creating experiences that felt intentional from every angle.'
+                },
+                {
+                  label: 'AI Operations',
+                  body: 'When production volume outpaces process, the answer isn\u2019t more headcount\u2014it\u2019s smarter tooling. I built three custom GPTs to remove friction from daily operations across the team.\n\nOne integrates directly with Rentman, ITE\u2019s project management platform. Input a project number, ask anything\u2014equipment lists, financials, crew breakdowns, event summaries\u2014and get a clear answer instantly. No system navigation, no manual cross-referencing.\n\nThe second generates SEO-optimized metadata for event photography at scale: ALT text, titles, captions, and keyword-rich descriptions that keep the asset library indexed and discoverable.\n\nThe third tags every photo uploaded to the company\u2019s shared cloud with contextual keywords\u2014venue, event type, format, visual detail\u2014making internal search fast and consistent across the team. Three tools. Real time saved. Shipped.'
                 }
               ]
             }
@@ -1046,19 +1050,19 @@
           return el;
         }
         function makeImgRow() {
-  var el = document.createElement('div');
-  el.className = 'cs-img-row cs-reveal';
-  el.innerHTML =
-    '<div style="display:flex;flex-direction:column;gap:12px;">' +
-      '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;">Before</span>' +
-      '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website_2022.png\');background-size:cover;background-position:center;"></div></div>' +
-    '</div>' +
-    '<div style="display:flex;flex-direction:column;gap:12px;">' +
-      '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;">After</span>' +
-      '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website.png\');background-size:cover;background-position:center;"></div></div>' +
-    '</div>';
-  return el;
-}
+          var el = document.createElement('div');
+          el.className = 'cs-img-row cs-reveal';
+          el.innerHTML =
+            '<div style="display:flex;flex-direction:column;gap:12px;">' +
+              '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;">Before</span>' +
+              '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website_2022.png\');background-size:cover;background-position:center;"></div></div>' +
+            '</div>' +
+            '<div style="display:flex;flex-direction:column;gap:12px;">' +
+              '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;">After</span>' +
+              '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website.png\');background-size:cover;background-position:center;"></div></div>' +
+            '</div>';
+          return el;
+        }
         if (data.sections) {
           // Rich sections layout
           // Brief + Details
@@ -1112,14 +1116,14 @@
                     '<p class="cs-brief">' + bodyHtml + '</p>';
                   csBody.appendChild(subEl);
                 }
-                // si=2 is Marketing + Physical Presence — use bento grid
-                // si=3 is Real World Execution — no image block
                 if (si === 1) {
                   csBody.appendChild(makeBento());
                 } else if (si === 2) {
                   csBody.appendChild(makeImgRow());
                 } else if (si === 4) {
                   csBody.appendChild(makeImgFull(null, 'assets/ITE-Stage.png'));
+                } else if (si === 5) {
+                  csBody.appendChild(makeImgFull(null, 'assets/customgpt.png'));
                 } else if (si !== 3) {
                   csBody.appendChild(si % 2 === 0 ? makeImgFull('0.9', sub.imgAfter || null) : makeImgRow());
                 }
