@@ -832,16 +832,16 @@
                   body: 'The website was redesigned to clearly communicate services, showcase capabilities, and support discovery.\n\nContent structure was rebuilt to highlight the full scope of work, with expanded galleries and service pages that allow users to explore the depth of production. A wishlist feature was also introduced, allowing clients and customers to curate lists of rental items directly on the site, streamlining the inquiry process and improving the overall user experience.'
                 },
                 {
+                  label: 'AI Operations',
+                  body: 'When production volume outpaces process, the answer isn\u2019t more headcount. It\u2019s smarter tooling. I built three custom GPTs to remove friction from daily operations across the team.\n\nOne integrates directly with Rentman, ITE\u2019s project management platform. Input a project number, ask anything: equipment lists, financials, crew breakdowns, event summaries. Clear answer, instantly. No system navigation, no manual cross-referencing.\n\nThe second generates SEO-optimized metadata for event photography at scale: ALT text, titles, captions, and keyword-rich descriptions that keep the asset library indexed and discoverable.\n\nThe third tags every photo uploaded to the company\u2019s shared cloud with contextual keywords, venue, event type, format, visual detail, making internal search fast and consistent across the team. Three tools. Real time saved. Shipped.'
+                },
+                {
                   label: 'Marketing + Physical Presence',
                   body: 'The brand was extended across all physical touchpoints, creating consistency from digital to real-world environments.\n\nThis included printed materials, presentation assets, and large-scale applications such as vehicle branding and building signage.'
                 },
                 {
                   label: 'Real-World Execution',
                   body: 'The brand was built to perform wherever ITE operates, extending from digital into the physical environments where their work is delivered.\n\nFrom venue infrastructure and vendor coordination to onsite operations and spatial design, every element was considered as part of a unified whole. Brand, lighting, staging, and environment worked in concert, creating experiences that felt intentional from every angle.'
-                },
-                {
-                  label: 'AI Operations',
-                  body: 'When production volume outpaces process, the answer isn\u2019t more headcount\u2014it\u2019s smarter tooling. I built three custom GPTs to remove friction from daily operations across the team.\n\nOne integrates directly with Rentman, ITE\u2019s project management platform. Input a project number, ask anything\u2014equipment lists, financials, crew breakdowns, event summaries\u2014and get a clear answer instantly. No system navigation, no manual cross-referencing.\n\nThe second generates SEO-optimized metadata for event photography at scale: ALT text, titles, captions, and keyword-rich descriptions that keep the asset library indexed and discoverable.\n\nThe third tags every photo uploaded to the company\u2019s shared cloud with contextual keywords\u2014venue, event type, format, visual detail\u2014making internal search fast and consistent across the team. Three tools. Real time saved. Shipped.'
                 }
               ]
             }
@@ -1120,11 +1120,11 @@
                   csBody.appendChild(makeBento());
                 } else if (si === 2) {
                   csBody.appendChild(makeImgRow());
-                } else if (si === 4) {
-                  csBody.appendChild(makeImgFull(null, 'assets/ITE-Stage.png'));
-                } else if (si === 5) {
+                } else if (si === 3) {
                   csBody.appendChild(makeImgFull(null, 'assets/customgpt.png'));
-                } else if (si !== 3) {
+                } else if (si === 5) {
+                  csBody.appendChild(makeImgFull(null, 'assets/ITE-Stage.png'));
+                } else if (si !== 4) {
                   csBody.appendChild(si % 2 === 0 ? makeImgFull('0.9', sub.imgAfter || null) : makeImgRow());
                 }
               });
