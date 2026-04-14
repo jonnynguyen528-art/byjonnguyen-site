@@ -858,13 +858,58 @@
         {
           num: '02', cat: 'Brand / Digital', year: '2024',
           title: 'Mannequin\nRent Co',
-          statement: 'Repositioning and scaling a brand through campaigns, web, and sales tools.',
-          brief: 'Mannequin Rent Co had the product,they needed the brand. We repositioned them for a new market tier, built a web presence engineered to convert, and created a suite of sales tools that close deals.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Repositioning\u00a0\u00b7\u00a0Digital Design',
+          statement: 'Repositioning a 10-year-old brand to compete for a different kind of deal.',
+          brief: 'Mannequin Rent Co had spent a decade building a real business. The problem was the brand said rental vendor when the business had become full expo production. We repositioned them, rebuilt the digital experience around buyer outcomes, and built the commercial tools to close a different tier of deal.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Digital Design\u00a0\u00b7\u00a0Sales Enablement',
           year_full: '2024',
-          outcome: 'Full brand repositioning, web redesign, and sales enablement toolkit,a complete commercial infrastructure that accelerated growth.',
           bg: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
-          c1: '#b0a898', c2: '#7a7060', c3: '#2e2820'
+          c1: '#b0a898', c2: '#7a7060', c3: '#2e2820',
+          sections: [
+            {
+              label: 'Context',
+              body: 'Mannequin Rent Co has provided mannequin rentals for trade shows, conventions, and retail displays for over 10 years. Along the way, the scope of the business had quietly expanded: booth design, SEG fabric walls, LED video displays, display accessories, full trade show logistics. Real capability. Real demand.\n\nThe brand was not keeping up.'
+            },
+            {
+              label: 'The Problem',
+              body: 'The site organized around inventory. The messaging organized around product. Buyers looking for a full-service expo partner, the kind of buyer willing to pay for one vendor who handles everything, were landing on a page that felt like a rental catalog.\n\nMRC could win those deals. The brand was not helping them get in the room.'
+            },
+            {
+              label: 'The Build',
+              subsections: [
+                {
+                  label: 'Repositioning',
+                  body: 'The strategy was to stop organizing around what MRC has and start organizing around what buyers need. The expo manager who wants one call. The brand director who needs premium display. The company that cannot afford fragmented vendors and coordination overhead.\n\nWe shifted the primary positioning to Full Expo House, a complete trade show and expo solution. Mannequin rental was reframed as a premium component of a larger offer, not the lead. New messaging hierarchy. Visual language calibrated to the market tier they were actually competing for, not the one they started in.',
+                  render: 'none'
+                },
+                {
+                  label: 'Web Rebuild',
+                  body: 'The old site organized around products. The new site organizes around outcomes.\n\nBuilt a 7-slide hero sequence that communicates the full service range immediately on arrival, each slide aimed at a different buyer type. New architecture built around use cases rather than inventory categories. Every page has a conversion goal. Every section has a next step. No dead ends in the funnel.',
+                  render: 'imgRow',
+                  imgBefore: 'assets/mrc_before.png',
+                  imgAfter: 'assets/mrc_after.png'
+                },
+                {
+                  label: 'Landing Pages',
+                  body: 'Purpose-built pages for every service vertical: Full Expo House, trade show production, mannequin rental (reframed as premium), retail display, and custom fabrication.\n\nEach page built with a single conversion goal, a clear headline, and one CTA. The service portfolio now has a front door for every buyer, wherever they enter.',
+                  render: 'imgFull',
+                  img: 'assets/mrc_landing.png'
+                },
+                {
+                  label: 'Sales System',
+                  body: 'Built a sales deck designed to move deals forward, not explain the company. It opens with the buyer problem: fragmented expo vendors, coordination overhead, inconsistent quality across providers. Frames MRC as the single-source solution. Walks through each service with visual evidence. Structured to work in a live meeting or sent cold and stand on its own.\n\nEmail campaigns built alongside the sales motion: lead nurture sequences, post-show follow-up, and re-engagement for dormant accounts. Written, designed, and deployed in-house.',
+                  render: 'imgFull',
+                  img: 'assets/mrc_deck.png'
+                }
+              ]
+            }
+          ],
+          outcomeItems: [
+            'Brand repositioned from mannequin rental vendor to full-service expo partner, targeting a higher tier of buyer and a larger average deal size.',
+            'New site architecture built around buyer outcomes, with dedicated landing pages for every service vertical.',
+            '7-slide hero sequence rebuilt to communicate the full range of services in the first seconds of every visit.',
+            'Sales deck built to close higher-value deals, structured to work in a live meeting or sent cold.',
+            'Email marketing system built in-house to run the full sales motion: lead nurture, post-show follow-up, and account re-engagement.'
+          ]
         },
         {
           num: '03', cat: 'Experiential', year: '2025',
@@ -1050,17 +1095,19 @@
           }
           return el;
         }
-        function makeImgRow() {
+        function makeImgRow(beforeSrc, afterSrc) {
+          var bSrc = beforeSrc || 'assets/ite_website_2022.png';
+          var aSrc = afterSrc || 'assets/ite_website.png';
           var el = document.createElement('div');
           el.className = 'cs-img-row cs-reveal';
           el.innerHTML =
             '<div style="display:flex;flex-direction:column;gap:12px;">' +
               '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;">Before</span>' +
-              '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website_2022.png\');background-size:cover;background-position:center;"></div></div>' +
+              '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'' + bSrc + '\');background-size:cover;background-position:center;"></div></div>' +
             '</div>' +
             '<div style="display:flex;flex-direction:column;gap:12px;">' +
               '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;">After</span>' +
-              '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'assets/ite_website.png\');background-size:cover;background-position:center;"></div></div>' +
+              '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'' + aSrc + '\');background-size:cover;background-position:center;"></div></div>' +
             '</div>';
           return el;
         }
@@ -1075,7 +1122,11 @@
               '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
             '</div>';
           csBody.appendChild(sec1);
-          csBody.appendChild(makeVideoFull('assets/MVI_0434.mp4'));
+          if (data.video) {
+            csBody.appendChild(makeVideoFull(data.video));
+          } else if (data.heroBanner) {
+            csBody.appendChild(makeImgFull(null, data.heroBanner));
+          }
           // Narrative sections
           data.sections.forEach(function(section) {
             if (section.subsections) {
@@ -1117,7 +1168,15 @@
                     '<p class="cs-brief">' + bodyHtml + '</p>';
                   csBody.appendChild(subEl);
                 }
-                if (si === 1) {
+                if (sub.render === 'bento') {
+                  csBody.appendChild(makeBento());
+                } else if (sub.render === 'imgRow') {
+                  csBody.appendChild(makeImgRow(sub.imgBefore || null, sub.imgAfter || null));
+                } else if (sub.render === 'imgFull') {
+                  csBody.appendChild(makeImgFull(sub.brighten || null, sub.img || null));
+                } else if (sub.render === 'none') {
+                  // no image block
+                } else if (si === 1) {
                   csBody.appendChild(makeBento());
                 } else if (si === 2) {
                   csBody.appendChild(makeImgRow());
