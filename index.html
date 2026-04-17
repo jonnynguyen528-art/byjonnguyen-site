@@ -198,7 +198,7 @@
     .cs-img-full {
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
-      aspect-ratio: 16/9; overflow: hidden;
+      overflow: hidden;
       margin-bottom: clamp(80px,10vw,160px);
     }
     .cs-img-full-inner {
@@ -246,7 +246,22 @@
       display: block; transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
     }
     .cs-bento-cell:hover img { transform: scale(1.04); }
-    .cs-bento-placeholder { background: rgba(18,18,18,0.04); }
+    .cs-bento-placeholder { background: rgba(18,18,18,0.06); width:100%; height:100%; }
+    .cs-tricol {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      width: calc(100% + clamp(64px,10vw,160px));
+      margin-left: calc(-1 * clamp(32px,5vw,80px));
+      margin-bottom: clamp(80px,10vw,160px);
+    }
+    .cs-tricol-cell {
+      aspect-ratio: 9/16; overflow: hidden; border-radius: 2px;
+      background: rgba(18,18,18,0.06);
+    }
+    .cs-tricol-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    @media (max-width: 600px) {
+      .cs-tricol { grid-template-columns: 1fr; gap: 12px; }
+      .cs-tricol-cell { aspect-ratio: 9/16; }
+    }
     @media (max-width: 600px) {
       .cs-bento { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(5, clamp(120px,36vw,200px)); }
       .cs-bento-cell.span2 { grid-column: span 2; }
@@ -859,79 +874,212 @@
           num: '02', cat: 'Brand / Digital', year: '2025',
           title: 'Mannequin\nRent Co',
           statement: 'Adding the right infrastructure to a 10-year-old brand to compete for a different kind of deal.',
-          brief: 'Mannequin Rent Co had a working site, real SEO equity, and 10 years of brand recognition. The problem was the business had quietly grown into full expo production and the site still looked like a rental catalog. The goal was not to rebuild what was working. It was to add the right pieces: a hero that communicated the full range on arrival, landing pages that gave every service a dedicated conversion path, and a sales system to close a higher tier of deal.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Digital Design\u00a0\u00b7\u00a0Sales Enablement',
+          brief: 'Mannequin Rent Co had a working site, real SEO equity, and 10 years of brand recognition. The business had quietly grown into full expo production — booth design, SEG fabric walls, LED displays, full logistics — but the brand still read like a rental catalog. The goal was not to rebuild what was working. It was to add the right pieces: reposition the brand, rebuild the digital entry point, document the work properly, and build the sales infrastructure to close a higher tier of deal.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Digital Design\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Sales Enablement',
           year_full: '2025',
           bg: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
           c1: '#b0a898', c2: '#7a7060', c3: '#2e2820',
           sections: [
             {
               label: 'Context',
-              body: 'Mannequin Rent Co has provided mannequin rentals for trade shows, conventions, and retail displays for over 10 years. Along the way, the scope of the business had expanded: booth design, SEG fabric walls, LED video displays, display accessories, and full trade show logistics. Real capability. Real demand.\n\nThe website had not kept pace. The existing site had good SEO equity and a working structure. What it lacked was the language and architecture to support the larger business it had become.'
+              body: 'Mannequin Rent Co has operated for over 10 years, building real SEO equity, a reliable client base, and a reputation in the trade show space. Over time the scope expanded well beyond mannequins: booth design, SEG fabric walls, LED video displays, display accessories, full show logistics. The capability was there. The brand infrastructure to communicate it was not.\n\nThe business was winning smaller, transactional deals while leaving a larger opportunity on the table. Brands that needed one partner to handle the full expo — and were willing to pay for it — were landing on a site that looked like a rental catalog and moving on.'
             },
             {
               label: 'The Problem',
-              body: 'The homepage led with product. The navigation led with inventory. Buyers looking for a full-service expo partner, the kind willing to pay for one vendor who handles everything, were landing on a page organized for someone who needed to rent a mannequin.\n\nA full site rebuild was considered and set aside. The existing site was ranking, converting on its core offer, and had years of domain authority behind it. Starting over would have cost more time and SEO equity than the problem was worth. The right call was surgical: upgrade the entry point, build out the service portfolio, and add the commercial layer that a higher-value buyer would need to see.'
+              body: 'The homepage led with product. The navigation led with inventory. Buyers evaluating a full-service expo partner were landing on a page organized for someone who needed to rent a mannequin for the weekend.\n\nA full rebuild was considered and set aside. The existing site was ranking, converting on its core offer, and had years of domain authority behind it. Tearing it down would have cost more SEO equity and time than the problem was worth. The right call was surgical: reposition the brand, upgrade the entry point, add service-specific landing pages, document the actual work with professional photography, and build the sales layer a higher-value buyer would need to see before writing a check.'
             },
             {
               label: 'The Build',
               subsections: [
                 {
                   label: 'Repositioning',
-                  body: 'We shifted the primary positioning to Full Expo House, a complete trade show and expo solution from one vendor. Mannequin rental was reframed as a premium component of a larger offer, not the lead product.\n\nThe messaging hierarchy was rebuilt around three buyer types: the expo manager who wants one call, the brand director who needs premium display, and the company that cannot absorb coordination overhead across multiple vendors. Every piece of copy written from that frame.',
+                  body: 'The primary positioning shifted to Full Expo House — a complete trade show solution from one vendor. Mannequin rental became a premium component of a larger offer, not the lead product. The brand voice shifted from catalog to partner.\n\nThe messaging hierarchy was rebuilt around three buyer types: the expo manager who wants one call, the brand director who needs premium display, and the company that cannot absorb coordination overhead across multiple vendors. Every page, every email, every deck written from that frame.',
                   render: 'none'
                 },
                 {
-                  label: 'Hero Rebuild',
-                  body: 'Replaced the static homepage header with a 7-slide hero sequence. Each slide targets a different buyer type and communicates a different use case: trade show, retail, Full Expo House, custom fabrication. The goal was simple: no visitor should arrive and not see themselves in the first 10 seconds.\n\nThe existing site structure and navigation were left intact. The hero was the right lever because it is the first thing every visitor sees and the place where the old site was losing the most buyers immediately.',
-                  render: 'imgRow',
-                  imgBefore: 'assets/mrc_before.png',
-                  imgAfter: 'assets/mrc_after.png'
+                  label: 'Digital Rebuild',
+                  body: 'The hero slider was running on a commercial WordPress plugin — costly, rigid, and impossible to customize without fighting the system. Replaced it with a custom PHP template and hand-coded JavaScript. Zero plugin dependency. Full control over layout, timing, transitions, and responsive behavior.\n\nThe navigation was rebuilt the same way. The old structure was WooCommerce product taxonomy — Shop, then subcategories by gender and form. It communicated vendor, not partner. Rebuilt as a custom component structured around services and outcomes: Inventory, Full Expo House, What We Do. The information hierarchy now matches the business.',
+                  render: 'none'
+                },
+                {
+                  label: 'Hero & Design System',
+                  body: 'Deployed a 7-slide hero sequence replacing the static header. Each slide targets a different buyer type and use case: Full Expo House, trade show production, SEG fabric walls, LED video, retail display, mannequin inventory. The goal: no visitor should land and not see themselves within the first 10 seconds.\n\nThe design system was modernized alongside it — tightened typography, cleaned spacing, and a visual language that communicates premium without abandoning the brand recognition built over a decade.',
+                  render: 'imgFull',
+                  img: 'assets/mrc_after.png'
                 },
                 {
                   label: 'Landing Pages',
-                  body: 'Built dedicated landing pages for every service vertical: Full Expo House, trade show production, mannequin rental (reframed), retail display, and custom fabrication.\n\nEach page is organized around a specific buyer, with a single headline, a clear offer, and one CTA. No options that dilute the action. The service portfolio now has a dedicated front door for every buyer, wherever they enter, and each page is independently indexable for the search terms that buyer would actually use.',
+                  body: 'Built five dedicated landing page templates in custom PHP, none of which existed before: Full Expo House, LED video walls, SEG fabric prints, display accessories, and an interactive 3D booth configurator. Each page built around a specific buyer — single headline, clear offer, one CTA.\n\nThe 3D booth viewer lets buyers pan, zoom, and rotate a fully dressed booth concept before a single conversation happens. It removes the abstraction from the pitch and puts visual proof in front of the buyer at the moment they are evaluating.',
                   render: 'imgFull',
                   img: 'assets/mrc_landing.png'
                 },
                 {
-                  label: 'Sales System',
-                  body: 'Built a sales deck designed to move deals forward, not introduce the company. It opens with the buyer problem: fragmented expo vendors, coordination overhead, quality inconsistency across multiple providers. Frames MRC as the single-source answer. Each service section uses visual evidence. Structured to work in a live meeting or sent cold without any additional context.\n\nEmail sequences built alongside the sales motion: lead nurture, post-show follow-up, and re-engagement for dormant accounts. Everything written, designed, and deployed in-house. Launched March 2025.',
+                  label: 'Photography',
+                  body: 'The existing visual library was iPhone photos and stock. Neither supported the premium positioning the brand needed to occupy. Shot and edited a full library of professional photography across trade shows, booth builds, and product displays — documenting the actual scale and quality of the work.\n\nThe photography does two things: it gives the site and sales materials the visual credibility to match the repositioned brand, and it gives the team something to share after every show. Real documentation of real work, at the level the work deserves.',
+                  render: 'mrcBento'
+                },
+                {
+                  label: 'Sales Deck',
+                  body: 'Built a sales deck designed to move deals forward, not introduce the company. Opens with the buyer problem: fragmented expo vendors, coordination overhead, inconsistent quality across providers. Frames MRC as the single-source answer. Each section uses visual evidence and clear pricing context. Structured to work in a live meeting or sent cold without additional context.',
                   render: 'imgFull',
-                  img: 'assets/mrc_deck.png'
+                  img: 'assets/mrc_deck_spread.png'
+                },
+                {
+                  label: 'Email Marketing',
+                  body: 'Built a full email marketing system from scratch — no agency, no template library. Three sequences cover the full sales motion. A lead nurture sequence warms prospects who have engaged but not converted, building familiarity with the Full Expo House offer over multiple touchpoints. A post-show sequence deploys after events, targeting brands that saw MRC in action and are most likely to book. A re-engagement sequence targets dormant accounts with a direct offer tied to their previous service.\n\nEvery email written and designed in-house to match the repositioned brand. Subject lines, copy, and CTAs built to get a reply or a click — not just an open. Runs without a dedicated marketing team behind it.',
+                  render: 'triCol',
+                  imgs: ['assets/mrc_email1.png', 'assets/mrc_email2.png', 'assets/mrc_email3.png']
                 }
               ]
             }
           ],
           outcomeItems: [
             'Repositioned from mannequin rental vendor to full-service expo partner without discarding the SEO equity and brand recognition built over 10 years.',
-            '7-slide hero sequence deployed to communicate the full service range on arrival, replacing a static header that was losing higher-value buyers immediately.',
-            'Dedicated landing pages launched for every service vertical, each independently optimized for the search terms and buyer intent specific to that service.',
-            'Sales deck and email system built and deployed in-house, designed to support a higher-value conversation without requiring a full sales team to operate.',
-            'Launched March 2025. Tracking deal size, landing page inquiry rate, and organic search performance per service page as data accumulates.'
+            'Hero slider rebuilt from scratch in custom PHP and JavaScript — commercial plugin replaced, full control over layout, transitions, and responsive behavior at every breakpoint.',
+            'Navigation restructured from WooCommerce product taxonomy to a service-oriented architecture, rebuilt as a custom component matching the actual business.',
+            'Five landing page templates launched in custom PHP, each independently optimized for the buyer and search terms specific to that service vertical.',
+            'Professional photography library built from scratch, replacing iPhone photos with edited documentation of real work at the scale and quality the brand needed.',
+            'Sales deck and three email sequences built and deployed in-house, designed to support a higher-value conversation without requiring a dedicated sales or marketing team.',
+            'Launched March 2025. Tracking deal size, landing page inquiry rate, email reply rate, and organic search performance per service page as data accumulates.'
           ]
         },
         {
-          num: '03', cat: 'Experiential', year: '2025',
+          num: '03', cat: 'Experiential', year: '2024',
           title: 'Best Ever\nConference',
-          statement: 'Building and evolving a conference brand year over year.',
-          brief: 'Best Ever Conference isn\u2019t just an event,it\u2019s a growing institution. We built a brand system flexible enough to evolve with each year\u2019s theme while maintaining a consistent visual identity that compounds in recognition.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Systems\u00a0\u00b7\u00a0Experiential Design',
-          year_full: '2025',
-          outcome: 'A living brand system that grows year over year,building cumulative recognition and community with every edition.',
+          statement: 'From print vendor to sole brand author \u2014 a three-year arc at the center of commercial real estate\u2019s premier conference.',
+          brief: 'Best Ever Conference draws 1,000+ serious CRE investors to Salt Lake City each year. Over three years, one creative relationship evolved from delivering print and environmental design to pitching and owning the full conference identity \u2014 culminating in designing the 2027 logo independently before being commissioned.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Identity\u00a0\u00b7\u00a0Environmental Design\u00a0\u00b7\u00a0Stage Design\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Videography',
+          year_full: '2024\u20132026',
           bg: 'linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%)',
-          c1: '#c8b8a0', c2: '#907860', c3: '#483828'
+          c1: '#c8b8a0', c2: '#907860', c3: '#483828',
+          heroBanner: 'assets/bec_hero.png',
+          sections: [
+            {
+              label: 'Context',
+              body: 'Best Ever Conference is one of the most respected commercial real estate investing events in the country. Held annually in Salt Lake City, BEC draws 1,000+ active and passive investors for three days of programming, deal flow, and high-caliber networking. The audience is intentionally curated \u2014 95% of attendees have closed at least one CRE deal in the past nine months \u2014 which means the brand has to signal that standard before a single word is read.\n\nThe conference is produced by Best Ever CRE, the media and education brand built by Joe Fairless, one of the most recognized voices in commercial real estate. BEC isn\u2019t a startup event. It\u2019s an institution \u2014 and it needed to look like one.'
+            },
+            {
+              label: 'The Problem',
+              body: 'A conference at this level doesn\u2019t just need a logo and some banners. It needs an environment. The physical experience \u2014 the stage, the entry, the registration desk, the signage at every touchpoint \u2014 is the brand in the room. Get it wrong and the energy flattens before the opening session. Get it right and the venue itself becomes part of what people come back for.\n\nThe first challenge was earning the work. The second was growing from vendor to creative director \u2014 from someone who executes on direction to someone who defines it.'
+            },
+            {
+              label: 'Three Years',
+              subsections: [
+                {
+                  label: 'Year One \u2014 Earning the Room',
+                  body: 'The engagement started with a bid. The opportunity: full print and environmental design for BEC\u2019s 2024 conference in Salt Lake City. The scope included the full suite of venue touchpoints \u2014 welcome entry panels, elevator wraps, escalator graphics, registration booth design, directional meterboards, bookshelf speaker displays, and booth numbers.\n\nEvery surface was designed to extend the brand beyond the stage. The elevator wraps turned a transit corridor into messaging real estate \u2014 copy that stopped attendees mid-step: \u201cYOU ARE OPENING DOORS.\u201d \u201cENTER TO WIN A VIP EXPERIENCE.\u201d \u201cPREPARE YOUR ELEVATOR PITCH.\u201d The bookshelf display turned the speaker roster into a branded installation, each shelf slot pairing a headshot with a QR code against a dramatic dark wood backdrop.\n\nAll of it was documented. Photographed and edited on-site to create a record of the work as it was built \u2014 the kind of documentation that earns the next conversation.',
+                  render: 'photoBento',
+                  imgs: [null, null, null, null, null, null]
+                },
+                {
+                  label: 'Year Two \u2014 Full Design Execution',
+                  body: 'Year Two changed the relationship. With a proven track record, the scope expanded to include full event design. Stage concepts were developed in 3D and presented as architectural renders before anything went to production.\n\nThe broadcast stage used a single large circular form with city skyline photography and the BEC IX mark centered at eye level \u2014 a signature piece built to frame every speaker. The regency stage used a multi-sphere arch system with organic forms that became one of the most photographed sets at the venue. The podcast stage was designed as an intimate satellite environment, distinct from the main room in tone and scale.\n\nThe registration desk was rebuilt with a deep purple-to-blue galaxy gradient across the full counter run \u2014 \u201cREGISTRATION\u201d and \u201cSPEAKER/VIP\u201d set bold and clean. A 3D broadcast logo opener was also developed: the BEC mark fully rendered in CG across four colorways \u2014 light blue, pink, purple, and black \u2014 built for opening sequences, digital screens, and broadcast backgrounds throughout the event.',
+                  render: 'imgFull',
+                  img: 'assets/bec_stage_ix.png'
+                },
+                {
+                  label: 'Year Three \u2014 Pitching the Brand',
+                  body: 'By Year Three, the ask was bigger. The pitch: take ownership of the brand itself. Not just execution \u2014 creative direction of the entire BECX identity.\n\nA formal proposal was developed and submitted with two complete logo suites for the Best Ever X Conference mark. Suite 1 used a mountain-peak X motif with a cyan-to-pink gradient. Suite 2 explored a different X treatment across purple, blue, and pink. Both presented with full application previews across the brand system.\n\nThe stage design for BECX became the most ambitious of the three years: a dramatic center-stage X monument rising above a multi-level platform, flanked by LED screens carrying the BECX wordmark. The registration desk was rebuilt in deep navy with bold blue branding. The meterboards carried a single line: \u201cFOR SERIOUS INVESTORS ONLY.\u201d The full environmental system was designed and rendered across every touchpoint \u2014 escalator displays with information panels, welcome banners, elevator graphics, podcast circles, easel signs, booth numbers.',
+                  render: 'imgFull',
+                  img: 'assets/becx_stage.png'
+                },
+                {
+                  label: 'BECXI \u2014 Sole Author',
+                  body: 'Before being formally engaged for 2027, the BECXI logo was designed independently \u2014 as a proof of concept and a statement of where the brand could go.\n\nThe mark: two overlapping diamonds forming an infinity-adjacent geometric system. Clean, minimal, built to scale. Paired with a custom BECXI wordmark and a \u201c2027\u201d year lock. Presented in four executions: minimal white on black, a gradient treatment, a landscape photo overlay, and a full gold 3D render \u2014 lit against a white ground plane, with the weight of a luxury hotel identity.\n\nThe gold render became the lead visual. It matched a direction that felt inevitable for where BEC was heading: less festival, more institution. The logo was subsequently commissioned for the 2027 conference.',
+                  render: 'imgFull',
+                  img: 'assets/becxi_logo_3d.png'
+                }
+              ]
+            }
+          ],
+          outcomeItems: [
+            'Three-year creative partnership evolved from print vendor to sole brand author for one of the largest commercial real estate conferences in the country.',
+            'Full print and environmental suite designed and produced for BEC 2024 across 10+ venue touchpoints \u2014 entry panels, elevator wraps, registration, escalators, bookshelf displays, directional signage, and booth numbers.',
+            'Three distinct stage environments designed in Year 2 \u2014 broadcast, regency, and podcast stages \u2014 developed as full 3D architectural renders and executed to spec.',
+            '3D broadcast logo opener produced across four colorways for screens, broadcast, and digital use throughout the event.',
+            'Formal BECX brand pitch submitted with two complete logo suites and a full environmental design system rendered across every conference touchpoint.',
+            'BECXI 2027 logo designed independently, presented in four executions including a gold 3D render, and subsequently commissioned for the event.',
+            'Full event documentation \u2014 photography and edited footage \u2014 produced and archived across all three years.'
+          ]
         },
         {
-          num: '04', cat: 'Experiential', year: '2025',
+          num: '04', cat: 'Experiential', year: '2024–2026',
           title: '47G Zero\nGravity Summit',
-          statement: 'Scaling a conference experience across multiple years.',
-          brief: 'The Zero Gravity Summit demanded a brand that felt as elevated as its subject matter. We built an experiential identity that scaled across multi-year programming, partner activations, and premium attendee touchpoints,a brand that kept pace with the ambition.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Experiential Design\u00a0\u00b7\u00a0Brand Strategy',
-          year_full: '2025',
-          outcome: 'An experiential brand platform built to scale,across years of programming, activations, and a growing audience of senior leaders.',
-          bg: 'linear-gradient(145deg,#d4d0c8 0%,#9890a0 45%,#2c2438 100%)',
-          c1: '#aca8b4', c2: '#7a7088', c3: '#1a1228'
+          statement: 'From a plane in a Delta hangar to 3,000 people on the floor of Salt Palace — a three-year arc building Utah\'s premier deep tech conference from the ground up.',
+          brief: '47G is Utah\'s coalition for aerospace, defense, and advanced technology — and the Zero Gravity Summit is its flagship annual event. Over three years, one creative partnership grew from designing the inaugural UADA brand launch to owning every visual surface of a 3,000-person national conference: stage, booths, wayfinding, motion graphics, photography, and the identity itself. No agency. No template. Just total creative ownership of an event that keeps getting bigger.',
+          role: 'Brand Identity\u00a0\u00b7\u00a0Stage Design\u00a0\u00b7\u00a0Environmental Design\u00a0\u00b7\u00a0Motion Graphics\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Creative Direction',
+          year_full: '2024–2026',
+          bg: 'linear-gradient(150deg,#111118 0%,#1e1a2e 50%,#0a0810 100%)',
+          c1: '#5a5070', c2: '#9080b8', c3: '#c8b8f0',
+          heroBanner: 'assets/47g_hero.png',
+          sections: [
+            {
+              title: 'Context',
+              body: [
+                'Utah\'s aerospace, defense, and deep tech sector needed a central gathering point — a conference that matched the ambition of the industry it represented. 47G (formerly UADA, Utah Advanced Defense Alliance) stepped into that space with the Zero Gravity Summit: an annual event bringing together government officials, defense leaders, university researchers, and investors.',
+                'The name carries meaning at every layer: a nod to the 46.2G force record set by Colonel John Paul Stapp — a man who pushed the limits of human endurance in the name of discovery — and a reference to July 24, 1847, the founding date of Utah. Elevation. Endurance. Identity rooted in place.',
+              ]
+            },
+            {
+              title: 'The Challenge',
+              body: [
+                'Building a premium conference identity from scratch is one thing. Doing it three consecutive years — each year larger, more complex, and with a growing audience that expects the experience to match the caliber of the speakers — is something else entirely.',
+                'Every edition brought a new venue, new exhibitor footprint, new production demands, and higher stakes. The visual identity had to work at the scale of a Salt Palace main stage and an individual booth graphic, simultaneously. And it had to be built, most of it, by one person.',
+              ]
+            },
+            {
+              title: 'Three Years',
+              body: [],
+              subsections: [
+                {
+                  title: 'The Origin — A Plane in a Delta Hangar',
+                  body: [
+                    'Before 47G existed, there was UADA. The brand launch was unlike any conference opener — a full-size commercial aircraft served as the stage backdrop inside a Delta Airlines hangar. Dramatic scale, unexpected venue, a visual statement about what this organization believed in: that Utah\'s defense and aerospace community was ready to occupy a bigger stage.',
+                    'The brief was essentially to make the room feel like the beginning of something important. The environment carried that weight. It planted the seed for everything that followed.',
+                  ],
+                  render: 'imgFull',
+                  img: 'assets/47g_uada_hangar.png'
+                },
+                {
+                  title: 'Year One — Zero Gravity Launches',
+                  body: [
+                    'The inaugural Zero Gravity Summit ran across multiple Salt Lake City venues including The Depot — an intimate, character-rich space that made every design decision count. Working alongside the agency 47G had brought in, the scope covered stage design, environmental graphics, outdoor signage, swag areas, photography, and video documentation.',
+                    'The diamond-perforated stage backdrop anchored the visual language. "ZERO GRAVITY THE 47G SUMMIT" in bold, clean typography against dark surfaces established the palette and tone that would scale across future years.',
+                  ],
+                  render: 'imgFull',
+                  img: 'assets/47g_y1_stage.png'
+                },
+                {
+                  title: 'Year Two — Total Ownership, 3,000 People',
+                  body: [
+                    'For the second Zero Gravity Summit, the venue moved to Salt Palace Convention Center. The agency was gone. Every visual surface was designed solo: a panoramic main stage with multi-LED displays flanked by oversized geometric white-frame light structures; a monumental illuminated 3D entrance sculpture of the GZ monogram; hanging corridor banners throughout the Salt Palace concourse; a quilted registration and merch counter; and custom exhibitor booths carrying Zero Gravity co-branding across 100+ partners.',
+                    '3,000 attendees. Keynotes from Peyton Manning and senior government officials — all in front of environments conceived, rendered, and executed from a single creative desk. Photography and LinkedIn social edits were produced the same way.',
+                  ],
+                  render: 'imgFull',
+                  img: 'assets/47g_y2_stage.png'
+                },
+                {
+                  title: 'Year Three — In Production',
+                  body: [
+                    'The 2026 Zero Gravity Summit (October 28–29) is currently in production. The design direction steps into new territory: a darker, more luxe visual language with gold-toned accent pillars, modular LED column configurations, and a multi-arch entrance structure that dwarfs anything built in previous years. Stage geometry is being modeled in Blender. Motion graphic sequences are in After Effects.',
+                    'Three years in, the relationship has shifted from vendor to trusted creative partner — the team that gets called before a concept exists, not after. That trust is the work.',
+                  ],
+                  render: 'imgFull',
+                  img: 'assets/47g_y3_render.png'
+                }
+              ]
+            }
+          ],
+          outcome: 'Three years of growing creative ownership across Utah\'s most ambitious deep tech conference — from inaugural brand launch to sole designer on a 3,000-person national event, with a fourth year in production.',
+          outcomeItems: [
+            '3,000+ attendees at the Year 2 Zero Gravity Summit — the largest edition of the conference to date.',
+            '100+ exhibitor booths branded and coordinated across the Salt Palace floor with zero agency support.',
+            'Peyton Manning and senior U.S. government officials keynoted in front of stage environments designed entirely from a single creative desk.',
+            'Complete solo creative ownership in Year 2: stage, entrance sculpture, corridor branding, booths, motion graphics, photography, and social content.',
+            'Inaugural brand launch executed in a Delta Airlines hangar with a full-size commercial aircraft as the stage backdrop — before the 47G rebrand existed.',
+            'Year 3 (October 2026) currently in production with Blender-modeled stage and entrance designs pushing the identity into an entirely new visual register.',
+            'A multi-year client relationship built on consistent delivery and the willingness to raise the ceiling every single time.'
+          ]
         }
       ];
       var csStoredRects = [];
@@ -1085,11 +1233,47 @@
             '<div class="cs-bento-cell cs-bento-placeholder"></div>';
           return el;
         }
+        function makeMrcBento() {
+          var el = document.createElement('div');
+          el.className = 'cs-bento cs-reveal';
+          el.innerHTML =
+            '<div class="cs-bento-cell span2"><div class="cs-bento-placeholder"></div></div>' +
+            '<div class="cs-bento-cell"><div class="cs-bento-placeholder"></div></div>' +
+            '<div class="cs-bento-cell"><div class="cs-bento-placeholder"></div></div>' +
+            '<div class="cs-bento-cell span2"><div class="cs-bento-placeholder"></div></div>' +
+            '<div class="cs-bento-cell"><div class="cs-bento-placeholder"></div></div>' +
+            '<div class="cs-bento-cell"><div class="cs-bento-placeholder"></div></div>';
+          return el;
+        }
+        function makePhotoBento(imgs) {
+          var el = document.createElement('div');
+          el.className = 'cs-bento cs-reveal';
+          var cells = (imgs && imgs.length >= 6) ? imgs : [null,null,null,null,null,null];
+          var spans = [true,false,false,true,false,false];
+          el.innerHTML = cells.map(function(src,i){
+            var cls = spans[i] ? 'cs-bento-cell span2' : 'cs-bento-cell';
+            return '<div class="'+cls+'">' +
+              (src ? '<img src="'+src+'" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">' : '<div class="cs-bento-placeholder"></div>') +
+              '</div>';
+          }).join('');
+          return el;
+        }
+        function makeTriCol(imgs) {
+          var el = document.createElement('div');
+          el.className = 'cs-tricol cs-reveal';
+          var cells = (imgs && imgs.length) ? imgs : [null, null, null];
+          el.innerHTML = cells.map(function(src) {
+            return '<div class="cs-tricol-cell">' +
+              (src ? '<img src="' + src + '" alt="" loading="lazy">' : '<div class="cs-bento-placeholder"></div>') +
+              '</div>';
+          }).join('');
+          return el;
+        }
         function makeImgFull(brighten, src) {
           var el = document.createElement('div');
           el.className = 'cs-img-full cs-reveal';
           if (src) {
-            el.innerHTML = '<div class="cs-img-full-inner" style="background-image:url(\'' + src + '\');background-size:cover;background-position:center;"></div>';
+            el.innerHTML = '<img src="' + src + '" alt="" loading="lazy" style="width:100%;height:auto;display:block;">';
           } else {
             el.innerHTML = '<div class="cs-img-full-inner" style="background:' + data.bg + ';' + (brighten ? 'filter:brightness(' + brighten + ');' : '') + '"></div>';
           }
@@ -1170,6 +1354,12 @@
                 }
                 if (sub.render === 'bento') {
                   csBody.appendChild(makeBento());
+                } else if (sub.render === 'mrcBento') {
+                  csBody.appendChild(makeMrcBento());
+                } else if (sub.render === 'photoBento') {
+                  csBody.appendChild(makePhotoBento(sub.imgs || null));
+                } else if (sub.render === 'triCol') {
+                  csBody.appendChild(makeTriCol(sub.imgs || null));
                 } else if (sub.render === 'imgRow') {
                   csBody.appendChild(makeImgRow(sub.imgBefore || null, sub.imgAfter || null));
                 } else if (sub.render === 'imgFull') {
