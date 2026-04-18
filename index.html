@@ -245,8 +245,26 @@
     .cs-bento-cell img {
       width: 100%; height: 100%; object-fit: cover;
       display: block; transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+      cursor: zoom-in;
     }
     .cs-bento-cell:hover img { transform: scale(1.04); }
+    #lb-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.92);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+      cursor: zoom-out;
+    }
+    #lb-overlay.open { opacity: 1; pointer-events: all; }
+    #lb-img {
+      max-width: 90vw; max-height: 90vh;
+      object-fit: contain; display: block;
+      cursor: default;
+      transform: scale(0.95);
+      transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    #lb-overlay.open #lb-img { transform: scale(1); }
     .cs-bento-placeholder { background: rgba(18,18,18,0.06); width:100%; height:100%; }
     .cs-tricol {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
@@ -1601,6 +1619,29 @@
         if (Math.abs(dy) > 40) handleDelta(dy * 3.5);
       }, { passive: true });
     })();
+
+    // ── Lightbox ────────────────────────────────────────────────
+    (function() {
+      var overlay = document.getElementById('lb-overlay');
+      var img     = document.getElementById('lb-img');
+
+      document.addEventListener('click', function(e) {
+        if (e.target.matches('.cs-bento-cell img')) {
+          img.src = e.target.src;
+          overlay.classList.add('open');
+          return;
+        }
+        if (overlay.classList.contains('open')) {
+          overlay.classList.remove('open');
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') overlay.classList.remove('open');
+      });
+    })();
   </script>
+
+  <div id="lb-overlay"><img id="lb-img" alt=""></div>
 </body>
 </html>
