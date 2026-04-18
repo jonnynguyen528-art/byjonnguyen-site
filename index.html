@@ -226,6 +226,25 @@
       transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
     }
     .cs-slide-cell:hover img { transform: scale(1.03); }
+    .cs-tri-flush {
+      display: flex;
+      gap: 0;
+      width: calc(100% + clamp(64px,10vw,160px));
+      margin-left: calc(-1 * clamp(32px,5vw,80px));
+      margin-bottom: clamp(80px,10vw,160px);
+      overflow: hidden;
+    }
+    .cs-tri-flush-cell {
+      flex: 0 0 33.333%;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+    }
+    .cs-tri-flush-cell img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      cursor: zoom-in;
+      transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cs-tri-flush-cell:hover img { transform: scale(1.03); }
     .cs-img-stack {
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
@@ -903,8 +922,20 @@
               subsections: [
                 {
                   label: 'Brand System',
-                  imgAfter: 'assets/ite_deck.png',
-                  body: 'The identity was simplified and modernized while retaining familiarity for existing clients. The result is a flexible system that works across digital platforms, printed materials, and large-scale physical applications.'
+                  render: 'slideShowcase',
+                  body: 'The identity was simplified and modernized while retaining familiarity for existing clients. The result is a flexible system that works across digital platforms, printed materials, and large-scale physical applications.',
+                  imgs: [
+                    'assets/ite_deck/Cover.png',
+                    'assets/ite_deck/ite_deck_1.png',
+                    'assets/ite_deck/ite_deck_2.png',
+                    'assets/ite_deck/ite_deck_3.png',
+                    'assets/ite_deck/ite_deck_4.png',
+                    'assets/ite_deck/ite_deck_5.png',
+                    'assets/ite_deck/ite_deck_6.png',
+                    'assets/ite_deck/ite_deck_7.png',
+                    'assets/ite_deck/ite_deck_8.png',
+                    'assets/ite_deck/ite_deck_9.png'
+                  ]
                 },
                 {
                   label: 'Brand Direction & Growth Strategy',
@@ -1105,6 +1136,12 @@
                   body: 'Before the 2025 conference opened its doors, the client commissioned the identity for 2027. That detail matters: the relationship had reached the point where next year\'s brand was being locked in before this year\'s event began.\n\nThe BECXI mark: two overlapping diamonds forming an infinity-adjacent geometric system. Clean, minimal, built to scale. Paired with a custom wordmark and year lock. Presented in four executions, with the lead visual a full gold 3D render lit against a white ground plane, with the weight of a luxury hotel identity.\n\nLess festival, more institution.',
                   render: 'imgFull',
                   img: 'assets/becxi_logo_3d.png'
+                },
+                {
+                  label: '',
+                  body: '',
+                  render: 'triFlush',
+                  imgs: ['assets/BECXI_1.png', 'assets/BECXI_3.png', 'assets/BECXI_4.png']
                 }
               ]
             }
@@ -1574,6 +1611,13 @@
                   csBody.appendChild(makeImgRow(sub.imgBefore || null, sub.imgAfter || null));
                 } else if (sub.render === 'imgFull') {
                   csBody.appendChild(makeImgFull(sub.brighten || null, sub.img || null));
+                } else if (sub.render === 'triFlush') {
+                  var tf = document.createElement('div');
+                  tf.className = 'cs-tri-flush cs-reveal';
+                  tf.innerHTML = (sub.imgs || []).map(function(src) {
+                    return '<div class="cs-tri-flush-cell"><img src="' + src + '" alt="" loading="lazy"></div>';
+                  }).join('');
+                  csBody.appendChild(tf);
                 } else if (sub.render === 'none') {
                   // no image block
                 } else if (si === 1) {
@@ -1790,7 +1834,7 @@
       var img     = document.getElementById('lb-img');
 
       document.addEventListener('click', function(e) {
-        if (e.target.matches('.cs-bento-cell img, .cs-tricol-cell img, .cs-img-stack-cell img, .cs-slide-cell img')) {
+        if (e.target.matches('.cs-bento-cell img, .cs-tricol-cell img, .cs-img-stack-cell img, .cs-slide-cell img, .cs-tri-flush-cell img')) {
           img.src = e.target.src;
           overlay.classList.add('open');
           return;
