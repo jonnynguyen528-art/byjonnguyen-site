@@ -245,6 +245,43 @@
       transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
     }
     .cs-tri-flush-cell:hover img { transform: scale(1.03); }
+    .cs-slide-showcase-lg {
+      width: calc(100% + clamp(64px,10vw,160px));
+      margin-left: calc(-1 * clamp(32px,5vw,80px));
+      height: 54vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: clamp(80px,10vw,160px);
+    }
+    .cs-slide-row-lg {
+      display: flex;
+      gap: 14px;
+      flex-shrink: 0;
+      width: calc(100% + 100px);
+      margin-left: -50px;
+      will-change: transform;
+    }
+    .cs-slide-cell-lg {
+      flex: 0 0 calc(33.333% - 9.33px);
+      overflow: hidden;
+      background: rgba(18,18,18,0.06);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.32);
+    }
+    .cs-slide-cell-lg img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      cursor: zoom-in;
+      transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cs-slide-cell-lg:hover img { transform: scale(1.03); }
+    .cs-slide-row-strip-bottom .cs-slide-cell-lg { aspect-ratio: 16/3; }
+    .cs-slide-row-strip-bottom .cs-slide-cell-lg img { object-position: center bottom; }
+    .cs-slide-row-full .cs-slide-cell-lg { aspect-ratio: 16/9; }
+    .cs-slide-row-full .cs-slide-cell-lg img { object-position: center center; }
+    .cs-slide-row-strip-top .cs-slide-cell-lg { aspect-ratio: 16/3; }
+    .cs-slide-row-strip-top .cs-slide-cell-lg img { object-position: center top; }
     .cs-img-stack {
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
@@ -922,7 +959,7 @@
               subsections: [
                 {
                   label: 'Brand System',
-                  render: 'slideShowcase',
+                  render: 'slideShowcaseLarge',
                   body: 'The identity was simplified and modernized while retaining familiarity for existing clients. The result is a flexible system that works across digital platforms, printed materials, and large-scale physical applications.',
                   imgs: [
                     'assets/ite_deck/Cover.png',
@@ -1449,6 +1486,50 @@
           });
           return el;
         }
+        function makeSlideShowcaseLarge(imgs) {
+          // imgs[0] = Cover (placed center of middle row)
+          // Row 0 strip (bottom 1/3): imgs[1-3]
+          // Row 1 full:               imgs[4], Cover, imgs[5]
+          // Row 2 strip (top 1/3):    imgs[6-8]
+          var rows = [
+            { cells: [imgs[1]||'', imgs[2]||'', imgs[3]||''], type: 'strip-bottom' },
+            { cells: [imgs[4]||'', imgs[0]||'', imgs[5]||''], type: 'full' },
+            { cells: [imgs[6]||'', imgs[7]||'', imgs[8]||''], type: 'strip-top' }
+          ];
+          var el = document.createElement('div');
+          el.className = 'cs-slide-showcase-lg cs-reveal';
+          el.innerHTML = rows.map(function(row) {
+            return '<div class="cs-slide-row-lg cs-slide-row-' + row.type + '">' +
+              row.cells.map(function(src) {
+                return '<div class="cs-slide-cell-lg">' +
+                  (src ? '<img src="' + src + '" alt="" loading="lazy">' : '') +
+                  '</div>';
+              }).join('') +
+            '</div>';
+          }).join('');
+          requestAnimationFrame(function() {
+            var csInner = document.getElementById('cs-inner');
+            if (!csInner) return;
+            var slideRows = el.querySelectorAll('.cs-slide-row-lg');
+            function update() {
+              var rect = el.getBoundingClientRect();
+              var vh = window.innerHeight;
+              var progress = 1 - (rect.bottom / (rect.height + vh));
+              progress = Math.max(0, Math.min(1, progress));
+              var shift = (progress - 0.5) * 120;
+              slideRows[0].style.transform = 'translateX(' + (-shift) + 'px)';
+              slideRows[1].style.transform = 'translateX(' + ( shift) + 'px)';
+              slideRows[2].style.transform = 'translateX(' + (-shift) + 'px)';
+            }
+            csInner.addEventListener('scroll', update, { passive: true });
+            update();
+            if (slideScrollCleanup) slideScrollCleanup();
+            slideScrollCleanup = function() {
+              csInner.removeEventListener('scroll', update);
+            };
+          });
+          return el;
+        }
         function makeImgStack(imgs) {
           var el = document.createElement('div');
           el.className = 'cs-img-stack cs-reveal';
@@ -1597,6 +1678,8 @@
                   csBody.appendChild(makeMrcBento());
                 } else if (sub.render === 'slideShowcase') {
                   csBody.appendChild(makeSlideShowcase(sub.imgs || []));
+                } else if (sub.render === 'slideShowcaseLarge') {
+                  csBody.appendChild(makeSlideShowcaseLarge(sub.imgs || []));
                 } else if (sub.render === 'imgStack') {
                   csBody.appendChild(makeImgStack(sub.imgs || []));
                 } else if (sub.render === 'bec9Bento') {
@@ -1834,7 +1917,7 @@
       var img     = document.getElementById('lb-img');
 
       document.addEventListener('click', function(e) {
-        if (e.target.matches('.cs-bento-cell img, .cs-tricol-cell img, .cs-img-stack-cell img, .cs-slide-cell img, .cs-tri-flush-cell img')) {
+        if (e.target.matches('.cs-bento-cell img, .cs-tricol-cell img, .cs-img-stack-cell img, .cs-slide-cell img, .cs-tri-flush-cell img, .cs-slide-cell-lg img')) {
           img.src = e.target.src;
           overlay.classList.add('open');
           return;
