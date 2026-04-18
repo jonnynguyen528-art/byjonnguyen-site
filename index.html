@@ -195,6 +195,36 @@
       font-family: 'Montserrat', sans-serif; font-size: clamp(11px,0.9vw,14px);
       letter-spacing: 0.08em; color: rgba(18,18,18,0.7); line-height: 1.6;
     }
+    .cs-slide-showcase {
+      width: calc(100% + clamp(64px,10vw,160px));
+      margin-left: calc(-1 * clamp(32px,5vw,80px));
+      height: 40vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: clamp(80px,10vw,160px);
+    }
+    .cs-slide-row {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+      width: calc(100% + 100px);
+      margin-left: -50px;
+      will-change: transform;
+    }
+    .cs-slide-cell {
+      flex: 0 0 calc(25% - 4.5px);
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: rgba(18,18,18,0.06);
+    }
+    .cs-slide-cell img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      cursor: zoom-in;
+      transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cs-slide-cell:hover img { transform: scale(1.03); }
     .cs-img-stack {
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
@@ -1049,6 +1079,22 @@
                   img: 'assets/becx_stage.png'
                 },
                 {
+                  label: 'BECX Brand Pitch',
+                  body: 'Presented alongside the stage design.',
+                  render: 'slideShowcase',
+                  imgs: [
+                    'assets/becx_deck/Logos.png',
+                    'assets/becx_deck/Logos Iterations.png',
+                    'assets/becx_deck/Escalator.png',
+                    'assets/becx_deck/Meterboards.png',
+                    'assets/becx_deck/Reg.png',
+                    'assets/becx_deck/Cover.png',
+                    'assets/becx_deck/Texture.png',
+                    'assets/becx_deck/Colors.png',
+                    null, null, null, null
+                  ]
+                },
+                {
                   label: 'BECXI: Sole Author',
                   body: 'Before the 2025 conference opened its doors, the client commissioned the identity for 2027. That detail matters: the relationship had reached the point where next year\'s brand was being locked in before this year\'s event began.\n\nThe BECXI mark: two overlapping diamonds forming an infinity-adjacent geometric system. Clean, minimal, built to scale. Paired with a custom wordmark and year lock. Presented in four executions, with the lead visual a full gold 3D render lit against a white ground plane, with the weight of a luxury hotel identity.\n\nLess festival, more institution.',
                   render: 'imgFull',
@@ -1149,6 +1195,7 @@
       var csStoredRects = [];
       var csActiveIdx = -1;
       var csObserver = null;
+      var slideScrollCleanup = null;
       function openCaseStudy(idx) {
         var data = CS_DATA[idx];
         var csOverlay = document.getElementById('cs-overlay');
@@ -1322,6 +1369,43 @@
           }).join('');
           return el;
         }
+        function makeSlideShowcase(imgs) {
+          var el = document.createElement('div');
+          el.className = 'cs-slide-showcase cs-reveal';
+          var rows = [imgs.slice(0,4), imgs.slice(4,8), imgs.slice(8,12)];
+          el.innerHTML = rows.map(function(rowImgs) {
+            return '<div class="cs-slide-row">' +
+              rowImgs.map(function(src) {
+                return '<div class="cs-slide-cell">' +
+                  (src ? '<img src="' + src + '" alt="" loading="lazy">' : '') +
+                  '</div>';
+              }).join('') +
+            '</div>';
+          }).join('');
+          // Attach parallax after element is in the DOM
+          requestAnimationFrame(function() {
+            var csInner = document.getElementById('cs-inner');
+            if (!csInner) return;
+            var slideRows = el.querySelectorAll('.cs-slide-row');
+            function update() {
+              var rect = el.getBoundingClientRect();
+              var vh = window.innerHeight;
+              var progress = 1 - (rect.bottom / (rect.height + vh));
+              progress = Math.max(0, Math.min(1, progress));
+              var shift = (progress - 0.5) * 100; // ±50px range
+              slideRows[0].style.transform = 'translateX(' + (-shift) + 'px)';
+              slideRows[1].style.transform = 'translateX(' + ( shift) + 'px)';
+              slideRows[2].style.transform = 'translateX(' + (-shift) + 'px)';
+            }
+            csInner.addEventListener('scroll', update, { passive: true });
+            update();
+            if (slideScrollCleanup) slideScrollCleanup();
+            slideScrollCleanup = function() {
+              csInner.removeEventListener('scroll', update);
+            };
+          });
+          return el;
+        }
         function makeImgStack(imgs) {
           var el = document.createElement('div');
           el.className = 'cs-img-stack cs-reveal';
@@ -1467,6 +1551,8 @@
                   csBody.appendChild(makeBento());
                 } else if (sub.render === 'mrcBento') {
                   csBody.appendChild(makeMrcBento());
+                } else if (sub.render === 'slideShowcase') {
+                  csBody.appendChild(makeSlideShowcase(sub.imgs || []));
                 } else if (sub.render === 'imgStack') {
                   csBody.appendChild(makeImgStack(sub.imgs || []));
                 } else if (sub.render === 'bec9Bento') {
@@ -1600,6 +1686,7 @@
           csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
           csOverlay.style.clipPath = '';
           csOverlay.classList.remove('cs-open');
+          if (slideScrollCleanup) { slideScrollCleanup(); slideScrollCleanup = null; }
           csActiveIdx = -1;
           accum = 0;
           wxWraps.forEach(function(w) {
@@ -1696,7 +1783,7 @@
       var img     = document.getElementById('lb-img');
 
       document.addEventListener('click', function(e) {
-        if (e.target.matches('.cs-bento-cell img, .cs-tricol-cell img, .cs-img-stack-cell img')) {
+        if (e.target.matches('.cs-bento-cell img, .cs-tricol-cell img, .cs-img-stack-cell img, .cs-slide-cell img')) {
           img.src = e.target.src;
           overlay.classList.add('open');
           return;
