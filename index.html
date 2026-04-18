@@ -1015,8 +1015,16 @@
                 {
                   label: 'Beyond the Stage',
                   body: 'The stage was one surface of many. From the elevator lobby to the ballroom floor, every attendee touchpoint was designed: elevator wraps, escalator graphics, directional signage, and a badging system running across the full registration flow. On stage, custom LED screen content carried the visual language through every session. The debate segment got its own purpose-built counter units, a tighter contained form distinct from the main stage. The registration counter was rebuilt to match the environment throughout.\n\nThe first original motion asset for the conference was produced alongside the environmental work. Working with the existing BEC IX mark, a 3D broadcast logo opener was built across four colorways for opening sequences, screens, and broadcast backgrounds throughout the event. The conference mark moved from print to motion for the first time.',
-                  render: 'photoBento',
-                  imgs: [null, null, null, null, null, null]
+                  render: 'bec9Bento',
+                  imgs: [
+                    'assets/bec9_app.jpg',
+                    'assets/bec9_elevators.jpg',
+                    'assets/bec9_centerpiece.png',
+                    'assets/bec9_debate.jpg',
+                    'assets/bec9_registration.png',
+                    'assets/bec9_escalator.jpg',
+                    'assets/bec9_party.jpg'
+                  ]
                 },
                 {
                   label: 'Year Three: Pitching Ownership',
@@ -1298,6 +1306,25 @@
           }).join('');
           return el;
         }
+        function makeBec9Bento(imgs) {
+          var el = document.createElement('div');
+          el.className = 'cs-bento cs-reveal';
+          var c = (imgs && imgs.length >= 7) ? imgs : Array(7).fill(null);
+          function cell(src, cls) {
+            return '<div class="cs-bento-cell' + (cls ? ' ' + cls : '') + '">' +
+              (src ? '<img src="' + src + '" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">' : '<div class="cs-bento-placeholder"></div>') +
+              '</div>';
+          }
+          el.innerHTML =
+            cell(c[0], 'row-span2') +   // row 1-2 col 1: app (portrait)
+            cell(c[1], 'span2') +        // row 1 col 2-3: elevators (wide)
+            cell(c[2], '') +             // row 2 col 2: centerpiece
+            cell(c[3], '') +             // row 2 col 3: debate
+            cell(c[4], 'span2') +        // row 3 col 1-2: registration (wide)
+            cell(c[5], 'row-span2') +   // row 3-4 col 3: escalator (portrait)
+            cell(c[6], 'span2');         // row 4 col 1-2: party (wide)
+          return el;
+        }
         function makeBecBento(imgs) {
           var el = document.createElement('div');
           el.className = 'cs-bento cs-reveal';
@@ -1414,6 +1441,8 @@
                   csBody.appendChild(makeBento());
                 } else if (sub.render === 'mrcBento') {
                   csBody.appendChild(makeMrcBento());
+                } else if (sub.render === 'bec9Bento') {
+                  csBody.appendChild(makeBec9Bento(sub.imgs || null));
                 } else if (sub.render === 'becBento') {
                   csBody.appendChild(makeBecBento(sub.imgs || null));
                 } else if (sub.render === 'photoBento') {
