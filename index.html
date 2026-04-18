@@ -202,22 +202,23 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 14px;
       margin-bottom: clamp(80px,10vw,160px);
     }
     .cs-slide-row {
       display: flex;
-      gap: 6px;
+      gap: 14px;
       flex-shrink: 0;
       width: calc(100% + 100px);
       margin-left: -50px;
       will-change: transform;
     }
     .cs-slide-cell {
-      flex: 0 0 calc(25% - 4.5px);
+      flex: 0 0 calc(25% - 10.5px);
       aspect-ratio: 16/9;
       overflow: hidden;
       background: rgba(18,18,18,0.06);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.10);
     }
     .cs-slide-cell img {
       width: 100%; height: 100%; object-fit: cover; display: block;
