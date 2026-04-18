@@ -1392,9 +1392,13 @@
                   csBody.appendChild(restEl);
                 } else {
                   var bodyHtml = sub.body.replace(/\n\n/g, '</p><p class="cs-brief" style="margin-top:1.2em;">');
-                  var logoTopper = sub.logo ? '<img src="' + sub.logo + '" alt="" style="height:28px;width:auto;display:block;margin-bottom:14px;object-fit:contain;opacity:0.7;">' : '';
-                  subEl.innerHTML = logoTopper + '<span class="cs-section-label">' + sub.label + '</span>' +
-                    '<p class="cs-brief">' + bodyHtml + '</p>';
+                  var labelHtml = sub.logo
+                    ? '<div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">' +
+                        '<img src="' + sub.logo + '" alt="" style="height:112px;width:auto;flex-shrink:0;object-fit:contain;opacity:0.85;">' +
+                        '<span class="cs-section-label" style="margin-bottom:0;">' + sub.label + '</span>' +
+                      '</div>'
+                    : '<span class="cs-section-label">' + sub.label + '</span>';
+                  subEl.innerHTML = labelHtml + '<p class="cs-brief">' + bodyHtml + '</p>';
                   csBody.appendChild(subEl);
                 }
                 if (sub.render === 'bento') {
