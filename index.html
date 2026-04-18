@@ -1065,11 +1065,11 @@
                   imgs: [
                     'assets/bec9_app.jpg',
                     'assets/bec9_elevators.jpg',
-                    'assets/bec9_centerpiece.png',
                     'assets/bec9_debate.jpg',
+                    'assets/bec9_centerpiece.png',
                     'assets/bec9_registration.png',
-                    'assets/bec9_escalator.jpg',
-                    'assets/bec9_party.jpg'
+                    'assets/bec9_party.jpg',
+                    'assets/bec9_escalator.jpg'
                   ]
                 },
                 {
@@ -1080,7 +1080,7 @@
                 },
                 {
                   label: 'BECX Brand Pitch',
-                  body: 'Presented alongside the stage design.',
+                  body: '',
                   render: 'slideShowcase',
                   imgs: [
                     'assets/becx_deck/Logos.png',
@@ -1429,13 +1429,13 @@
               '</div>';
           }
           el.innerHTML =
-            cell(c[0], 'row-span2') +   // row 1-2 col 1: app (portrait)
-            cell(c[1], 'span2') +        // row 1 col 2-3: elevators (wide)
-            cell(c[2], '') +             // row 2 col 2: centerpiece
-            cell(c[3], '') +             // row 2 col 3: debate
-            cell(c[4], 'span2') +        // row 3 col 1-2: registration (wide)
-            cell(c[5], 'row-span2') +   // row 3-4 col 3: escalator (portrait)
-            cell(c[6], 'span2');         // row 4 col 1-2: party (wide)
+            cell(c[0], 'row-span2') +  // row 1-2 col 1: app (portrait)
+            cell(c[1], '') +            // row 1 col 2: elevators
+            cell(c[2], '') +            // row 1 col 3: debate (next to elevators)
+            cell(c[3], 'span2') +      // row 2 col 2-3: centerpiece (wide)
+            cell(c[4], '') +            // row 3 col 1: registration
+            cell(c[5], '') +            // row 3 col 2: party (bottom right)
+            cell(c[6], '');             // row 3 col 3: escalator (bottom right)
           return el;
         }
         function makeBecBento(imgs) {
@@ -1545,9 +1545,10 @@
                   restEl.innerHTML = '<p class="cs-brief" style="margin-top:0;">' + restHtml + '</p>';
                   csBody.appendChild(restEl);
                 } else {
-                  var bodyHtml = sub.body.replace(/\n\n/g, '</p><p class="cs-brief" style="margin-top:1.2em;">');
-                  subEl.innerHTML = '<span class="cs-section-label">' + sub.label + '</span>' +
-                    '<p class="cs-brief">' + bodyHtml + '</p>';
+                  var bodyHtml = sub.body ? sub.body.replace(/\n\n/g, '</p><p class="cs-brief" style="margin-top:1.2em;">') : '';
+                  var bodyTag = bodyHtml ? '<p class="cs-brief">' + bodyHtml + '</p>' : '';
+                  if (!bodyHtml) subEl.style.marginBottom = '24px';
+                  subEl.innerHTML = '<span class="cs-section-label">' + sub.label + '</span>' + bodyTag;
                   csBody.appendChild(subEl);
                 }
                 if (sub.render === 'bento') {
