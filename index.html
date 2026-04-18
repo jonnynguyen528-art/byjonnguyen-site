@@ -218,7 +218,7 @@
       aspect-ratio: 16/9;
       overflow: hidden;
       background: rgba(18,18,18,0.06);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.35);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.45);
     }
     .cs-slide-cell img {
       width: 100%; height: 100%; object-fit: cover; display: block;
@@ -876,6 +876,7 @@
         {
           num: '01', cat: 'Brand', year: '2024',
           video: 'assets/ITE_Logo.mp4',
+          briefVideo: 'assets/MVI_0434.mp4',
           title: 'In The\nEvent',
           statement: 'Building and scaling a brand, marketing system, and revenue engine.',
           brief: 'In The Event operated primarily through referrals, with no structured marketing or digital presence. The brand lacked consistency, and the website did not reflect the full scope of services or capabilities.',
@@ -1505,8 +1506,8 @@
               '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
             '</div>';
           csBody.appendChild(sec1);
-          if (data.video) {
-            csBody.appendChild(makeVideoFull(data.video));
+          if (data.briefVideo || data.video) {
+            csBody.appendChild(makeVideoFull(data.briefVideo || data.video));
           } else if (data.heroBanner) {
             csBody.appendChild(makeImgFull(null, data.heroBanner));
           }
