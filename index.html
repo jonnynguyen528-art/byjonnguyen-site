@@ -1642,8 +1642,8 @@
               '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
             '</div>';
           csBody.appendChild(sec1);
-          if (data.briefVideo || data.video) {
-            csBody.appendChild(makeVideoFull(data.briefVideo || data.video));
+          if (data.briefVideo) {
+            csBody.appendChild(makeVideoFull(data.briefVideo));
           } else if (data.heroBanner) {
             csBody.appendChild(makeImgFull(null, data.heroBanner));
           }
