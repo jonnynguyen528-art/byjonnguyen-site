@@ -1156,6 +1156,7 @@
                 },
                 {
                   label: 'Year Three: Pitching Ownership',
+                  tightBottom: true,
                   body: 'Year Three was the push for full brand authorship. A formal pitch was submitted alongside the event work: two complete logo suites for the Best Ever X Conference mark, each developed with full application previews across the event system. Not a style exploration. A complete identity, ready to deploy.\n\nThe BECX stage was the most ambitious build of the four years: a center-stage X monument rising above a multi-level platform, flanked by LED screens. Meterboards carried a single line: "FOR SERIOUS INVESTORS ONLY." The full environmental system was rendered across every venue touchpoint. The environment and the brand pitch landed simultaneously. The relationship was no longer about execution.',
                   render: 'imgFull',
                   img: 'assets/becx_stage.png'
@@ -1181,6 +1182,7 @@
                 },
                 {
                   label: 'BECXI: Sole Author',
+                  compact: true,
                   body: 'Before the 2025 conference opened its doors, the client commissioned the identity for 2027. That detail matters: the relationship had reached the point where next year\'s brand was being locked in before this year\'s event began.\n\nThe BECXI mark: two overlapping diamonds forming an infinity-adjacent geometric system. Clean, minimal, built to scale. Paired with a custom wordmark and year lock. Presented in four executions, with the lead visual a full gold 3D render lit against a white ground plane, with the weight of a luxury hotel identity.\n\nLess festival, more institution.',
                   render: 'imgFull',
                   img: 'assets/becxi_logo_3d.png'
@@ -1679,7 +1681,8 @@
                 } else {
                   var bodyHtml = sub.body ? sub.body.replace(/\n\n/g, '</p><p class="cs-brief" style="margin-top:1.2em;">') : '';
                   var bodyTag = bodyHtml ? '<p class="cs-brief">' + bodyHtml + '</p>' : '';
-                  if (!bodyHtml) subEl.style.marginBottom = '24px';
+                  if (!bodyHtml) subEl.style.marginBottom = '12px';
+                  if (sub.compact) { subEl.style.marginTop = 'calc(-1 * clamp(48px,6vw,96px))'; subEl.style.marginBottom = '32px'; }
                   subEl.innerHTML = '<span class="cs-section-label">' + sub.label + '</span>' + bodyTag;
                   csBody.appendChild(subEl);
                 }
@@ -1704,7 +1707,9 @@
                 } else if (sub.render === 'imgRow') {
                   csBody.appendChild(makeImgRow(sub.imgBefore || null, sub.imgAfter || null));
                 } else if (sub.render === 'imgFull') {
-                  csBody.appendChild(makeImgFull(sub.brighten || null, sub.img || null));
+                  var imgFullEl = makeImgFull(sub.brighten || null, sub.img || null);
+                  if (sub.tightBottom) imgFullEl.style.marginBottom = '32px';
+                  csBody.appendChild(imgFullEl);
                 } else if (sub.render === 'triFlush') {
                   var tf = document.createElement('div');
                   tf.className = 'cs-tri-flush cs-reveal';
