@@ -35,6 +35,9 @@
     .hero-word-col.left { justify-content: flex-end; margin-right: clamp(-150px, -21vw, -260px); }
     .hero-word-col.right { justify-content: flex-start; margin-left: clamp(-150px, -21vw, -260px); }
     .hero-word { display: block; font-family: 'Cinema Sunday', serif; font-weight: normal; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; font-size: clamp(32px, 5vw, 82px); color: rgba(18,18,18,0.88); white-space: nowrap; }
+    .hero-director-wrap { display: flex; flex-direction: column; align-items: flex-start; }
+    .hero-director-discipline { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: clamp(6px, 0.52vw, 8.5px); letter-spacing: 0.32em; text-transform: uppercase; color: rgba(18,18,18,0.5); margin-top: 10px; white-space: nowrap; }
+    .rx-discipline { opacity: 0; animation: revealWord 1.2s cubic-bezier(0.4,0,0.2,1) 1.4s forwards; }
     @media (max-width: 900px) {
       .hero-word-col { padding-top: calc(clamp(240px, 48vw, 480px) * 0.22); }
       .hero-word-col.left { margin-right: clamp(-60px, -12vw, -140px); }
@@ -85,7 +88,7 @@
     .content-section { min-height: 100vh; }
     .work-section { height: 100vh; display: flex; flex-direction: column; overflow: hidden; padding: 0; }
     .work-header { padding: clamp(88px,10vh,108px) clamp(32px,5vw,80px) clamp(14px,1.8vh,24px); flex-shrink: 0; }
-    .work-eyebrow { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: clamp(9px,0.75vw,11px); letter-spacing: 0.38em; text-transform: uppercase; color: rgb(31, 87, 255); }
+    .work-eyebrow { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: clamp(11px,0.95vw,14px); letter-spacing: 0.32em; text-transform: uppercase; color: rgb(31, 87, 255); }
     .work-cards-grid { flex: 1; display: flex; gap: 3px; padding: 0 3px 3px; min-height: 0; perspective: 1400px; perspective-origin: 50% -25%; }
     .work-card-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; opacity: 0; perspective: 800px; }
     .work-card { flex: 1; position: relative; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
@@ -580,13 +583,12 @@
             </div>
           </div>
           <div class="hero-word-col right">
-            <div class="word-mask"><span class="hero-word rx rx-director">DIRECTOR</span></div>
+            <div class="hero-director-wrap">
+              <div class="word-mask"><span class="hero-word rx rx-director">DIRECTOR</span></div>
+              <div class="hero-director-discipline rx rx-discipline">BRAND &nbsp; DIGITAL &nbsp; EXPERIENTIAL</div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="hero-sub">
-        <p class="hero-sub-role">BUILDING BRAND SYSTEMS THAT SHIP AND SCALE</p>
-        <p class="hero-sub-discipline">BRAND &nbsp;&middot;&nbsp; DIGITAL &nbsp;&middot;&nbsp; EXPERIENTIAL</p>
       </div>
       <button class="hero-scroll-cue" id="heroScrollCue">SELECTED WORK ↓</button>
     </section>
