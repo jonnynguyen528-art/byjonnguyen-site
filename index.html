@@ -229,6 +229,58 @@
       transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
     }
     .cs-slide-cell:hover img { transform: scale(1.03); }
+    .cs-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      width: calc(100% + clamp(64px,10vw,160px));
+      margin-left: calc(-1 * clamp(32px,5vw,80px));
+      margin-bottom: clamp(80px,10vw,160px);
+    }
+    .cs-two-col-cell { aspect-ratio: 3/4; overflow: hidden; background: rgba(18,18,18,0.06); }
+    .cs-two-col-cell img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; transition: transform 0.6s cubic-bezier(0.16,1,0.3,1); }
+    .cs-two-col-cell:hover img { transform: scale(1.03); }
+    .cs-img-slider {
+      width: calc(100% + clamp(64px,10vw,160px));
+      margin-left: calc(-1 * clamp(32px,5vw,80px));
+      margin-bottom: clamp(80px,10vw,160px);
+      position: relative;
+      overflow: hidden;
+      background: rgba(18,18,18,0.06);
+      aspect-ratio: 16/9;
+    }
+    .cs-img-slider-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cs-img-slider-slide {
+      flex: 0 0 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .cs-img-slider-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cs-img-slider-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(244,241,234,0.85); border: none; cursor: pointer;
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: rgba(18,18,18,0.8);
+      z-index: 2; transition: background 0.2s;
+    }
+    .cs-img-slider-btn:hover { background: rgba(244,241,234,1); }
+    .cs-img-slider-btn.prev { left: 16px; }
+    .cs-img-slider-btn.next { right: 16px; }
+    .cs-img-slider-dots {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; z-index: 2;
+    }
+    .cs-img-slider-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(244,241,234,0.5); cursor: pointer;
+      transition: background 0.2s;
+    }
+    .cs-img-slider-dot.active { background: rgba(244,241,234,1); }
     .cs-tri-flush {
       display: flex;
       gap: 0;
@@ -1037,6 +1089,7 @@
               subsections: [
                 {
                   label: 'Repositioning',
+                  twoCol: ['assets/mrc_booth_1.png', 'assets/mrc_booth_2.png'],
                   body: 'The primary positioning shifted to Full Expo House — a complete trade show solution from one vendor. Mannequin rental became a premium component of a larger offer, not the lead product. The brand voice shifted from catalog to partner.\n\nThe messaging hierarchy was rebuilt around three buyer types: the expo manager who wants one call, the brand director who needs premium display, and the company that cannot absorb coordination overhead across multiple vendors. Every page, every email, every deck written from that frame.',
                   render: 'none'
                 },
@@ -1047,6 +1100,7 @@
                 },
                 {
                   label: 'Hero & Design System',
+                  slider: ['assets/mrc_slide_1.jpg', 'assets/mrc_slide_2.jpg', 'assets/mrc_slide_3.jpg', 'assets/mrc_slide_4.jpg', 'assets/mrc_slide_5.jpg', 'assets/mrc_slide_6.jpg', 'assets/mrc_slide_7.jpg'],
                   body: 'Deployed a 7-slide hero sequence replacing the static header. Each slide targets a different buyer type and use case: Full Expo House, trade show production, SEG fabric walls, LED video, retail display, mannequin inventory. The goal: no visitor should land and not see themselves within the first 10 seconds.\n\nThe design system was modernized alongside it — tightened typography, cleaned spacing, and a visual language that communicates premium without abandoning the brand recognition built over a decade.',
                   render: 'imgFull',
                   img: 'assets/mrc_after.png'
@@ -1342,6 +1396,13 @@
           vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.85;';
           heroBg.appendChild(vid);
           vid.load();
+          vid.addEventListener('canplay', function() {
+            vid.play().catch(function() {});
+          });
+          vid.addEventListener('stalled', function() {
+            vid.load();
+            vid.play().catch(function() {});
+          });
         } else {
           heroBg.style.inset = '';
           heroBg.style.background = data.bg;
@@ -1573,6 +1634,54 @@
           });
           return el;
         }
+        function makeTwoCol(imgs) {
+          var el = document.createElement('div');
+          el.className = 'cs-two-col cs-reveal';
+          el.innerHTML = (imgs || [null, null]).map(function(src) {
+            return '<div class="cs-two-col-cell">' +
+              (src ? '<img src="' + src + '" alt="" loading="lazy">' : '<div class="cs-bento-placeholder" style="height:100%;"></div>') +
+              '</div>';
+          }).join('');
+          return el;
+        }
+        function makeImgSlider(imgs) {
+          var el = document.createElement('div');
+          el.className = 'cs-img-slider cs-reveal';
+          var idx = 0;
+          var track = document.createElement('div');
+          track.className = 'cs-img-slider-track';
+          track.innerHTML = (imgs || []).map(function(src) {
+            return '<div class="cs-img-slider-slide"><img src="' + src + '" alt="" loading="lazy"></div>';
+          }).join('');
+          el.appendChild(track);
+          var dots = document.createElement('div');
+          dots.className = 'cs-img-slider-dots';
+          dots.innerHTML = imgs.map(function(_, i) {
+            return '<div class="cs-img-slider-dot' + (i === 0 ? ' active' : '') + '"></div>';
+          }).join('');
+          el.appendChild(dots);
+          var prev = document.createElement('button');
+          prev.className = 'cs-img-slider-btn prev';
+          prev.innerHTML = '&#8592;';
+          var next = document.createElement('button');
+          next.className = 'cs-img-slider-btn next';
+          next.innerHTML = '&#8594;';
+          el.appendChild(prev);
+          el.appendChild(next);
+          function go(n) {
+            idx = (n + imgs.length) % imgs.length;
+            track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+            dots.querySelectorAll('.cs-img-slider-dot').forEach(function(d, i) {
+              d.classList.toggle('active', i === idx);
+            });
+          }
+          prev.addEventListener('click', function() { go(idx - 1); });
+          next.addEventListener('click', function() { go(idx + 1); });
+          dots.querySelectorAll('.cs-img-slider-dot').forEach(function(d, i) {
+            d.addEventListener('click', function() { go(i); });
+          });
+          return el;
+        }
         function makeImgStack(imgs) {
           var el = document.createElement('div');
           el.className = 'cs-img-stack cs-reveal';
@@ -1748,7 +1857,8 @@
                   }).join('');
                   csBody.appendChild(tf);
                 } else if (sub.render === 'none') {
-                  // no image block
+                  if (sub.twoCol) csBody.appendChild(makeTwoCol(sub.twoCol));
+                  if (sub.slider) csBody.appendChild(makeImgSlider(sub.slider));
                 } else if (si === 1) {
                   csBody.appendChild(makeBento());
                 } else if (si === 2) {
@@ -1967,7 +2077,7 @@
       var img     = document.getElementById('lb-img');
 
       document.addEventListener('click', function(e) {
-        if (e.target.matches('.cs-bento-cell img, .cs-tricol-cell img, .cs-img-stack-cell img, .cs-slide-cell img, .cs-tri-flush-cell img, .cs-slide-cell-lg img')) {
+        if (e.target.matches('.cs-bento-cell img, .cs-tricol-cell img, .cs-img-stack-cell img, .cs-slide-cell img, .cs-tri-flush-cell img, .cs-slide-cell-lg img, .cs-two-col-cell img')) {
           img.src = e.target.src;
           overlay.classList.add('open');
           return;
