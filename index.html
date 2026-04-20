@@ -339,6 +339,9 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, clamp(160px, 20vw, 300px));
+    }
+    .cs-bento.portrait-bento {
+      grid-template-rows: repeat(4, clamp(220px, 28vw, 420px));
       gap: 3px;
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
@@ -1454,7 +1457,7 @@
         }
         function makeMrcBento(imgs) {
           var el = document.createElement('div');
-          el.className = 'cs-bento cs-reveal';
+          el.className = 'cs-bento portrait-bento cs-reveal';
           var c = imgs || [];
           function cell(src, cls) {
             return '<div class="cs-bento-cell' + (cls ? ' ' + cls : '') + '">' +
