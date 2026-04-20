@@ -1057,7 +1057,18 @@
                 {
                   label: 'Photography',
                   body: 'The existing visual library was iPhone photos and stock. Neither supported the premium positioning the brand needed to occupy. Shot and edited a full library of professional photography across trade shows, booth builds, and product displays — documenting the actual scale and quality of the work.\n\nThe photography does two things: it gives the site and sales materials the visual credibility to match the repositioned brand, and it gives the team something to share after every show. Real documentation of real work, at the level the work deserves.',
-                  render: 'mrcBento'
+                  render: 'mrcBento',
+                  imgs: [
+                    'assets/mrc_bento_1.jpg',
+                    'assets/mrc_bento_2.jpg',
+                    'assets/mrc_bento_3.jpg',
+                    'assets/mrc_bento_4.jpg',
+                    'assets/mrc_bento_5.jpg',
+                    'assets/mrc_bento_6.jpg',
+                    'assets/mrc_bento_7.jpg',
+                    'assets/mrc_bento_8.jpg',
+                    'assets/mrc_bento_9.jpg'
+                  ]
                 },
                 {
                   label: 'Sales Deck',
@@ -1441,16 +1452,25 @@
             '<div class="cs-bento-cell cs-bento-placeholder"></div>';
           return el;
         }
-        function makeMrcBento() {
+        function makeMrcBento(imgs) {
           var el = document.createElement('div');
           el.className = 'cs-bento cs-reveal';
+          var c = imgs || [];
+          function cell(src, cls) {
+            return '<div class="cs-bento-cell' + (cls ? ' ' + cls : '') + '">' +
+              (src ? '<img src="' + src + '" alt="" loading="lazy">' : '<div class="cs-bento-placeholder"></div>') +
+              '</div>';
+          }
           el.innerHTML =
-            '<div class="cs-bento-cell span2"><div class="cs-bento-placeholder"></div></div>' +
-            '<div class="cs-bento-cell"><div class="cs-bento-placeholder"></div></div>' +
-            '<div class="cs-bento-cell"><div class="cs-bento-placeholder"></div></div>' +
-            '<div class="cs-bento-cell span2"><div class="cs-bento-placeholder"></div></div>' +
-            '<div class="cs-bento-cell"><div class="cs-bento-placeholder"></div></div>' +
-            '<div class="cs-bento-cell"><div class="cs-bento-placeholder"></div></div>';
+            cell(c[2], 'span2') +  // row 1 col 1-2: landscape
+            cell(c[0], '') +        // row 1 col 3: portrait
+            cell(c[1], '') +        // row 2 col 1: portrait
+            cell(c[3], '') +        // row 2 col 2: portrait
+            cell(c[4], '') +        // row 2 col 3: portrait
+            cell(c[6], '') +        // row 3 col 1: portrait
+            cell(c[5], 'span2') +  // row 3 col 2-3: landscape
+            cell(c[7], '') +        // row 4 col 1: portrait
+            cell(c[8], 'span2');   // row 4 col 2-3: landscape
           return el;
         }
         function makePhotoBento(imgs) {
@@ -1693,7 +1713,7 @@
                 if (sub.render === 'bento') {
                   csBody.appendChild(makeBento());
                 } else if (sub.render === 'mrcBento') {
-                  csBody.appendChild(makeMrcBento());
+                  csBody.appendChild(makeMrcBento(sub.imgs || null));
                 } else if (sub.render === 'slideShowcase') {
                   csBody.appendChild(makeSlideShowcase(sub.imgs || []));
                 } else if (sub.render === 'slideShowcaseLarge') {
