@@ -391,13 +391,13 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, clamp(160px, 20vw, 300px));
-    }
-    .cs-bento.portrait-bento {
-      grid-template-rows: repeat(4, clamp(220px, 28vw, 420px));
       gap: 3px;
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
       margin-bottom: clamp(80px,10vw,160px);
+    }
+    .cs-bento.portrait-bento {
+      grid-template-rows: repeat(4, clamp(220px, 28vw, 420px));
     }
     .cs-bento-cell {
       overflow: hidden; position: relative;
@@ -988,13 +988,13 @@
       // ── Case Study ───────────────────────────────────────────────────
       var CS_DATA = [
         {
-          num: '01', cat: 'Brand', year: '2024',
+          num: '01', cat: 'Brand / Digital', year: '2024',
           video: 'assets/ITE_Logo.mp4',
           briefVideo: 'assets/MVI_0434.mp4',
           title: 'In The\nEvent',
           statement: 'Building and scaling a brand, marketing system, and revenue engine.',
-          brief: 'In The Event operated primarily through referrals, with no structured marketing or digital presence. The brand lacked consistency, and the website did not reflect the full scope of services or capabilities.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Marketing Systems',
+          brief: 'In The Event was producing events at scale — conferences, corporate activations, and large-format productions — with almost no brand infrastructure to support it. No structured marketing, no design system, no in-house production capabilities. The company had earned serious clients through word of mouth alone. The goal was to build everything the work deserved: a complete brand, a marketing system, a digital presence, and an in-house creative engine capable of producing at the level the clients required.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Graphic Design\u00a0\u00b7\u00a0Motion Design\u00a0\u00b7\u00a03D Rendering\u00a0\u00b7\u00a0Videography\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Marketing Systems',
           year_full: '2024',
           outcome: 'A complete brand and marketing system built to scale,from visual identity to revenue-driving campaigns, all working together.',
           bg: 'linear-gradient(160deg,#ddd6c8 0%,#b8a88a 45%,#6e5c48 100%)',
@@ -1010,7 +1010,7 @@
             },
             {
               label: 'The Approach',
-              body: 'The focus was to rebuild the company from the ground up as a cohesive system.\n\nThis included redefining the brand, redesigning the website for clarity and conversion, and creating a foundation that could support ongoing marketing and growth. Every touchpoint, digital and physical, was aligned to present a clear and scalable identity.'
+              body: 'The scope covered everything at once. Brand identity, website, motion graphics, 3D production, photography, videography, AI tooling, and marketing systems — built as a single cohesive engine rather than a series of isolated projects.\n\nThe strategy was to close every gap simultaneously: give the brand a system it could scale, give the website the positioning and structure to convert, build the in-house creative capabilities to produce at the level the clients required, and build the marketing infrastructure to grow without adding headcount.'
             },
             {
               label: 'The Transformation',
@@ -1035,32 +1035,34 @@
                 {
                   label: 'Brand Direction & Growth Strategy',
                   logoFlow: true,
-                  body: 'ITE\u2019s identity had roots worth keeping, but a presentation that undersold the company. The original logo carried real character; what followed was a script wordmark that felt small and inconsistent. I led a complete rebrand to modernize the identity while keeping it recognizable to existing clients: a minimal, versatile mark drawn from the original figure, refined into something contemporary and ownable, paired with a clean typographic system set in ITC Avant Garde Gothic Pro and a cohesive green palette.\n\nThe rebrand touched every surface. New business cards, presentation folders, brochures, building signage, and vehicle wraps unified ITE\u2019s presence across physical touchpoints. The website was rebuilt from the ground up, shifting the positioning from \u201cYour Preferred Event Coordinator in Utah\u201d to \u201cFull-Service Event Production,\u201d and optimized for SEO to turn organic search into a consistent source of qualified leads.\n\nI built an in-house graphics department from the ground up, reducing reliance on external vendors and building a faster, more capable internal creative engine. Custom branding, environmental signage, branded vinyl wraps, motion graphics, and 3D rendering became core ITE capabilities rather than outsourced line items.\n\nThe growth strategy extended well beyond the graphics department. I expanded the service portfolio with dedicated offerings for tradeshows, audio/visual, lighting, display, floral, and decor. Each service was supported by a purpose-built landing page structured for conversion and optimized for SEO.\n\nThe brand system was built to scale: flexible enough to operate across digital platforms, printed materials, and the large-scale conference and tradeshow environments ITE produces for its clients. It gave ITE the infrastructure to pursue larger clients, command bigger productions, and grow without outpacing its own identity.'
+                  body: 'ITE\u2019s identity had roots worth keeping, but a presentation that undersold the company. The original logo carried real character; what followed was a script wordmark that felt small and inconsistent. I led a complete rebrand to modernize the identity while keeping it recognizable to existing clients: a minimal, versatile mark drawn from the original figure, refined into something contemporary and ownable, paired with a clean typographic system set in ITC Avant Garde Gothic Pro and a cohesive green palette.\n\nThe rebrand touched every surface. New business cards, presentation folders, brochures, building signage, and vehicle wraps unified ITE\u2019s presence across physical touchpoints. The website was rebuilt from the ground up, shifting the positioning from \u201cYour Preferred Event Coordinator in Utah\u201d to \u201cFull-Service Event Production,\u201d and optimized for SEO to turn organic search into a consistent source of qualified leads.\n\nI built an in-house graphics department from the ground up, reducing reliance on external vendors and building a faster, more capable internal creative engine. Custom branding, environmental signage, branded vinyl wraps, motion graphics, and 3D rendering became core ITE capabilities rather than outsourced line items.\n\nThe growth strategy extended well beyond the graphics department. I expanded the service portfolio with dedicated offerings for tradeshows, audio/visual, lighting, display, floral, and decor. Each service was supported by a purpose-built landing page structured for conversion and optimized for SEO.\n\nThe brand system was built to scale: flexible enough to operate across digital platforms, printed materials, and the large-scale conference and tradeshow environments ITE produces for its clients. It gave ITE the infrastructure to pursue larger clients, command bigger productions, and grow without outpacing its own identity.\n\nIn 2024, the first full year under the new brand and positioning, ITE completed 537 events — the highest volume in company history, up 15% year over year.'
+                },
+                {
+                  label: 'Marketing + Physical Presence',
+                  render: 'bento',
+                  body: 'The brand was extended across every physical surface ITE operates on. Vehicle wraps, building signage, branded merchandise, presentation folders, and event collateral were designed as a unified system. Every item a client or crew member touches reads from the same identity.\n\nMotion graphics became a full production capability built entirely in-house. A complete event motion package was designed and deployed across conferences, corporate activations, and large-scale productions: custom lower thirds, animated openers, scene transitions, countdown sequences, and client-specific live event graphics. All motion work produced in-house, turning what was previously a vendor dependency into a core ITE differentiator.\n\n3D visualization was integrated into the pre-production and sales workflow. Stage designs, truss configurations, and environmental builds were modeled and rendered before load-in, giving clients a clear preview of the finished environment and giving the sales team a tool that closes deals before the first truck is booked.\n\nPhoto and video documentation was produced in-house across events, productions, and environments. Not stock, not iPhone. Production-level photography and videography used across the website, client deliverables, and marketing materials, giving the brand visual proof that matched the scale of the work.'
                 },
                 {
                   label: 'Digital Experience',
-                  body: 'The website was redesigned to clearly communicate services, showcase capabilities, and support discovery.\n\nContent structure was rebuilt to highlight the full scope of work, with expanded galleries and service pages that allow users to explore the depth of production. A wishlist feature was also introduced, allowing clients and customers to curate lists of rental items directly on the site, streamlining the inquiry process and improving the overall user experience.'
+                  body: 'The website was redesigned to clearly communicate services, showcase capabilities, and support discovery. Content structure was rebuilt around the full scope of work, with dedicated service pages and expanded galleries that let users explore the depth of production. A wishlist feature was introduced, allowing clients to curate rental items directly on the site and streamlining the inquiry process.\n\nThe SEO repositioning worked. Organic search now accounts for 55% of all inbound leads. Search visibility grew 360% year over year. Form submissions increased 33% year over year.'
                 },
                 {
                   label: 'AI Operations',
                   body: 'When production volume outpaces process, the answer isn\u2019t more headcount. It\u2019s smarter tooling. I built three custom GPTs to remove friction from daily operations across the team.\n\nOne integrates directly with Rentman, ITE\u2019s project management platform. Input a project number, ask anything: equipment lists, financials, crew breakdowns, event summaries. Clear answer, instantly. No system navigation, no manual cross-referencing.\n\nThe second generates SEO-optimized metadata for event photography at scale: ALT text, titles, captions, and keyword-rich descriptions that keep the asset library indexed and discoverable.\n\nThe third tags every photo uploaded to the company\u2019s shared cloud with contextual keywords, venue, event type, format, visual detail, making internal search fast and consistent across the team. Three tools. Real time saved. Shipped.'
                 },
                 {
-                  label: 'Marketing + Physical Presence',
-                  body: 'The brand was extended across all physical touchpoints, creating consistency from digital to real-world environments.\n\nThis included printed materials, presentation assets, and large-scale applications such as vehicle branding and building signage.'
-                },
-                {
                   label: 'Real-World Execution',
-                  body: 'The brand was built to perform wherever ITE operates, extending from digital into the physical environments where their work is delivered.\n\nFrom venue infrastructure and vendor coordination to onsite operations and spatial design, every element was considered as part of a unified whole. Brand, lighting, staging, and environment worked in concert, creating experiences that felt intentional from every angle.'
+                  body: 'The brand system was built to perform inside the environments ITE produces. Every conference, corporate activation, and large-format production is a live test of whether the brand, the motion package, the spatial design, and the production infrastructure can operate at scale.\n\nThey do. Custom motion graphics, branded environments, professional photography and video documentation, and full production support delivered across every event. The work that comes out of those productions is the visual library that backs every piece of marketing, every sales deck, and every client conversation.'
                 }
               ]
             }
           ],
           outcomeItems: [
-            'Complete brand identity and system built for a full-service event production company, scaling across digital, print, and every client-facing touchpoint.',
-            'In-house creative department built from the ground up, reducing vendor reliance and increasing production speed.',
-            'Website rebuilt and optimized for SEO, shifting positioning to Full-Service Event Production and turning organic search into a consistent lead source.',
-            'Service portfolio expanded with purpose-built landing pages for tradeshows, A/V, lighting, floral, and decor.',
+            '537 events completed in 2024, the highest volume in company history and 15% more than the year prior — the first full year under the new brand and positioning.',
+            'Organic search now drives 55% of all inbound leads. Search visibility up 360% year over year. Form submissions up 33% year over year.',
+            'In-house creative department built from the ground up, turning motion graphics, 3D rendering, photography, videography, and large-format production from vendor dependencies into core ITE capabilities.',
+            'Website rebuilt from scratch with dedicated landing pages for every service, structured for conversion and optimized for SEO.',
+            'Full event motion package deployed across conferences and corporate activations: custom lower thirds, animated openers, scene transitions, and client-specific live graphics.',
             'Custom AI tooling deployed across project management, photo metadata, and asset tagging, removing friction and compressing turnaround across the team.',
             'Unified brand presence across every touchpoint, from digital campaigns to vehicle wraps, building signage, and live event environments.'
           ]
@@ -1069,51 +1071,61 @@
           num: '02', cat: 'Brand / Digital', year: '2025',
           video: 'assets/mrc_maggie.mp4',
           title: 'Mannequin\nRent Co',
-          statement: 'Adding the right infrastructure to a 10-year-old brand to compete for a different kind of deal.',
-          brief: 'Mannequin Rent Co had a working site, real SEO equity, and 10 years of brand recognition. The business had quietly grown into full expo production — booth design, SEG fabric walls, LED displays, full logistics — but the brand still read like a rental catalog. The goal was not to rebuild what was working. It was to add the right pieces: reposition the brand, rebuild the digital entry point, document the work properly, and build the sales infrastructure to close a higher tier of deal.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Digital Design\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Sales Enablement',
+          statement: 'Ten years of equity. One complete brand system built across every surface it touched.',
+          brief: 'Mannequin Rent Co had a working site, real SEO equity, and 10 years of brand recognition. The business had quietly grown into full expo production — booth design, SEG fabric walls, LED displays, full logistics — but the brand still read like a rental catalog. There was no print collateral, no motion work, no cohesive system across touchpoints. The goal was not to rebuild what was working. It was to build everything that was missing: reposition the brand, design the collateral to represent it, rebuild the digital entry point, document the work properly, and build the sales and campaign infrastructure to close a higher tier of deal.',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Print Design\u00a0\u00b7\u00a0Motion Design\u00a0\u00b7\u00a0Digital Design\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Sales Enablement',
           year_full: '2025',
           bg: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
           c1: '#b0a898', c2: '#7a7060', c3: '#2e2820',
           sections: [
             {
               label: 'Context',
-              body: 'Mannequin Rent Co has operated for over 10 years, building real SEO equity, a reliable client base, and a reputation in the trade show space. Over time the scope expanded well beyond mannequins: booth design, SEG fabric walls, LED video displays, display accessories, full show logistics. The capability was there. The brand infrastructure to communicate it was not.\n\nThe business was winning smaller, transactional deals while leaving a larger opportunity on the table. Brands that needed one partner to handle the full expo — and were willing to pay for it — were landing on a site that looked like a rental catalog and moving on.'
+              body: 'Mannequin Rent Co has operated for over 10 years, building real SEO equity, a reliable client base, and a reputation in the trade show space. Over time the scope expanded well beyond mannequins: booth design, SEG fabric walls, LED video displays, display accessories, full show logistics. The capability was there. The brand infrastructure to communicate it was not.\n\nNo print collateral. No motion work. No cohesive visual language across the touchpoints the business was already operating. The business was winning smaller, transactional deals while leaving a larger opportunity on the table. Brands that needed one partner to handle the full expo were landing on a site that looked like a rental catalog and moving on.'
             },
             {
               label: 'The Problem',
-              body: 'The homepage led with product. The navigation led with inventory. Buyers evaluating a full-service expo partner were landing on a page organized for someone who needed to rent a mannequin for the weekend.\n\nA full rebuild was considered and set aside. The existing site was ranking, converting on its core offer, and had years of domain authority behind it. Tearing it down would have cost more SEO equity and time than the problem was worth. The right call was surgical: reposition the brand, upgrade the entry point, add service-specific landing pages, document the actual work with professional photography, and build the sales layer a higher-value buyer would need to see before writing a check.'
+              body: 'The homepage led with product. The navigation led with inventory. There was nothing to hand a client at a meeting, nothing to leave behind after a show, and no visual system that said full-service partner rather than vendor.\n\nA full rebuild was considered and set aside. The existing site was ranking, converting on its core offer, and had years of domain authority behind it. Tearing it down would have cost more than the problem was worth. The right call was surgical: reposition the brand, build the collateral and campaign system to support it, upgrade the digital entry point, document the actual work, and give the sales motion everything it needed to close a higher tier of deal.'
             },
             {
               label: 'The Build',
               subsections: [
                 {
-                  label: 'Repositioning',
+                  label: 'Brand Collateral',
                   twoCol: ['assets/mrc_booth_1.png', 'assets/mrc_booth_2.png'],
-                  body: 'The primary positioning shifted to Full Expo House — a complete trade show solution from one vendor. Mannequin rental became a premium component of a larger offer, not the lead product. The brand voice shifted from catalog to partner.\n\nThe messaging hierarchy was rebuilt around three buyer types: the expo manager who wants one call, the brand director who needs premium display, and the company that cannot absorb coordination overhead across multiple vendors. Every page, every email, every deck written from that frame.',
+                  body: 'Before anything else, the brand needed something to hand to a client. Business cards were designed to match the repositioned identity: premium stock, refined typography, nothing that reads like a rental company. A tri-fold brochure structured the Full Expo House offer for in-person meetings and cold outreach. An ad slick gave the sales team a single-page leave-behind that works at a trade show, in an email, or dropped in a proposal.\n\nThese were the first pieces of print collateral MRC had ever produced. They did not exist before this engagement.',
+                  render: 'none'
+                },
+                {
+                  label: 'Repositioning',
+                  body: 'The primary positioning shifted to Full Expo House: a complete trade show solution from one vendor. Mannequin rental became a premium component of a larger offer, not the lead product. The brand voice shifted from catalog to partner.\n\nThe messaging hierarchy was rebuilt around three buyer types: the expo manager who wants one call, the brand director who needs premium display, and the company that cannot absorb coordination overhead across multiple vendors. Every page, every email, every deck, and every piece of collateral written from that frame.',
                   render: 'none'
                 },
                 {
                   label: 'Digital Rebuild',
-                  body: 'The hero slider was running on a commercial WordPress plugin — costly, rigid, and impossible to customize without fighting the system. Replaced it with a custom PHP template and hand-coded JavaScript. Zero plugin dependency. Full control over layout, timing, transitions, and responsive behavior.\n\nThe navigation was rebuilt the same way. The old structure was WooCommerce product taxonomy — Shop, then subcategories by gender and form. It communicated vendor, not partner. Rebuilt as a custom component structured around services and outcomes: Inventory, Full Expo House, What We Do. The information hierarchy now matches the business.',
+                  body: 'The hero slider was running on a commercial WordPress plugin: costly, rigid, and impossible to customize without fighting the system. Replaced it with a custom PHP template and hand-coded JavaScript. Zero plugin dependency. Full control over layout, timing, transitions, and responsive behavior at every breakpoint.\n\nThe navigation was rebuilt the same way. The old structure was WooCommerce product taxonomy: Shop, then subcategories by gender and form. It communicated vendor, not partner. Rebuilt as a custom component structured around services and outcomes: Inventory, Full Expo House, What We Do. The information hierarchy now matches the business.',
                   render: 'none'
                 },
                 {
                   label: 'Hero & Design System',
                   slider: ['assets/mrc_slide_1.jpg', 'assets/mrc_slide_2.jpg', 'assets/mrc_slide_3.jpg', 'assets/mrc_slide_4.jpg', 'assets/mrc_slide_5.jpg', 'assets/mrc_slide_6.jpg', 'assets/mrc_slide_7.jpg'],
-                  body: 'Deployed a 7-slide hero sequence replacing the static header. Each slide targets a different buyer type and use case: Full Expo House, trade show production, SEG fabric walls, LED video, retail display, mannequin inventory. The goal: no visitor should land and not see themselves within the first 10 seconds.\n\nThe design system was modernized alongside it — tightened typography, cleaned spacing, and a visual language that communicates premium without abandoning the brand recognition built over a decade.',
+                  body: 'Deployed a 7-slide hero sequence replacing the static header. Each slide targets a different buyer type and use case: Full Expo House, trade show production, SEG fabric walls, LED video, retail display, mannequin inventory. The goal: no visitor should land and not see themselves within the first 10 seconds.\n\nThe design system was modernized alongside it: tightened typography, cleaned spacing, and a visual language that communicates premium without abandoning the brand recognition built over a decade.',
                   render: 'imgFull',
                   img: 'assets/mrc_after.png'
                 },
                 {
                   label: 'Landing Pages',
-                  body: 'Built five dedicated landing page templates in custom PHP, none of which existed before: Full Expo House, LED video walls, SEG fabric prints, display accessories, and an interactive 3D booth configurator. Each page built around a specific buyer — single headline, clear offer, one CTA.\n\nThe 3D booth viewer lets buyers pan, zoom, and rotate a fully dressed booth concept before a single conversation happens. It removes the abstraction from the pitch and puts visual proof in front of the buyer at the moment they are evaluating.',
+                  body: 'Built five dedicated landing page templates in custom PHP, none of which existed before: Full Expo House, LED video walls, SEG fabric prints, display accessories, and an interactive 3D booth configurator. Each page built around a specific buyer: single headline, clear offer, one CTA.\n\nThe 3D booth viewer lets buyers pan, zoom, and rotate a fully dressed booth concept before a single conversation happens. It removes the abstraction from the pitch and puts visual proof in front of the buyer at the moment they are evaluating.',
                   render: 'imgFull',
                   img: 'assets/mrc_landing.png'
                 },
                 {
+                  label: 'Trade Show System',
+                  body: 'MRC operates across six-plus trade shows annually. Each event required its own branded order form: NAUMD, Swim Show, SLTS, Surf Expo, Techtextile, Active Collective. Every form designed to the same standard: clear, professional, on-brand, and built to be completed at a booth without confusion.\n\nWarehouse signage, a vehicle magnet, condition cards, and branded letterhead completed the physical environment. Every surface an MRC client or team member touches carries the same visual language.',
+                  render: 'none'
+                },
+                {
                   label: 'Photography',
-                  body: 'The existing visual library was iPhone photos and stock. Neither supported the premium positioning the brand needed to occupy. Shot and edited a full library of professional photography across trade shows, booth builds, and product displays — documenting the actual scale and quality of the work.\n\nThe photography does two things: it gives the site and sales materials the visual credibility to match the repositioned brand, and it gives the team something to share after every show. Real documentation of real work, at the level the work deserves.',
+                  body: 'The existing visual library was iPhone photos and stock. Neither supported the premium positioning the brand needed to occupy. Shot and edited a full library of professional photography across trade shows, booth builds, and product displays: documenting the actual scale and quality of the work.\n\nThe photography does two things: it gives the site and sales materials the visual credibility to match the repositioned brand, and it gives the team something to share after every show. Real documentation of real work, at the level the work deserves.',
                   render: 'mrcBento',
                   imgs: [
                     'assets/mrc_bento_1.jpg',
@@ -1128,8 +1140,14 @@
                   ]
                 },
                 {
+                  label: 'Campaign System',
+                  body: 'Built a full campaign system from scratch: no agency, no template library. Three automated sequences cover the core sales motion: lead nurture, post-show follow-up, and dormant account re-engagement. Each sequence written and designed in-house, built to get a reply or a click, not just an open.\n\nBeyond the sequences: event-specific blasts for Surf Expo and Active Collective, regional ad campaigns, and a monthly newsletter keeping the brand present between shows. The full campaign load runs without a dedicated marketing team behind it.',
+                  render: 'triCol',
+                  imgs: ['assets/mrc_email1.png', 'assets/mrc_email2.png', 'assets/mrc_email3.png']
+                },
+                {
                   label: 'Sales Deck',
-                  body: 'Built a sales deck designed to move deals forward, not introduce the company. Opens with the buyer problem: fragmented expo vendors, coordination overhead, inconsistent quality across providers. Frames MRC as the single-source answer. Each section uses visual evidence and clear pricing context. Structured to work in a live meeting or sent cold without additional context.',
+                  body: 'Built a sales deck designed to move deals forward, not introduce the company. Opens with the buyer problem: fragmented expo vendors, coordination overhead, inconsistent quality across providers. Frames MRC as the single-source answer. Each section backed by visual evidence and clear pricing context. Structured to work in a live meeting or sent cold without additional context.',
                   render: 'slideShowcaseLarge',
                   imgs: [
                     'assets/mrc_deck/mrc_deck_cover.png',
@@ -1144,21 +1162,22 @@
                   ]
                 },
                 {
-                  label: 'Email Marketing',
-                  body: 'Built a full email marketing system from scratch — no agency, no template library. Three sequences cover the full sales motion. A lead nurture sequence warms prospects who have engaged but not converted, building familiarity with the Full Expo House offer over multiple touchpoints. A post-show sequence deploys after events, targeting brands that saw MRC in action and are most likely to book. A re-engagement sequence targets dormant accounts with a direct offer tied to their previous service.\n\nEvery email written and designed in-house to match the repositioned brand. Subject lines, copy, and CTAs built to get a reply or a click — not just an open. Runs without a dedicated marketing team behind it.',
-                  render: 'triCol',
-                  imgs: ['assets/mrc_email1.png', 'assets/mrc_email2.png', 'assets/mrc_email3.png']
+                  label: 'Motion',
+                  body: 'Produced animated holiday cards for 2022 and 2023 in After Effects: the first motion work ever created for the brand. Short, on-brand, and distributed to clients and across social channels. A small touchpoint that signals a brand paying attention year-round, not just at show time.',
+                  render: 'none'
                 }
               ]
             }
           ],
           outcomeItems: [
-            'Repositioned from mannequin rental vendor to full-service expo partner without discarding the SEO equity and brand recognition built over 10 years.',
-            'Hero slider rebuilt from scratch in custom PHP and JavaScript — commercial plugin replaced, full control over layout, transitions, and responsive behavior at every breakpoint.',
-            'Navigation restructured from WooCommerce product taxonomy to a service-oriented architecture, rebuilt as a custom component matching the actual business.',
-            'Five landing page templates launched in custom PHP, each independently optimized for the buyer and search terms specific to that service vertical.',
-            'Professional photography library built from scratch, replacing iPhone photos with edited documentation of real work at the scale and quality the brand needed.',
-            'Sales deck and three email sequences built and deployed in-house, designed to support a higher-value conversation without requiring a dedicated sales or marketing team.',
+            'Repositioned from mannequin rental vendor to full-service expo partner: the first complete brand system in the company\'s 10-year history, built without discarding the SEO equity and recognition behind the existing business.',
+            'First print collateral ever produced for the brand: business cards, tri-fold brochure, and ad slick designed to the same standard as the digital work.',
+            'Hero slider and navigation rebuilt from scratch in custom PHP and JavaScript: zero plugin dependency, full control over layout, timing, and responsive behavior at every breakpoint.',
+            'Five landing page templates launched, each independently optimized for a specific buyer type and service vertical. Interactive 3D booth configurator built and deployed.',
+            'Professional photography library built from scratch across trade shows, booth builds, and product displays: replaced iPhone photos and stock with documented proof of real work.',
+            'Branded order forms designed for six-plus annual trade shows. Warehouse signage, vehicle magnet, condition cards, and letterhead extend the brand system across every physical touchpoint.',
+            'Full campaign system deployed: three automated email sequences, event-specific blasts, regional ad campaigns, and a monthly newsletter — all running without a dedicated marketing team.',
+            'First motion work produced for the brand: animated holiday cards for 2022 and 2023 in After Effects.',
             'Launched March 2025. Tracking deal size, landing page inquiry rate, email reply rate, and organic search performance per service page as data accumulates.'
           ]
         },
@@ -1514,9 +1533,8 @@
             '<div class="cs-bento-cell"><img src="assets/ite_hat.png" alt="ITE Hat" loading="eager" style="object-position:center 5%;"></div>' +
             '<div class="cs-bento-cell"><img src="assets/ite_polo.png" alt="ITE Polo" loading="lazy"></div>' +
             '<div class="cs-bento-cell span2"><img src="assets/ite_vehicles.jpg" alt="ITE Vehicles" loading="eager"></div>' +
-            '<div class="cs-bento-cell"><img src="assets/ite_catalogbooks copy.png" alt="ITE Catalog" loading="lazy"></div>' +
             '<div class="cs-bento-cell"><img src="assets/ite_businesscards.png" alt="ITE Business Cards" loading="lazy"></div>' +
-            '<div class="cs-bento-cell cs-bento-placeholder"></div>';
+            '<div class="cs-bento-cell span2"><img src="assets/ite_catalogbooks copy.png" alt="ITE Catalog" loading="lazy"></div>';
           return el;
         }
         function makeMrcBento(imgs) {
@@ -1859,16 +1877,12 @@
                 } else if (sub.render === 'none') {
                   if (sub.twoCol) csBody.appendChild(makeTwoCol(sub.twoCol));
                   if (sub.slider) csBody.appendChild(makeImgSlider(sub.slider));
-                } else if (si === 1) {
-                  csBody.appendChild(makeBento());
-                } else if (si === 2) {
-                  csBody.appendChild(makeImgRow());
                 } else if (si === 3) {
+                  csBody.appendChild(makeImgRow());
+                } else if (si === 4) {
                   csBody.appendChild(makeImgFull(null, 'assets/customgpt.png'));
                 } else if (si === 5) {
                   csBody.appendChild(makeImgFull(null, 'assets/ITE-Stage.png'));
-                } else if (si !== 4) {
-                  csBody.appendChild(si % 2 === 0 ? makeImgFull('0.9', sub.imgAfter || null) : makeImgRow());
                 }
               });
             } else {
