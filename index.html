@@ -7,9 +7,10 @@
   <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" /></noscript>
   <link rel="preload" href="assets/cinema%20sunday.otf" as="font" type="font/otf" crossorigin>
-  <link rel="preload" as="image" href="frames/hero-bust-b2.png">
+  <link rel="preload" as="image" href="frames/hero-bust-b2.png" fetchpriority="high">
   <link rel="stylesheet" href="./style.css" />
   <style>
     @font-face {
@@ -244,6 +245,7 @@
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
       margin-bottom: clamp(80px,10vw,160px);
+      aspect-ratio: 16/9; /* overridden by JS once first image loads */
       position: relative;
       overflow: hidden;
       background: rgba(18,18,18,0.06);
@@ -260,6 +262,9 @@
       overflow: hidden;
     }
     .cs-img-slider-slide img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .cs-img-quad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: calc(100% + clamp(64px,10vw,160px)); margin-left: calc(-1 * clamp(32px,5vw,80px)); margin-bottom: clamp(80px,10vw,160px); }
+    .cs-img-quad-cell { overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.32); }
+    .cs-img-quad-cell img { width: 100%; height: auto; display: block; }
     .cs-img-slider-btn {
       position: absolute; top: 50%; transform: translateY(-50%);
       background: rgba(244,241,234,0.85); border: none; cursor: pointer;
@@ -1123,8 +1128,8 @@
                 {
                   label: 'Landing Pages',
                   body: 'Built five dedicated landing page templates in custom PHP, none of which existed before: Full Expo House, LED video walls, SEG fabric prints, display accessories, and an interactive 3D booth configurator. Each page built around a specific buyer: single headline, clear offer, one CTA.\n\nThe 3D booth viewer lets buyers pan, zoom, and rotate a fully dressed booth concept before a single conversation happens. It removes the abstraction from the pitch and puts visual proof in front of the buyer at the moment they are evaluating.',
-                  render: 'none',
-                  slider: ['assets/mrc_landing_home.png', 'assets/mrc_landing_booth.png', 'assets/mrc_landing_videowalls.png', 'assets/mrc_landing_accessories.png']
+                  render: 'imgQuad',
+                  imgs: ['assets/mrc_landing_home.png', 'assets/mrc_landing_booth.png', 'assets/mrc_landing_videowalls.png', 'assets/mrc_landing_accessories.png']
                 },
                 {
                   label: 'Trade Show System',
@@ -1419,7 +1424,7 @@
           vid.muted = true;
           vid.loop = true;
           vid.playsInline = true;
-          vid.preload = 'auto';
+          vid.preload = 'metadata';
           vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.85;';
           heroBg.appendChild(vid);
           vid.load();
@@ -1539,10 +1544,10 @@
           el.innerHTML =
             '<div class="cs-bento-cell span2"><img src="assets/ite_building.png" alt="ITE Building" loading="eager"></div>' +
             '<div class="cs-bento-cell"><img src="assets/ite_hat.png" alt="ITE Hat" loading="eager" style="object-position:center 5%;"></div>' +
-            '<div class="cs-bento-cell"><img src="assets/ite_polo.png" alt="ITE Polo" loading="lazy"></div>' +
+            '<div class="cs-bento-cell"><img src="assets/ite_polo.png" alt="ITE Polo" loading="lazy" decoding="async"></div>' +
             '<div class="cs-bento-cell span2"><img src="assets/ite_vehicles.jpg" alt="ITE Vehicles" loading="eager"></div>' +
-            '<div class="cs-bento-cell"><img src="assets/ite_businesscards.png" alt="ITE Business Cards" loading="lazy"></div>' +
-            '<div class="cs-bento-cell span2"><img src="assets/ite_catalogbooks copy.png" alt="ITE Catalog" loading="lazy"></div>';
+            '<div class="cs-bento-cell"><img src="assets/ite_businesscards.png" alt="ITE Business Cards" loading="lazy" decoding="async"></div>' +
+            '<div class="cs-bento-cell span2"><img src="assets/ite_catalogbooks copy.png" alt="ITE Catalog" loading="lazy" decoding="async"></div>';
           return el;
         }
         function makeMrcBento(imgs) {
@@ -1551,7 +1556,7 @@
           var c = imgs || [];
           function cell(src, cls) {
             return '<div class="cs-bento-cell' + (cls ? ' ' + cls : '') + '">' +
-              (src ? '<img src="' + src + '" alt="" loading="lazy">' : '<div class="cs-bento-placeholder"></div>') +
+              (src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async">' : '<div class="cs-bento-placeholder"></div>') +
               '</div>';
           }
           el.innerHTML =
@@ -1574,7 +1579,7 @@
           el.innerHTML = cells.map(function(src,i){
             var cls = spans[i] ? 'cs-bento-cell span2' : 'cs-bento-cell';
             return '<div class="'+cls+'">' +
-              (src ? '<img src="'+src+'" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">' : '<div class="cs-bento-placeholder"></div>') +
+              (src ? '<img src="'+src+'" alt="" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">' : '<div class="cs-bento-placeholder"></div>') +
               '</div>';
           }).join('');
           return el;
@@ -1587,7 +1592,7 @@
             return '<div class="cs-slide-row">' +
               rowImgs.map(function(src) {
                 return '<div class="cs-slide-cell">' +
-                  (src ? '<img src="' + src + '" alt="" loading="lazy">' : '') +
+                  (src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async">' : '') +
                   '</div>';
               }).join('') +
             '</div>';
@@ -1632,7 +1637,7 @@
             return '<div class="cs-slide-row-lg cs-slide-row-' + row.type + '">' +
               row.cells.map(function(src) {
                 return '<div class="cs-slide-cell-lg">' +
-                  (src ? '<img src="' + src + '" alt="" loading="lazy">' : '') +
+                  (src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async">' : '') +
                   '</div>';
               }).join('') +
             '</div>';
@@ -1665,7 +1670,7 @@
           el.className = 'cs-two-col cs-reveal';
           el.innerHTML = (imgs || [null, null]).map(function(src) {
             return '<div class="cs-two-col-cell">' +
-              (src ? '<img src="' + src + '" alt="" loading="lazy">' : '<div class="cs-bento-placeholder" style="height:100%;"></div>') +
+              (src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async">' : '<div class="cs-bento-placeholder" style="height:100%;"></div>') +
               '</div>';
           }).join('');
           return el;
@@ -1673,11 +1678,20 @@
         function makeImgSlider(imgs) {
           var el = document.createElement('div');
           el.className = 'cs-img-slider cs-reveal';
+          if (imgs && imgs.length > 0) {
+            var probe = new Image();
+            probe.onload = function() {
+              if (probe.naturalWidth && probe.naturalHeight) {
+                el.style.aspectRatio = probe.naturalWidth + '/' + probe.naturalHeight;
+              }
+            };
+            probe.src = imgs[0];
+          }
           var idx = 0;
           var track = document.createElement('div');
           track.className = 'cs-img-slider-track';
           track.innerHTML = (imgs || []).map(function(src) {
-            return '<div class="cs-img-slider-slide"><img src="' + src + '" alt="" loading="lazy"></div>';
+            return '<div class="cs-img-slider-slide"><img src="' + src + '" alt="" loading="lazy" decoding="async" decoding="async"></div>';
           }).join('');
           el.appendChild(track);
           var dots = document.createElement('div');
@@ -1713,7 +1727,7 @@
           el.className = 'cs-img-stack cs-reveal';
           el.innerHTML = (imgs || []).map(function(src) {
             return '<div class="cs-img-stack-cell">' +
-              (src ? '<img src="' + src + '" alt="" loading="lazy">' : '') +
+              (src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async">' : '') +
               '</div>';
           }).join('');
           return el;
@@ -1724,7 +1738,7 @@
           var c = (imgs && imgs.length >= 7) ? imgs : Array(7).fill(null);
           function cell(src, cls) {
             return '<div class="cs-bento-cell' + (cls ? ' ' + cls : '') + '">' +
-              (src ? '<img src="' + src + '" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">' : '<div class="cs-bento-placeholder"></div>') +
+              (src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">' : '<div class="cs-bento-placeholder"></div>') +
               '</div>';
           }
           el.innerHTML =
@@ -1743,7 +1757,7 @@
           var c = (imgs && imgs.length >= 6) ? imgs : [null,null,null,null,null,null];
           function cell(src, cls) {
             return '<div class="cs-bento-cell' + (cls ? ' ' + cls : '') + '">' +
-              (src ? '<img src="' + src + '" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">' : '<div class="cs-bento-placeholder"></div>') +
+              (src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">' : '<div class="cs-bento-placeholder"></div>') +
               '</div>';
           }
           el.innerHTML =
@@ -1761,7 +1775,7 @@
           var cells = (imgs && imgs.length) ? imgs : [null, null, null];
           el.innerHTML = cells.map(function(src) {
             return '<div class="cs-tricol-cell">' +
-              (src ? '<img src="' + src + '" alt="" loading="lazy">' : '<div class="cs-bento-placeholder"></div>') +
+              (src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async">' : '<div class="cs-bento-placeholder"></div>') +
               '</div>';
           }).join('');
           return el;
@@ -1770,7 +1784,7 @@
           var el = document.createElement('div');
           el.className = 'cs-img-full cs-reveal';
           if (src) {
-            el.innerHTML = '<img src="' + src + '" alt="" loading="lazy" style="width:100%;height:auto;display:block;">';
+            el.innerHTML = '<img src="' + src + '" alt="" loading="lazy" decoding="async" style="width:100%;height:auto;display:block;">';
           } else {
             el.innerHTML = '<div class="cs-img-full-inner" style="background:' + data.bg + ';' + (brighten ? 'filter:brightness(' + brighten + ');' : '') + '"></div>';
           }
@@ -1879,9 +1893,16 @@
                   var tf = document.createElement('div');
                   tf.className = 'cs-tri-flush cs-reveal';
                   tf.innerHTML = (sub.imgs || []).map(function(src) {
-                    return '<div class="cs-tri-flush-cell"><img src="' + src + '" alt="" loading="lazy"></div>';
+                    return '<div class="cs-tri-flush-cell"><img src="' + src + '" alt="" loading="lazy" decoding="async"></div>';
                   }).join('');
                   csBody.appendChild(tf);
+                } else if (sub.render === 'imgQuad') {
+                  var quad = document.createElement('div');
+                  quad.className = 'cs-img-quad cs-reveal';
+                  quad.innerHTML = (sub.imgs || []).map(function(src) {
+                    return '<div class="cs-img-quad-cell"><img src="' + src + '" alt="" loading="lazy" decoding="async" decoding="async"></div>';
+                  }).join('');
+                  csBody.appendChild(quad);
                 } else if (sub.render === 'none') {
                   if (sub.twoCol) csBody.appendChild(makeTwoCol(sub.twoCol));
                   if (sub.slider) csBody.appendChild(makeImgSlider(sub.slider));
