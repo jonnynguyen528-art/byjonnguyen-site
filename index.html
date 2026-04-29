@@ -238,9 +238,9 @@
       margin-left: calc(-1 * clamp(32px,5vw,80px));
       margin-bottom: clamp(80px,10vw,160px);
     }
-    .cs-two-col-cell { aspect-ratio: 3/4; overflow: hidden; background: rgba(18,18,18,0.06); }
-    .cs-two-col-cell img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; transition: transform 0.6s cubic-bezier(0.16,1,0.3,1); }
-    .cs-two-col-cell:hover img { transform: scale(1.03); }
+    .cs-two-col-cell { overflow: hidden; background: rgba(18,18,18,0.06); }
+    .cs-two-col-cell img { width: 100%; height: auto; object-fit: unset; display: block; cursor: zoom-in; }
+    .cs-two-col-cell:hover img { }
     .cs-img-slider {
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
@@ -263,7 +263,7 @@
     }
     .cs-img-slider-slide img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .cs-img-quad { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: calc(100% + clamp(64px,10vw,160px)); margin-left: calc(-1 * clamp(32px,5vw,80px)); margin-bottom: clamp(80px,10vw,160px); }
-    .cs-img-quad-cell { overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.32); }
+    .cs-img-quad-cell { overflow: hidden; }
     .cs-img-quad-cell img { width: 100%; height: auto; display: block; filter: brightness(1.15); }
     .cs-img-slider-btn {
       position: absolute; top: 50%; transform: translateY(-50%);
