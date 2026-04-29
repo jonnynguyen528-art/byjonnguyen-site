@@ -262,9 +262,9 @@
       overflow: hidden;
     }
     .cs-img-slider-slide img { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .cs-img-quad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: calc(100% + clamp(64px,10vw,160px)); margin-left: calc(-1 * clamp(32px,5vw,80px)); margin-bottom: clamp(80px,10vw,160px); }
+    .cs-img-quad { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: calc(100% + clamp(64px,10vw,160px)); margin-left: calc(-1 * clamp(32px,5vw,80px)); margin-bottom: clamp(80px,10vw,160px); }
     .cs-img-quad-cell { overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.32); }
-    .cs-img-quad-cell img { width: 100%; height: auto; display: block; }
+    .cs-img-quad-cell img { width: 100%; height: auto; display: block; filter: brightness(1.15); }
     .cs-img-slider-btn {
       position: absolute; top: 50%; transform: translateY(-50%);
       background: rgba(244,241,234,0.85); border: none; cursor: pointer;
@@ -446,6 +446,8 @@
     }
     .cs-tricol-cell img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
     .cs-tricol-landscape .cs-tricol-cell { aspect-ratio: 16/9; }
+    .cs-tricol-full .cs-tricol-cell { aspect-ratio: unset; background: none; overflow: visible; }
+    .cs-tricol-full .cs-tricol-cell img { height: auto; object-fit: unset; }
     @media (max-width: 600px) {
       .cs-tricol { grid-template-columns: 1fr; gap: 12px; }
       .cs-tricol-cell { aspect-ratio: 9/16; }
@@ -1078,7 +1080,7 @@
           title: 'Mannequin\nRent Co',
           statement: 'Ten years of equity. One complete brand system built across every surface it touched.',
           brief: 'Mannequin Rent Co had a working site, real SEO equity, and 10 years of brand recognition. The business had quietly grown into full expo production — booth design, SEG fabric walls, LED displays, full logistics — but the brand still read like a rental catalog. There was no print collateral, no motion work, no cohesive system across touchpoints. The goal was not to rebuild what was working. It was to build everything that was missing: reposition the brand, design the collateral to represent it, rebuild the digital entry point, document the work properly, and build the sales and campaign infrastructure to close a higher tier of deal.',
-          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Print Design\u00a0\u00b7\u00a0Motion Design\u00a0\u00b7\u00a0Digital Design\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Sales Enablement',
+          role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Print Design\u00a0\u00b7\u00a0Digital Design\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Sales Enablement',
           year_full: '2025',
           bg: 'linear-gradient(155deg,#cdc7bc 0%,#968c7e 50%,#4a4038 100%)',
           c1: '#b0a898', c2: '#7a7060', c3: '#2e2820',
@@ -1096,7 +1098,7 @@
               subsections: [
                 {
                   label: 'Brand Collateral',
-                  twoCol: ['assets/mrc_booth_1.png', 'assets/mrc_booth_2.png'],
+                  twoCol: ['assets/mrc_brochure.png', 'assets/mrc_businesscards.png'],
                   body: 'Before anything else, the brand needed something to hand to a client. Business cards were designed to match the repositioned identity: premium stock, refined typography, nothing that reads like a rental company. A tri-fold brochure structured the Full Expo House offer for in-person meetings and cold outreach. An ad slick gave the sales team a single-page leave-behind that works at a trade show, in an email, or dropped in a proposal.\n\nThese were the first pieces of print collateral MRC had ever produced. They did not exist before this engagement.',
                   render: 'none'
                 },
@@ -1156,6 +1158,7 @@
                   label: 'Campaign System',
                   body: 'Built a full campaign system from scratch: no agency, no template library. Three automated sequences cover the core sales motion: lead nurture, post-show follow-up, and dormant account re-engagement. Each sequence written and designed in-house, built to get a reply or a click, not just an open.\n\nBeyond the sequences: event-specific blasts for Surf Expo and Active Collective, regional ad campaigns, and a monthly newsletter keeping the brand present between shows. The full campaign load runs without a dedicated marketing team behind it.',
                   render: 'triCol',
+                  fullHeight: true,
                   imgs: ['assets/mrc_email_1.jpg', 'assets/mrc_email_2.jpg', 'assets/mrc_email_3.jpg']
                 },
                 {
@@ -1174,11 +1177,6 @@
                     'assets/ite_deck/ite_deck_9.png'
                   ]
                 },
-                {
-                  label: 'Motion',
-                  body: 'Produced animated holiday cards for 2022 and 2023 in After Effects: the first motion work ever created for the brand. Short, on-brand, and distributed to clients and across social channels. A small touchpoint that signals a brand paying attention year-round, not just at show time.',
-                  render: 'none'
-                }
               ]
             }
           ],
@@ -1769,9 +1767,9 @@
             cell(c[5], 'span2');        // row 3 col 2-3: window (wide)
           return el;
         }
-        function makeTriCol(imgs, landscape) {
+        function makeTriCol(imgs, landscape, fullHeight) {
           var el = document.createElement('div');
-          el.className = 'cs-tricol cs-reveal' + (landscape ? ' cs-tricol-landscape' : '');
+          el.className = 'cs-tricol cs-reveal' + (landscape ? ' cs-tricol-landscape' : '') + (fullHeight ? ' cs-tricol-full' : '');
           var cells = (imgs && imgs.length) ? imgs : [null, null, null];
           el.innerHTML = cells.map(function(src) {
             return '<div class="cs-tricol-cell">' +
@@ -1882,7 +1880,7 @@
                 } else if (sub.render === 'photoBento') {
                   csBody.appendChild(makePhotoBento(sub.imgs || null));
                 } else if (sub.render === 'triCol') {
-                  csBody.appendChild(makeTriCol(sub.imgs || null, sub.landscape || false));
+                  csBody.appendChild(makeTriCol(sub.imgs || null, sub.landscape || false, sub.fullHeight || false));
                 } else if (sub.render === 'imgRow') {
                   csBody.appendChild(makeImgRow(sub.imgBefore || null, sub.imgAfter || null));
                 } else if (sub.render === 'imgFull') {
