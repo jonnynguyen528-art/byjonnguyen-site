@@ -1077,6 +1077,7 @@
         {
           num: '02', cat: 'Brand / Digital', year: '2025',
           video: 'assets/mrc_maggie.mp4',
+          roleVideo: 'assets/mrc_logo_ani.mp4',
           title: 'Mannequin\nRent Co',
           statement: 'Ten years of equity. One complete brand system built across every surface it touched.',
           brief: 'Mannequin Rent Co had a working site, real SEO equity, and 10 years of brand recognition. The business had quietly grown into full expo production — booth design, SEG fabric walls, LED displays, full logistics — but the brand still read like a rental catalog. There was no print collateral, no motion work, no cohesive system across touchpoints. The goal was not to rebuild what was working. It was to build everything that was missing: reposition the brand, design the collateral to represent it, rebuild the digital entry point, document the work properly, and build the sales and campaign infrastructure to close a higher tier of deal.',
@@ -1816,6 +1817,9 @@
               '<div><div class="cs-detail-label">Role</div><div class="cs-detail-val">' + data.role + '</div></div>' +
             '</div>';
           csBody.appendChild(sec1);
+          if (data.roleVideo) {
+            csBody.appendChild(makeVideoFull(data.roleVideo));
+          }
           if (data.briefVideo) {
             csBody.appendChild(makeVideoFull(data.briefVideo));
           } else if (data.heroBanner) {
