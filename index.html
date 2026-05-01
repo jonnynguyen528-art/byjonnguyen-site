@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jon Nguyen — Creative Director</title>
+  <link rel="icon" type="image/svg+xml" href="assets/jn_logo.svg" />
   <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -625,7 +626,7 @@
   }
   #pw-gate.fade-out { opacity: 0; pointer-events: none; }
   #pw-box { display: flex; flex-direction: column; align-items: center; gap: 40px; }
-  #pw-logo { font-family: 'Cinema Sunday', serif; color: rgb(244,241,234); font-size: clamp(2.4rem,5vw,4rem); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; }
+  #pw-logo { width: clamp(60px,8vw,100px); height: auto; opacity: 0.9; }
   #pw-input {
     background: none; border: none; border-bottom: 1px solid rgba(244,241,234,0.15);
     color: rgb(244,241,234); font-family: 'Montserrat', sans-serif;
@@ -647,7 +648,7 @@
   <!-- Password Gate -->
   <div id="pw-gate">
     <div id="pw-box">
-      <div id="pw-logo">JN</div>
+      <img id="pw-logo" src="assets/jn_logo.svg" alt="JN" />
       <input id="pw-input" type="password" inputmode="numeric" maxlength="4" placeholder="· · · ·" autocomplete="off" autofocus />
       <div id="pw-error"></div>
     </div>
