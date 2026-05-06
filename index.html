@@ -89,7 +89,7 @@
     }
     .content-section { min-height: 100vh; }
     .work-section { height: 100vh; display: flex; flex-direction: column; overflow: hidden; padding: 0; }
-    .work-header { padding: clamp(88px,10vh,108px) clamp(32px,5vw,80px) clamp(14px,1.8vh,24px); flex-shrink: 0; }
+    .work-header { padding: clamp(88px,10vh,108px) clamp(32px,5vw,80px) clamp(14px,1.8vh,24px); flex-shrink: 0; text-align: center; }
     .work-eyebrow { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: clamp(11px,0.95vw,14px); letter-spacing: 0.32em; text-transform: uppercase; color: rgb(31, 87, 255); }
     .work-cards-grid { flex: 1; display: flex; gap: 3px; padding: 0 3px 3px; min-height: 0; perspective: 1400px; perspective-origin: 50% -25%; }
     .work-card-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; opacity: 0; perspective: 800px; }
@@ -738,12 +738,14 @@
       <div class="work-cards-grid">
         <div class="work-card-wrap">
           <div class="work-card wx-card wx-1">
-            <div class="work-card-bg"></div>
+            <div class="work-card-bg" style="background:rgb(12,10,8);">
+              <video autoplay muted loop playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"><source src="assets/ITE_Logo.mp4" type="video/mp4"></video>
+            </div>
             <div class="work-card-overlay"></div>
             <div class="work-card-body">
               <div class="work-card-num">01</div>
               <div class="work-card-cat">Brand</div>
-              <div class="work-card-title">In The<br>Event</div>
+              <div class="work-card-title">In<br>The Event</div>
               <div class="work-card-arrow">&#8599;</div>
             </div>
           </div>
@@ -762,12 +764,14 @@
         </div>
         <div class="work-card-wrap">
           <div class="work-card wx-card wx-3">
-            <div class="work-card-bg"></div>
+            <div class="work-card-bg" style="background:rgb(12,10,8);">
+              <video autoplay muted loop playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"><source src="assets/becx_logo.mp4" type="video/mp4"></video>
+            </div>
             <div class="work-card-overlay"></div>
             <div class="work-card-body">
               <div class="work-card-num">03</div>
-              <div class="work-card-cat">Experiential</div>
-              <div class="work-card-title">Best Ever<br>Conference</div>
+              <div class="work-card-cat">Brand / Experiential</div>
+              <div class="work-card-title">Best<br>Ever Conference</div>
               <div class="work-card-arrow">&#8599;</div>
             </div>
           </div>
@@ -779,7 +783,7 @@
             <div class="work-card-body">
               <div class="work-card-num">04</div>
               <div class="work-card-cat">Experiential</div>
-              <div class="work-card-title">47G Zero<br>Gravity Summit</div>
+              <div class="work-card-title">Zero<br>Gravity Summit</div>
               <div class="work-card-arrow">&#8599;</div>
             </div>
           </div>
@@ -1061,7 +1065,7 @@
           num: '01', cat: 'Brand / Digital', year: '2024',
           video: 'assets/ITE_Logo.mp4',
           briefVideo: 'assets/MVI_0434.mp4',
-          title: 'In The\nEvent',
+          title: 'In\nThe Event',
           statement: 'Building and scaling a brand, marketing system, and revenue engine.',
           brief: 'In The Event was producing events at scale: conferences, corporate activations, and large-format productions, with almost no brand infrastructure to support it. No structured marketing, no design system, no in-house production capabilities. The company had earned serious clients through word of mouth alone. The goal was to build everything the work deserved: a complete brand, a marketing system, a digital presence, and an in-house creative engine capable of producing at the level the clients required.',
           role: 'Creative Direction\u00a0\u00b7\u00a0Brand Strategy\u00a0\u00b7\u00a0Graphic Design\u00a0\u00b7\u00a0Motion Design\u00a0\u00b7\u00a03D Rendering\u00a0\u00b7\u00a0Videography\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Marketing Systems',
@@ -1261,10 +1265,10 @@
           ]
         },
         {
-          num: '03', cat: 'Experiential', year: '2023',
+          num: '03', cat: 'Brand / Experiential', year: '2023',
           video: 'assets/becx_logo.mp4',
           briefVideo: 'assets/becx_logo_animation_cut.mp4',
-          title: 'Best Ever\nConference',
+          title: 'Best\nEver Conference',
           statement: 'Four years designing the event and the brand behind it, growing from print vendor to sole author of a conference identity system.',
           brief: 'Best Ever Conference is one of the most recognized annual events in commercial real estate. 1,000+ active investors gather each year for three days of programming, deal flow, and high-caliber networking. Over four years, the work expanded from environmental execution into full brand authorship: every venue surface designed from entry to exit, original identity assets built from scratch, and the 2027 conference logo commissioned before the current year\'s event had even opened.',
           role: 'Creative Direction\u00a0\u00b7\u00a0Brand Identity\u00a0\u00b7\u00a0Environmental Design\u00a0\u00b7\u00a0Stage Design\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Videography',
@@ -1377,9 +1381,9 @@
         },
         {
           num: '04', cat: 'Experiential', year: '2024–2026',
-          title: '47G Zero\nGravity Summit',
-          statement: 'Three years taking a digital brand guide and building everything it couldn\'t anticipate: what the identity looks like at stage scale, in motion, and through a full brand refresh.',
-          brief: 'The Zero Gravity Summit is 47G\'s flagship annual conference for Utah\'s aerospace, defense, and advanced technology community. Each year started with the same input: a brand guide designed for digital and print. The job was to take that guide and invent what came next. How the identity lives on a 30-foot stage. What it looks like in motion across an LED wall. How it moves through a venue so every surface a guest touches carries the same brand. Three years of answering that question across different spaces, a full brand refresh, and a venue that tripled in size.',
+          title: 'Zero\nGravity Summit',
+          statement: 'Three years taking a brand off the page and into the room. Different venues, a new identity mid-run, the same visual logic holding throughout.',
+          brief: 'The Zero Gravity Summit is 47G\'s flagship annual conference for Utah\'s aerospace, defense, and advanced technology community. Each year started with the same input: a brand guide built for digital and print. The job was to take that system and figure out what came next. How the identity lives in a physical venue. What it looks like in motion across an LED wall. How it moves through a space so every surface a guest encounters carries the same brand. Three years of answering that question across different venues, a new identity mid-run, and an audience that grew from hundreds to thousands.',
           role: 'Brand Identity\u00a0\u00b7\u00a0Stage Design\u00a0\u00b7\u00a0Environmental Design\u00a0\u00b7\u00a0Motion Graphics\u00a0\u00b7\u00a0Photography\u00a0\u00b7\u00a0Creative Direction',
           year_full: '2024–2026',
           bg: 'linear-gradient(150deg,#111118 0%,#1e1a2e 50%,#0a0810 100%)',
@@ -1388,36 +1392,36 @@
           sections: [
             {
               label: 'Context',
-              body: 'The 47G identity was built by an agency for digital and print. Event design lives in a different dimension. A brand guide can show you the colors, the type, a texture render. It cannot tell you how to build a stage that makes a room feel the way the brand is supposed to feel, or what the logo looks like moving through an LED display at 30 feet wide, or how to create an entrance that signals to 3,000 people that what they\'re walking into is worth their attention.\n\nThat gap between what the guide shows and what the venue delivers is where the actual design work lives.'
+              body: 'An agency can build a brand guide for digital and print. Event design asks something different: what does this brand feel like when you\'re standing inside it?\n\nThe 47G identity has a specific visual logic. Geometric precision. A dark technical palette. A macro render of a space shuttle thruster surface used as the brand\'s signature texture, baking an aerospace reference directly into the visual system. The work was reading that logic and extending it into three dimensions, into motion, into architectural moments the guide never anticipated.'
             },
             {
               label: 'The Challenge',
-              body: 'Between Year One and Year Two, 47G refreshed its brand entirely: new logo, new identity direction. The venue changed at the same time, from an intimate character space to a convention center floor three times the size.\n\nAbsorbing a full brand update and scaling the system simultaneously, while keeping the event recognizable to anyone who had been there the year before, is the kind of compound design problem that separates brand understanding from brand application.'
+              body: 'Year One and Year Two came with compounding variables. The identity was refreshed between the two events: new logo, updated visual direction. The venue changed from an intimate character space to a convention center floor three times the scale.\n\nThe design had to absorb both at once and keep the conference recognizable to anyone who had been there the year before. That is a different problem than designing an event once.'
             },
             {
               label: 'Three Years',
               subsections: [
                 {
-                  label: 'The Origin: Reading the Brand',
-                  body: 'Before the Zero Gravity Summit, there was the UADA brand launch, the organization\'s inaugural event held inside a Delta Airlines hangar with a commercial aircraft as the stage backdrop. The brief was an environment that felt like the beginning of something serious.\n\nThat event established the approach: read what the brand is trying to say, then build an environment that says it in three dimensions. Everything that followed was an application of that same process.',
+                  label: 'The Origin: The Hangar',
+                  body: 'Before the Zero Gravity Summit, there was the UADA brand launch, the organization\'s inaugural event inside a Delta Airlines hangar with a commercial aircraft as the stage backdrop. The brief was an environment that felt like the start of something serious.\n\nThat event established the working relationship and the approach: read what the brand is reaching for, then build an environment that gets it there.',
                   render: 'imgFull',
                   img: 'assets/47g_uada_hangar.png'
                 },
                 {
-                  label: 'Year One: From Guide to Room',
-                  body: 'The inaugural Zero Gravity Summit was the first time the 47G identity had to exist in a physical event environment. The brand guide ended at the studio wall. Everything beyond that had to be invented.\n\nThe stage was the anchor. The thruster texture, a geometric render in the brand guide, became a multi-layer physical structure with lighting threaded between each layer. Not a printed backdrop. A stage environment with its own internal depth and drama, built from a reference that was never designed to become architecture. That decision set the standard: find what the brand is already trying to be, then give it a form the guide couldn\'t anticipate.\n\nEnvironmental design carried the identity through the rest of the venue. Every surface a guest encountered, from signage to event backdrops, was designed as part of the same system.',
+                  label: 'Year One: From Page to Room',
+                  body: 'The inaugural Zero Gravity Summit was the first time the 47G identity had to work in a physical space. The brand guide showed type, color, and texture. It did not show what to do with a stage.\n\nThe thruster texture from the guide, a macro render of a space shuttle thruster surface, became a multi-layer physical structure with lighting threaded between each panel. Not a printed backdrop. A stage with internal depth and drama, built from a reference that was never designed to become architecture. The aerospace material the brand was built around was now something you could stand in front of.\n\nEnvironmental design carried the identity through the rest of the venue. Every surface a guest encountered, signage, backdrops, and wayfinding, was designed as part of the same system.',
                   render: 'imgFull',
                   img: 'assets/47g_y1_stage.png'
                 },
                 {
-                  label: 'Year Two: New Logo, New Scale',
-                  body: 'The second Zero Gravity Summit came with two changes at once: a full brand refresh, and a venue that required a stage three times the size of anything built the year before. Salt Palace Convention Center is not a character space. It is a floor, and it needs to be filled.\n\nThe LED format that scale demanded became the motion layer the brand had never had. A full suite of motion graphics was built from the updated identity: speaker opens, panel transitions, break sequences, ambient loops. Each piece designed in the same moody, high-contrast visual language, with enough movement to hold a room of 3,000 without pulling attention from the stage. Custom-built lighting frames completed the staging, giving the LED environment structure and depth beyond a flat screen.\n\nThe entrance was designed around the aerospace references at the center of the brand\'s DNA: a custom arch structure creating a gyroscope effect around a large-scale ZG monogram sculpture. A moment built to land before a word is spoken. The merch area and lounge were held to the same standard, carrying the identity through every touchpoint a guest experienced.',
+                  label: 'Year Two: New Mark, New Scale',
+                  body: 'Salt Palace Convention Center required a stage three times the size of anything built the year before. The LED format that scale demanded became the motion layer the brand had never had.\n\nA full suite of motion graphics was produced from the refreshed identity: speaker opens, panel transitions, break sequences, ambient loops. Same moody, high-contrast visual language. Custom-built lighting frames gave the LED environment structure and physical dimension beyond a flat screen.\n\nThe entrance was designed around the same aerospace logic at the core of the brand. A custom arch structure created a gyroscope effect around a large-scale GZ monogram sculpture, an architectural moment built to land before a single speaker took the stage. The lounge, merch counter, and corridor environments were held to the same standard. The thruster texture ran through all of it.',
                   render: 'imgFull',
                   img: 'assets/47g_y2_stage.png'
                 },
                 {
                   label: 'Year Three: In Production',
-                  body: 'The 2026 Zero Gravity Summit is in production. The direction pushes the identity into new material territory: gold-toned accents, modular LED column configurations, a multi-arch entrance structure at larger scale than anything built before. Stage geometry developed in Blender, motion in After Effects.\n\nThree years of applying the system to real environments has clarified what the brand is capable of and where it still has room to go.',
+                  body: 'The 2026 Zero Gravity Summit is in production. Gold-toned accents, modular LED column configurations, a multi-arch entrance at larger scale. Stage geometry in Blender. Motion in After Effects.\n\nThree years of applying the system to real environments has made clear what the brand is capable of. Year three is about pushing it further.',
                   render: 'imgFull',
                   img: 'assets/47g_y3_render.png'
                 }
@@ -1425,12 +1429,12 @@
             }
           ],
           outcomeItems: [
-            'Translated a digital and print brand guide into a complete physical event system three consecutive years, building the rules for how the brand lives in space and motion.',
-            'Year One stage designed from a flat brand texture render into a multi-layer structure with internal lighting, creating depth and dimension the original guide never anticipated.',
-            'Absorbed a full brand refresh and a venue three times the size simultaneously in Year Two, keeping the event recognizable across both changes.',
-            'Full motion graphics suite produced for Year Two: speaker opens, panel transitions, breaks, and ambient loops, designed in the brand\'s visual language to hold a room without distracting from the content.',
-            'Entrance architecture derived from the brand\'s aerospace identity: custom arch structure creating a gyroscope effect around a large-scale ZG monogram sculpture.',
-            'Every guest-facing surface across both events, stage, entrance, corridors, merch, and lounge, designed as a unified brand environment.'
+            'Translated a digital and print brand guide into a complete physical event system across three consecutive years, building the rules for how the brand lives in space and motion.',
+            'Year One stage built from the brand\'s thruster texture render, a macro of a space shuttle thruster surface, into a multi-layer lit structure with internal depth the guide never anticipated.',
+            'Absorbed a full identity refresh and a venue three times the scale simultaneously in Year Two, keeping the conference recognizable across both changes.',
+            'Full motion graphics suite produced for Year Two: speaker opens, panel transitions, breaks, and ambient loops, all in the brand\'s moody high-contrast visual language.',
+            'Entrance architecture derived from the brand\'s aerospace identity: a custom arch structure creating a gyroscope effect around a large-scale GZ monogram sculpture.',
+            'Every guest-facing surface across both events designed as a unified brand environment: stage, entrance, corridors, lounge, and merch counter.'
           ]
         }
       ];
