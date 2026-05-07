@@ -182,7 +182,8 @@
     .cs-close.revealed { opacity: 1; }
     .cs-close:hover { color: rgba(244,241,234,0.95); }
     .cs-body { background: rgb(244,241,234); padding: clamp(80px,10vw,160px) clamp(32px,5vw,80px); }
-    .cs-section { margin-bottom: clamp(80px,10vw,160px); }
+    .cs-section { margin-top: clamp(72px,9vw,144px); margin-bottom: clamp(80px,10vw,160px); }
+    .cs-body > .cs-section:first-child { margin-top: 0; }
     .cs-section-label {
       font-family: 'Montserrat', sans-serif; font-size: clamp(8px,0.65vw,10px);
       letter-spacing: 0.32em; text-transform: uppercase; color: rgba(18,18,18,0.35);
@@ -240,7 +241,7 @@
       gap: 6px;
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
-      margin-bottom: clamp(80px,10vw,160px);
+      margin-bottom: 6px;
     }
     .cs-two-col-cell { aspect-ratio: 3/4; overflow: hidden; }
     .cs-two-col-cell img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; transition: transform 0.6s cubic-bezier(0.16,1,0.3,1); }
@@ -350,7 +351,7 @@
     .cs-img-stack {
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
-      margin-bottom: clamp(80px,10vw,160px);
+      margin-bottom: 6px;
       display: flex; flex-direction: column; gap: 6px;
     }
     .cs-img-stack-cell {
@@ -368,16 +369,16 @@
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
       overflow: hidden;
-      margin-bottom: clamp(80px,10vw,160px);
+      margin-bottom: 6px;
     }
     .cs-img-full-inner {
       width: 100%; height: 100%; background-size: cover; background-position: center;
     }
     .cs-img-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
-      margin-bottom: clamp(80px,10vw,160px);
+      margin-bottom: 6px;
     }
     .cs-img-half { aspect-ratio: 4/5; overflow: hidden; }
     .cs-img-half-inner { width: 100%; height: 100%; background-size: cover; background-position: center; }
@@ -403,7 +404,7 @@
       gap: 3px;
       width: calc(100% + clamp(64px,10vw,160px));
       margin-left: calc(-1 * clamp(32px,5vw,80px));
-      margin-bottom: clamp(80px,10vw,160px);
+      margin-bottom: 6px;
     }
     .cs-bento.portrait-bento {
       grid-template-rows: repeat(4, clamp(220px, 28vw, 420px));
