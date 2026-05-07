@@ -774,7 +774,7 @@
         <div class="work-card-wrap">
           <div class="work-card wx-card wx-1">
             <div class="work-card-bg" style="background:rgb(12,10,8);">
-              <video autoplay muted loop playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"><source src="assets/ITE_Logo.mp4" type="video/mp4"></video>
+              <video autoplay muted loop playsinline preload="none" data-src="assets/ITE_Logo.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"></video>
             </div>
             <div class="work-card-overlay"></div>
             <div class="work-card-body">
@@ -800,7 +800,7 @@
         <div class="work-card-wrap">
           <div class="work-card wx-card wx-3">
             <div class="work-card-bg" style="background:rgb(12,10,8);">
-              <video autoplay muted loop playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"><source src="assets/becx_logo.mp4" type="video/mp4"></video>
+              <video autoplay muted loop playsinline preload="none" data-src="assets/becx_logo.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"></video>
             </div>
             <div class="work-card-overlay"></div>
             <div class="work-card-body">
@@ -965,6 +965,12 @@
       }
       function fireWork() {
         if (wxFired) return; wxFired = true;
+        // Activate deferred work-card videos now that the panel is visible
+        document.querySelectorAll('.work-card-bg video[data-src]').forEach(function(v) {
+          v.src = v.dataset.src;
+          v.load();
+          v.play().catch(function(){});
+        });
         wxWraps.forEach(function(wrap) {
           var card = wrap.querySelector('.wx-card');
           card.style.clipPath = 'inset(100% 0 0 0)';
@@ -1505,15 +1511,14 @@
           heroBg.style.background = 'rgb(12,10,8)';
           heroBg.style.inset = '0'; // override CSS -10% bleed — not needed for video
           var vid = document.createElement('video');
-          vid.src = data.video;
+          vid.preload = 'auto';
           vid.autoplay = true;
           vid.muted = true;
           vid.loop = true;
           vid.playsInline = true;
-          vid.preload = 'metadata';
           vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.85;';
           heroBg.appendChild(vid);
-          vid.load();
+          vid.src = data.video;
           vid.addEventListener('canplay', function() {
             vid.play().catch(function() {});
           });
@@ -1631,9 +1636,19 @@
           el.className = 'cs-img-full cs-reveal';
           el.style.background = '#0c0a08';
           var vid = document.createElement('video');
-          vid.src = src;
+          vid.preload = 'none';
           vid.autoplay = true; vid.muted = true; vid.loop = true; vid.playsInline = true;
           vid.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+          // Use IntersectionObserver to load only when scrolled into view
+          vid.dataset.src = src;
+          var obs = new IntersectionObserver(function(entries, o) {
+            if (entries[0].isIntersecting) {
+              vid.src = vid.dataset.src;
+              vid.play().catch(function(){});
+              o.disconnect();
+            }
+          }, { threshold: 0.1 });
+          obs.observe(el);
           el.appendChild(vid);
           return el;
         }
@@ -1641,10 +1656,10 @@
           var el = document.createElement('div');
           el.className = 'cs-bento cs-reveal';
           el.innerHTML =
-            '<div class="cs-bento-cell span2"><img src="assets/ite_building.png" alt="ITE Building" loading="eager"></div>' +
-            '<div class="cs-bento-cell"><img src="assets/ite_hat.png" alt="ITE Hat" loading="eager" style="object-position:center 5%;"></div>' +
+            '<div class="cs-bento-cell span2"><img src="assets/ite_building.png" alt="ITE Building" loading="lazy" decoding="async"></div>' +
+            '<div class="cs-bento-cell"><img src="assets/ite_hat.png" alt="ITE Hat" loading="lazy" decoding="async" style="object-position:center 5%;"></div>' +
             '<div class="cs-bento-cell"><img src="assets/ite_polo.png" alt="ITE Polo" loading="lazy" decoding="async"></div>' +
-            '<div class="cs-bento-cell span2"><img src="assets/ite_vehicles.jpg" alt="ITE Vehicles" loading="eager"></div>' +
+            '<div class="cs-bento-cell span2"><img src="assets/ite_vehicles.jpg" alt="ITE Vehicles" loading="lazy" decoding="async"></div>' +
             '<div class="cs-bento-cell"><img src="assets/ite_businesscards.png" alt="ITE Business Cards" loading="lazy" decoding="async"></div>' +
             '<div class="cs-bento-cell span2"><img src="assets/ite_catalogbooks copy.png" alt="ITE Catalog" loading="lazy" decoding="async"></div>';
           return el;
