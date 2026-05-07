@@ -1489,7 +1489,9 @@
                   noLabel: true,
                   render: 'imgRow',
                   imgBefore: 'assets/47g_y2_stage_render.png',
-                  imgAfter: 'assets/47g_y2_stage.png'
+                  imgAfter: 'assets/47g_y2_stage.png',
+                  labelBefore: 'Render',
+                  labelAfter: 'Reality'
                 },
                 {
                   noLabel: true,
@@ -1500,7 +1502,9 @@
                   noLabel: true,
                   render: 'imgRow',
                   imgBefore: 'assets/47g_y2_entrance_render.png',
-                  imgAfter: 'assets/47g_y2_entrance_real.png'
+                  imgAfter: 'assets/47g_y2_entrance_real.png',
+                  labelBefore: 'Render',
+                  labelAfter: 'Reality'
                 },
                 {
                   noLabel: true,
@@ -1522,8 +1526,13 @@
                 },
                 {
                   noLabel: true,
-                  render: 'twoCol',
-                  twoCol: ['assets/47g_y3_render_b.png', 'assets/47g_y3_render_c.png']
+                  render: 'videoFull',
+                  src: 'assets/47g_y3_render.mp4'
+                },
+                {
+                  noLabel: true,
+                  render: 'imgStack',
+                  imgs: ['assets/47g_y3_render_b.png', 'assets/47g_y3_render_c.png']
                 }
               ]
             }
@@ -1746,7 +1755,7 @@
           var el = document.createElement('div');
           el.className = 'cs-bento cs-reveal';
           var cells = (imgs && imgs.length >= 6) ? imgs : [null,null,null,null,null,null];
-          var spans = [true,false,false,true,false,false];
+          var spans = [true,false,false,true,true,false];
           el.innerHTML = cells.map(function(src,i){
             var cls = spans[i] ? 'cs-bento-cell span2' : 'cs-bento-cell';
             return '<div class="'+cls+'">' +
@@ -1961,20 +1970,35 @@
           }
           return el;
         }
-        function makeImgRow(beforeSrc, afterSrc) {
+        function makeImgRow(beforeSrc, afterSrc, labelBefore, labelAfter) {
           var bSrc = beforeSrc || 'assets/ite_website_2022.png';
           var aSrc = afterSrc || 'assets/ite_website.png';
+          var lb = labelBefore || 'Before';
+          var la = labelAfter || 'After';
+          var labelStyle = 'font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;';
           var el = document.createElement('div');
           el.className = 'cs-img-row cs-reveal';
           el.innerHTML =
             '<div style="display:flex;flex-direction:column;gap:12px;">' +
-              '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;">Before</span>' +
-              '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'' + bSrc + '\');background-size:cover;background-position:center;"></div></div>' +
+              '<span style="' + labelStyle + '">' + lb + '</span>' +
+              '<div class="cs-img-half"><div class="cs-img-half-inner" data-bg="' + bSrc + '"></div></div>' +
             '</div>' +
             '<div style="display:flex;flex-direction:column;gap:12px;">' +
-              '<span style="font-family:\'Montserrat\',sans-serif;font-size:clamp(7px,0.6vw,9px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(18,18,18,0.4);text-align:center;">After</span>' +
-              '<div class="cs-img-half"><div class="cs-img-half-inner" style="background-image:url(\'' + aSrc + '\');background-size:cover;background-position:center;"></div></div>' +
+              '<span style="' + labelStyle + '">' + la + '</span>' +
+              '<div class="cs-img-half"><div class="cs-img-half-inner" data-bg="' + aSrc + '"></div></div>' +
             '</div>';
+          // Lazy-load background images via IntersectionObserver
+          el.querySelectorAll('[data-bg]').forEach(function(inner) {
+            var obs = new IntersectionObserver(function(entries, o) {
+              if (entries[0].isIntersecting) {
+                inner.style.backgroundImage = 'url(\'' + inner.dataset.bg + '\')';
+                inner.style.backgroundSize = 'cover';
+                inner.style.backgroundPosition = 'center';
+                o.disconnect();
+              }
+            }, { threshold: 0.05 });
+            obs.observe(inner);
+          });
           return el;
         }
         if (data.sections) {
@@ -2004,9 +2028,10 @@
                 if (sub.noLabel) {
                   if (sub.render === 'imgFull') { var vf = makeImgFull(null, sub.img || null); if (sub.tightBottom) vf.style.marginBottom = '32px'; csBody.appendChild(vf); }
                   else if (sub.render === 'twoCol') csBody.appendChild(makeTwoCol(sub.twoCol || null));
-                  else if (sub.render === 'imgRow') csBody.appendChild(makeImgRow(sub.imgBefore || null, sub.imgAfter || null));
+                  else if (sub.render === 'imgRow') csBody.appendChild(makeImgRow(sub.imgBefore || null, sub.imgAfter || null, sub.labelBefore, sub.labelAfter));
                   else if (sub.render === 'photoBento') csBody.appendChild(makePhotoBento(sub.imgs || null));
                   else if (sub.render === 'imgStack') csBody.appendChild(makeImgStack(sub.imgs || []));
+                  else if (sub.render === 'videoFull') csBody.appendChild(makeVideoFull(sub.src));
                   return;
                 }
                 var subEl = document.createElement('div');
@@ -2085,7 +2110,7 @@
                 } else if (sub.render === 'triCol') {
                   csBody.appendChild(makeTriCol(sub.imgs || null, sub.landscape || false, sub.fullHeight || false));
                 } else if (sub.render === 'imgRow') {
-                  csBody.appendChild(makeImgRow(sub.imgBefore || null, sub.imgAfter || null));
+                  csBody.appendChild(makeImgRow(sub.imgBefore || null, sub.imgAfter || null, sub.labelBefore, sub.labelAfter));
                 } else if (sub.render === 'imgFull') {
                   var imgFullEl = makeImgFull(sub.brighten || null, sub.img || null);
                   if (sub.tightBottom) imgFullEl.style.marginBottom = '32px';
@@ -2107,11 +2132,11 @@
                 } else if (sub.render === 'none') {
                   if (sub.twoCol) csBody.appendChild(makeTwoCol(sub.twoCol));
                   if (sub.slider) csBody.appendChild(makeImgSlider(sub.slider));
-                } else if (si === 3) {
+                } else if (data.num === '01' && si === 3) {
                   csBody.appendChild(makeImgRow());
-                } else if (si === 4) {
+                } else if (data.num === '01' && si === 4) {
                   csBody.appendChild(makeImgFull(null, 'assets/customgpt.png'));
-                } else if (si === 5) {
+                } else if (data.num === '01' && si === 5) {
                   csBody.appendChild(makeImgFull(null, 'assets/ITE-Stage.png'));
                 }
               });
