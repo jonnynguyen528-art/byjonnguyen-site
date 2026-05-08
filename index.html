@@ -2234,38 +2234,52 @@
         heroStmt.classList.remove('revealed');
         scrollHint.classList.remove('revealed');
         csClose.classList.remove('revealed');
-        // Lock scroll but don't reset position — collapse from wherever the user is
+        // Lock scroll — will smooth-scroll back to hero during collapse
         csInner.classList.remove('cs-scrollable');
         // Hide card titles instantly so they can fade in cleanly after collapse
         wxWraps.forEach(function(w) {
           var titleEl = w.querySelector('.work-card-title');
           if (titleEl) { titleEl.style.transition = 'none'; titleEl.style.opacity = '0'; }
         });
-        // Restore hero bg parallax and clean up video if present
-        var heroBg = document.getElementById('cs-hero-bg');
-        heroBg.style.transform = '';
-        var vid = heroBg.querySelector('video');
-        if (vid) { vid.pause(); vid.src = ''; heroBg.innerHTML = ''; heroBg.style.inset = ''; }
+        // Fade out body content and hero text so hero video is all that remains
+        var csBodyEl = document.getElementById('cs-body');
+        var csHeroContent = csOverlay.querySelector('.cs-hero-content');
+        if (csBodyEl) { csBodyEl.style.transition = 'opacity 0.35s ease'; csBodyEl.style.opacity = '0'; }
+        if (csHeroContent) { csHeroContent.style.transition = 'opacity 0.35s ease'; csHeroContent.style.opacity = '0'; }
+        // Smooth scroll csInner back to top so hero video fills the collapsing frame
+        var scrollDist = csInner.scrollTop;
+        var scrollT0 = null, scrollDur = 500;
+        var scrollRafId = null;
+        if (scrollDist > 0) {
+          function scrollToTop(ts) {
+            if (!scrollT0) scrollT0 = ts;
+            var p = Math.min((ts - scrollT0) / scrollDur, 1);
+            var ease = 1 - Math.pow(1 - p, 3);
+            csInner.scrollTop = scrollDist * (1 - ease);
+            if (p < 1) { scrollRafId = requestAnimationFrame(scrollToTop); }
+          }
+          scrollRafId = requestAnimationFrame(scrollToTop);
+        }
         // Collapse back to card rect
         var idx = csActiveIdx;
         var r = csStoredRects[idx];
         var vw = window.innerWidth, vh = window.innerHeight;
         var endClip = 'inset(' + r.top.toFixed(1) + 'px ' + (vw - r.right).toFixed(1) + 'px ' + (vh - r.bottom).toFixed(1) + 'px ' + r.left.toFixed(1) + 'px round 3px)';
-        // Cancel any lingering fills (expandAnim etc.) before collapse starts,
-        // then pin the inline style so the starting position is unambiguous.
         csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
         csOverlay.style.clipPath = 'inset(0px 0px 0px 0px round 0px)';
         csOverlay.animate([
           { clipPath: 'inset(0px 0px 0px 0px round 0px)' },
           { clipPath: endClip }
         ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
-        // Removing cs-open triggers the CSS :not(.cs-open) !important rule which
-        // forces inset(100%) regardless of any fill or inline style still present.
         setTimeout(function() {
+          if (scrollRafId) { cancelAnimationFrame(scrollRafId); scrollRafId = null; }
           csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
           csOverlay.style.clipPath = '';
           csOverlay.classList.remove('cs-open');
           csInner.scrollTop = 0;
+          // Reset faded elements
+          if (csBodyEl) { csBodyEl.style.transition = ''; csBodyEl.style.opacity = ''; }
+          if (csHeroContent) { csHeroContent.style.transition = ''; csHeroContent.style.opacity = ''; }
           if (slideScrollCleanup) { slideScrollCleanup(); slideScrollCleanup = null; }
           if (heroScrollCleanup) { heroScrollCleanup(); heroScrollCleanup = null; }
           csActiveIdx = -1;
