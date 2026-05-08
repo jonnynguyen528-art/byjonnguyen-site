@@ -2305,47 +2305,7 @@
       }
       function goToContent() {
         animating = true; accum = 0;
-        var cue     = document.getElementById('heroScrollCue');
-        var eyebrow = panelContent.querySelector('.work-eyebrow');
-        if (cue && eyebrow) {
-          var sr  = cue.getBoundingClientRect();
-          var er  = eyebrow.getBoundingClientRect();
-          // panel-content is at translateY(100%) — compute eyebrow's final on-screen position
-          var cueFS   = parseFloat(window.getComputedStyle(cue).fontSize);
-          var eyFS    = parseFloat(window.getComputedStyle(eyebrow).fontSize);
-          var scale   = eyFS / cueFS;
-          var startCX = sr.left + sr.width  / 2;
-          var startCY = sr.top  + sr.height / 2;
-          var endCX   = er.left + er.width  / 2;
-          var endCY   = (er.top - window.innerHeight) + er.height / 2;
-          // Fade the glass pill out
-          cue.style.animation = 'none';
-          cue.animate([{ opacity: 1 }, { opacity: 0 }],
-            { duration: 350, easing: 'ease-out', fill: 'forwards' });
-          // Flying text clone — position anchored at top:0,left:0; movement via transform only (GPU)
-          var clone = document.createElement('span');
-          clone.setAttribute('data-cue-clone', '');
-          clone.textContent = 'Selected Work';
-          clone.style.cssText =
-            'position:fixed;z-index:10000;pointer-events:none;top:0;left:0;' +
-            'font-family:Montserrat,sans-serif;font-weight:600;text-transform:uppercase;white-space:nowrap;' +
-            'font-size:' + cueFS + 'px;letter-spacing:0.22em;color:rgba(18,18,18,0.75);' +
-            'will-change:transform,color;';
-          document.body.appendChild(clone);
-          eyebrow.style.opacity = '0';
-          clone.animate([
-            { transform: 'translate('+startCX+'px,'+startCY+'px) translate(-50%,-50%) scale(1)',       color: 'rgba(18,18,18,0.75)' },
-            { transform: 'translate('+endCX  +'px,'+endCY  +'px) translate(-50%,-50%) scale('+scale+')', color: 'rgb(31,87,255)' }
-          ], { duration: 900, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
-        }
-        slidePanel(panelContent, '0%', function() {
-          state = 'content'; animating = false;
-          var cl = document.querySelector('[data-cue-clone]');
-          if (cl && cl.parentNode) cl.parentNode.removeChild(cl);
-          if (eyebrow) eyebrow.style.opacity = '';
-          if (cue) { cue.style.animation = ''; cue.style.opacity = ''; }
-          fireWork();
-        });
+        slidePanel(panelContent, '0%', function() { state = 'content'; animating = false; fireWork(); });
       }
       function goToHero() {
         animating = true; accum = 0;
@@ -2354,52 +2314,8 @@
       }
       function goToHeroFromContent() {
         animating = true; accum = 0;
-        var cue     = document.getElementById('heroScrollCue');
-        var eyebrow = panelContent.querySelector('.work-eyebrow');
-        if (cue && eyebrow) {
-          var er  = eyebrow.getBoundingClientRect();
-          var cr  = cue.getBoundingClientRect();   // panel-hero always renders behind
-          var eyFS  = parseFloat(window.getComputedStyle(eyebrow).fontSize);
-          var cueFS = parseFloat(window.getComputedStyle(cue).fontSize);
-          var scale = cueFS / eyFS;
-          // Flying text clone: eyebrow → cue pill (GPU-composited via transform only)
-          var startCX = er.left + er.width  / 2;
-          var startCY = er.top  + er.height / 2;
-          var endCX   = cr.left + cr.width  / 2;
-          var endCY   = cr.top  + cr.height / 2;
-          var clone = document.createElement('span');
-          clone.setAttribute('data-cue-clone', '');
-          clone.textContent = 'Selected Work';
-          clone.style.cssText =
-            'position:fixed;z-index:10000;pointer-events:none;top:0;left:0;' +
-            'font-family:Montserrat,sans-serif;font-weight:600;text-transform:uppercase;white-space:nowrap;' +
-            'font-size:' + eyFS + 'px;letter-spacing:0.22em;color:rgb(31,87,255);' +
-            'will-change:transform,color,opacity;';
-          document.body.appendChild(clone);
-          eyebrow.style.opacity = '0';
-          // Cue glass fades in as clone arrives — simple opacity only, no background animation
-          cue.style.animation = 'none';
-          cue.style.opacity = '0';
-          cue.animate([{ opacity: 0 }, { opacity: 1 }],
-            { duration: 450, delay: 420, easing: 'ease-in', fill: 'forwards' });
-          // Clone flies from eyebrow to cue, shrinking and fading as the cue glass reveals
-          clone.animate([
-            { transform: 'translate('+startCX+'px,'+startCY+'px) translate(-50%,-50%) scale(1)',        color: 'rgb(31,87,255)',       opacity: 1 },
-            { transform: 'translate('+endCX  +'px,'+endCY  +'px) translate(-50%,-50%) scale('+scale+')', color: 'rgba(18,18,18,0.75)', opacity: 0 }
-          ], { duration: 900, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
-        }
         resetWork();
-        slidePanel(panelContent, '100%', function() {
-          state = 'hero'; animating = false;
-          var cl = document.querySelector('[data-cue-clone]');
-          if (cl && cl.parentNode) cl.parentNode.removeChild(cl);
-          if (eyebrow) eyebrow.style.opacity = '';
-          if (cue) {
-            // Clear only the specific inline styles we set — preserve CSS class animations
-            cue.style.animation = '';
-            cue.style.opacity = '';
-          }
-        });
+        slidePanel(panelContent, '100%', function() { state = 'hero'; animating = false; });
       }
       function handleDelta(dy) {
         if (animating) return;
