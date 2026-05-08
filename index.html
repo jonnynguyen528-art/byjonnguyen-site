@@ -1640,15 +1640,6 @@
         // Lock scroll during animation
         csInner.classList.remove('cs-scrollable');
         csInner.scrollTop = 0;
-        // Dim sibling cards via inline style (avoids fill:forwards animation state issues on close)
-        wxWraps.forEach(function(w, j) {
-          if (j !== idx) {
-            var c = w.querySelector('.wx-card');
-            c.getAnimations().forEach(function(a) { a.cancel(); });
-            c.style.transition = 'opacity 0.4s ease';
-            c.style.opacity = '0';
-          }
-        });
         // Reveal overlay — expand from card position
         csOverlay.classList.add('cs-open');
         var expandAnim = csOverlay.animate([
@@ -2270,7 +2261,6 @@
         if (heroScrollCleanup) { heroScrollCleanup(); heroScrollCleanup = null; }
           csActiveIdx = -1;
           accum = 0;
-          revealWorkCards();
         }, 750);
       }
       document.getElementById('cs-close').addEventListener('click', closeCaseStudy);
