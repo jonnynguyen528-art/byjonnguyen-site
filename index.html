@@ -8,11 +8,10 @@
   <meta name="description" content="Creative Director building brand worlds. Brand, digital, experiential." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" /></noscript>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" /></noscript>
   <link rel="preload" href="assets/cinema%20sunday.otf" as="font" type="font/otf" crossorigin>
   <link rel="preload" as="image" href="frames/hero-bust-b2.png" fetchpriority="high">
-  <link rel="stylesheet" href="./style.css" />
   <style>
     @font-face {
       font-family: 'Cinema Sunday';
@@ -182,7 +181,7 @@
     .cs-close.revealed { opacity: 1; }
     .cs-close:hover { color: rgba(244,241,234,0.95); }
     .cs-body { background: rgb(244,241,234); padding: clamp(80px,10vw,160px) clamp(32px,5vw,80px); }
-    .cs-section { margin-top: clamp(72px,9vw,144px); margin-bottom: clamp(80px,10vw,160px); }
+    .cs-section { margin-top: clamp(72px,9vw,144px); margin-bottom: clamp(80px,10vw,160px); content-visibility: auto; contain-intrinsic-size: 0 600px; }
     .cs-body > .cs-section:first-child { margin-top: 0; }
     .cs-section-label {
       font-family: 'Montserrat', sans-serif; font-size: clamp(8px,0.65vw,10px);
@@ -854,42 +853,49 @@
   </div>
   <div id="cursorSpotlight"></div>
   <script>
-    // ── Cursor spotlight ──────────────────────────────────────────────
+    // ── Cursor spotlight — deferred to idle so it doesn't compete with hero render ──
     (function () {
-      const spotlight = document.getElementById('cursorSpotlight');
-      const shadowEl = document.getElementById('groundShadow');
-      let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-      let curX = mouseX, curY = mouseY;
-      let hasEntered = false;
-      const LERP = 0.08;
-      document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; hasEntered = true; });
-      function tick() {
-        curX += (mouseX - curX) * LERP;
-        curY += (mouseY - curY) * LERP;
-        if (!hasEntered) { requestAnimationFrame(tick); return; }
-        const W = window.innerWidth, H = window.innerHeight;
-        const dx = (curX - W * 0.5) / (W * 0.5);
-        const dy = (curY - H * 0.5) / (H * 0.5);
-        const dist = Math.min(Math.sqrt(dx * dx + dy * dy), 1.0);
-        const blend = dist * 0.8;
-        if (blend < 0.02) {
-          spotlight.style.opacity = '0';
-        } else {
-          spotlight.style.opacity = blend.toFixed(3);
-          spotlight.style.background = `
-            radial-gradient(320px circle at ${curX}px ${curY}px, rgba(255,242,210,0.10) 0%, rgba(255,238,195,0.04) 50%, transparent 100%),
-            radial-gradient(800px circle at ${curX}px ${curY}px, transparent 0%, transparent 25%, rgba(12,10,6,0.05) 60%, rgba(12,10,6,0.13) 100%)`;
+      function initSpotlight() {
+        const spotlight = document.getElementById('cursorSpotlight');
+        const shadowEl = document.getElementById('groundShadow');
+        let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+        let curX = mouseX, curY = mouseY;
+        let hasEntered = false;
+        const LERP = 0.08;
+        document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; hasEntered = true; });
+        function tick() {
+          curX += (mouseX - curX) * LERP;
+          curY += (mouseY - curY) * LERP;
+          if (!hasEntered) { requestAnimationFrame(tick); return; }
+          const W = window.innerWidth, H = window.innerHeight;
+          const dx = (curX - W * 0.5) / (W * 0.5);
+          const dy = (curY - H * 0.5) / (H * 0.5);
+          const dist = Math.min(Math.sqrt(dx * dx + dy * dy), 1.0);
+          const blend = dist * 0.8;
+          if (blend < 0.02) {
+            spotlight.style.opacity = '0';
+          } else {
+            spotlight.style.opacity = blend.toFixed(3);
+            spotlight.style.background = `
+              radial-gradient(320px circle at ${curX}px ${curY}px, rgba(255,242,210,0.10) 0%, rgba(255,238,195,0.04) 50%, transparent 100%),
+              radial-gradient(800px circle at ${curX}px ${curY}px, transparent 0%, transparent 25%, rgba(12,10,6,0.05) 60%, rgba(12,10,6,0.13) 100%)`;
+          }
+          if (shadowEl) {
+            const cx = mouseX / W - 0.5;
+            const adist = Math.abs(cx);
+            shadowEl.style.transform = `translateX(calc(-50% + ${(-cx*120).toFixed(1)}px)) scaleX(${(0.8+adist*2).toFixed(3)})`;
+            shadowEl.style.filter = `blur(${(8+adist*20).toFixed(1)}px)`;
+            shadowEl.style.opacity = Math.min(0.08+adist*0.25, 0.4).toFixed(3);
+          }
+          requestAnimationFrame(tick);
         }
-        if (shadowEl) {
-          const cx = mouseX / W - 0.5;
-          const adist = Math.abs(cx);
-          shadowEl.style.transform = `translateX(calc(-50% + ${(-cx*120).toFixed(1)}px)) scaleX(${(0.8+adist*2).toFixed(3)})`;
-          shadowEl.style.filter = `blur(${(8+adist*20).toFixed(1)}px)`;
-          shadowEl.style.opacity = Math.min(0.08+adist*0.25, 0.4).toFixed(3);
-        }
-        requestAnimationFrame(tick);
+        tick();
       }
-      tick();
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(initSpotlight, { timeout: 2000 });
+      } else {
+        setTimeout(initSpotlight, 200);
+      }
     })();
     // ── Bust reveal ───────────────────────────────────────────────────
     (function () {
@@ -1033,11 +1039,13 @@
       }
       function fireWork() {
         if (wxFired) return; wxFired = true;
-        // Activate deferred work-card videos now that the panel is visible
-        document.querySelectorAll('.work-card-bg video[data-src]').forEach(function(v) {
-          v.src = v.dataset.src;
-          v.load();
-          v.play().catch(function(){});
+        // Activate deferred work-card videos with stagger to avoid bandwidth collision
+        document.querySelectorAll('.work-card-bg video[data-src]').forEach(function(v, i) {
+          setTimeout(function() {
+            v.src = v.dataset.src;
+            v.load();
+            v.play().catch(function(){});
+          }, i * 350);
         });
         revealWorkCards();
         initWxParallax();
@@ -1592,7 +1600,7 @@
           heroBg.style.background = 'rgb(12,10,8)';
           heroBg.style.inset = '0'; // override CSS -10% bleed — not needed for video
           var vid = document.createElement('video');
-          vid.preload = 'auto';
+          vid.preload = 'metadata';
           vid.autoplay = true;
           vid.muted = true;
           vid.loop = true;
