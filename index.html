@@ -2234,33 +2234,9 @@
         heroStmt.classList.remove('revealed');
         scrollHint.classList.remove('revealed');
         csClose.classList.remove('revealed');
-        // Lock scroll — will smooth-scroll back to hero during collapse
+        // Lock scroll
         csInner.classList.remove('cs-scrollable');
-        // Hide card titles instantly so they can fade in cleanly after collapse
-        wxWraps.forEach(function(w) {
-          var titleEl = w.querySelector('.work-card-title');
-          if (titleEl) { titleEl.style.transition = 'none'; titleEl.style.opacity = '0'; }
-        });
-        // Fade out body content and hero text so hero video is all that remains
-        var csBodyEl = document.getElementById('cs-body');
-        var csHeroContent = csOverlay.querySelector('.cs-hero-content');
-        if (csBodyEl) { csBodyEl.style.transition = 'opacity 0.35s ease'; csBodyEl.style.opacity = '0'; }
-        if (csHeroContent) { csHeroContent.style.transition = 'opacity 0.35s ease'; csHeroContent.style.opacity = '0'; }
-        // Smooth scroll csInner back to top so hero video fills the collapsing frame
-        var scrollDist = csInner.scrollTop;
-        var scrollT0 = null, scrollDur = 500;
-        var scrollRafId = null;
-        if (scrollDist > 0) {
-          function scrollToTop(ts) {
-            if (!scrollT0) scrollT0 = ts;
-            var p = Math.min((ts - scrollT0) / scrollDur, 1);
-            var ease = 1 - Math.pow(1 - p, 3);
-            csInner.scrollTop = scrollDist * (1 - ease);
-            if (p < 1) { scrollRafId = requestAnimationFrame(scrollToTop); }
-          }
-          scrollRafId = requestAnimationFrame(scrollToTop);
-        }
-        // Collapse back to card rect
+        // Collapse clip-path back to card rect — card is already live behind the overlay
         var idx = csActiveIdx;
         var r = csStoredRects[idx];
         var vw = window.innerWidth, vh = window.innerHeight;
@@ -2272,23 +2248,14 @@
           { clipPath: endClip }
         ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
         setTimeout(function() {
-          if (scrollRafId) { cancelAnimationFrame(scrollRafId); scrollRafId = null; }
           csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
           csOverlay.style.clipPath = '';
           csOverlay.classList.remove('cs-open');
           csInner.scrollTop = 0;
-          // Reset faded elements
-          if (csBodyEl) { csBodyEl.style.transition = ''; csBodyEl.style.opacity = ''; }
-          if (csHeroContent) { csHeroContent.style.transition = ''; csHeroContent.style.opacity = ''; }
           if (slideScrollCleanup) { slideScrollCleanup(); slideScrollCleanup = null; }
           if (heroScrollCleanup) { heroScrollCleanup(); heroScrollCleanup = null; }
           csActiveIdx = -1;
           accum = 0;
-          // Fade card titles back in now that overlay is gone
-          wxWraps.forEach(function(w) {
-            var titleEl = w.querySelector('.work-card-title');
-            if (titleEl) { titleEl.style.transition = 'opacity 0.45s ease'; titleEl.style.opacity = '1'; }
-          });
         }, 750);
       }
       document.getElementById('cs-close').addEventListener('click', closeCaseStudy);
