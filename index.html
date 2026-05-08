@@ -2243,20 +2243,29 @@
         var endClip = 'inset(' + r.top.toFixed(1) + 'px ' + (vw - r.right).toFixed(1) + 'px ' + (vh - r.bottom).toFixed(1) + 'px ' + r.left.toFixed(1) + 'px round 3px)';
         csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
         csOverlay.style.clipPath = 'inset(0px 0px 0px 0px round 0px)';
+        csOverlay.style.opacity = '1';
+        // Clip-path collapses over 800ms
         csOverlay.animate([
           { clipPath: 'inset(0px 0px 0px 0px round 0px)' },
           { clipPath: endClip }
-        ], { duration: 700, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+        ], { duration: 800, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+        // Opacity holds full, then fades out in the second half
+        csOverlay.animate([
+          { opacity: 1, offset: 0 },
+          { opacity: 1, offset: 0.45 },
+          { opacity: 0, offset: 1 }
+        ], { duration: 800, easing: 'ease-in', fill: 'forwards' });
         setTimeout(function() {
           csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
           csOverlay.style.clipPath = '';
+          csOverlay.style.opacity = '';
           csOverlay.classList.remove('cs-open');
           csInner.scrollTop = 0;
           if (slideScrollCleanup) { slideScrollCleanup(); slideScrollCleanup = null; }
           if (heroScrollCleanup) { heroScrollCleanup(); heroScrollCleanup = null; }
           csActiveIdx = -1;
           accum = 0;
-        }, 750);
+        }, 850);
       }
       document.getElementById('cs-close').addEventListener('click', closeCaseStudy);
       // ── Scroll cue click → jump to work ──────────────────────────────
