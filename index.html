@@ -964,16 +964,17 @@
         });
         return innerSpans;
       }
-      function fireWork() {
-        if (wxFired) return; wxFired = true;
-        // Activate deferred work-card videos now that the panel is visible
-        document.querySelectorAll('.work-card-bg video[data-src]').forEach(function(v) {
-          v.src = v.dataset.src;
-          v.load();
-          v.play().catch(function(){});
-        });
+      function revealWorkCards() {
+        wxAnims.forEach(function(a) { try { a.cancel(); } catch(e) {} }); wxAnims = [];
         wxWraps.forEach(function(wrap) {
           var card = wrap.querySelector('.wx-card');
+          // Clear any dim/hover/close state on the card
+          card.getAnimations().forEach(function(a) { a.cancel(); });
+          card.style.transition = '';
+          card.style.opacity = '';
+          card.style.filter = '';
+          card.style.transform = '';
+          card.style.boxShadow = '';
           card.style.clipPath = 'inset(100% 0 0 0)';
           wrap.style.opacity = '1';
           wrap.querySelectorAll('.work-card-num, .work-card-cat, .work-card-arrow')
@@ -1025,6 +1026,16 @@
           };
           wxAnims.push(a);
         });
+      }
+      function fireWork() {
+        if (wxFired) return; wxFired = true;
+        // Activate deferred work-card videos now that the panel is visible
+        document.querySelectorAll('.work-card-bg video[data-src]').forEach(function(v) {
+          v.src = v.dataset.src;
+          v.load();
+          v.play().catch(function(){});
+        });
+        revealWorkCards();
         initWxParallax();
       }
       function resetWork() {
@@ -2259,16 +2270,7 @@
         if (heroScrollCleanup) { heroScrollCleanup(); heroScrollCleanup = null; }
           csActiveIdx = -1;
           accum = 0;
-          wxWraps.forEach(function(w) {
-            w.style.opacity = '1'; // safety: CSS default is 0, fireWork sets inline 1
-            var c = w.querySelector('.wx-card');
-            c.getAnimations().forEach(function(a) { a.cancel(); });
-            c.style.transition = 'opacity 0.35s ease';
-            c.style.opacity = '1';
-            c.style.filter = '';
-            c.style.transform = '';
-            c.style.boxShadow = '';
-          });
+          revealWorkCards();
         }, 750);
       }
       document.getElementById('cs-close').addEventListener('click', closeCaseStudy);
