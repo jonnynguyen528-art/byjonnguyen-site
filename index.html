@@ -2298,7 +2298,50 @@
       }
       function goToContent() {
         animating = true; accum = 0;
-        slidePanel(panelContent, '0%', function() { state = 'content'; animating = false; fireWork(); });
+        var cue     = document.getElementById('heroScrollCue');
+        var eyebrow = panelContent.querySelector('.work-eyebrow');
+        if (cue && eyebrow) {
+          var sr  = cue.getBoundingClientRect();
+          var er  = eyebrow.getBoundingClientRect();
+          // panel-content is at translateY(100%) — eyebrow's on-screen position when panel reaches 0%:
+          var endTop  = er.top  - window.innerHeight;
+          var endLeft = er.left;
+          var cueFS   = window.getComputedStyle(cue).fontSize;
+          var eyFS    = window.getComputedStyle(eyebrow).fontSize;
+          // Fade the whole cue (glass + text) out — clone takes over the text
+          cue.style.animation = 'none';
+          var cueFade = cue.animate(
+            [{ opacity: 1 }, { opacity: 0 }],
+            { duration: 420, easing: 'ease-out', fill: 'forwards' }
+          );
+          // Flying text clone: centered on cue pill → centered on eyebrow
+          var startCX = sr.left + sr.width  / 2;
+          var startCY = sr.top  + sr.height / 2;
+          var endCX   = endLeft + er.width  / 2;
+          var endCY   = endTop  + er.height / 2;
+          var clone = document.createElement('span');
+          clone.setAttribute('data-cue-clone', '');
+          clone.textContent = 'Selected Work';
+          clone.style.cssText =
+            'position:fixed;z-index:10000;pointer-events:none;' +
+            'font-family:Montserrat,sans-serif;font-weight:600;text-transform:uppercase;white-space:nowrap;' +
+            'font-size:' + cueFS + ';letter-spacing:0.22em;color:rgba(18,18,18,0.75);' +
+            'top:' + startCY + 'px;left:' + startCX + 'px;transform:translate(-50%,-50%);';
+          document.body.appendChild(clone);
+          eyebrow.style.opacity = '0';
+          clone.animate([
+            { top: startCY + 'px', left: startCX + 'px', fontSize: cueFS,  letterSpacing: '0.22em', color: 'rgba(18,18,18,0.75)' },
+            { top: endCY   + 'px', left: endCX   + 'px', fontSize: eyFS,   letterSpacing: '0.32em', color: 'rgb(31,87,255)' }
+          ], { duration: 900, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+        }
+        slidePanel(panelContent, '0%', function() {
+          state = 'content'; animating = false;
+          var cl = document.querySelector('[data-cue-clone]');
+          if (cl && cl.parentNode) cl.parentNode.removeChild(cl);
+          if (eyebrow) eyebrow.style.opacity = '';
+          if (cue) { cue.style.animation = ''; cue.style.opacity = ''; }
+          fireWork();
+        });
       }
       function goToHero() {
         animating = true; accum = 0;
@@ -2307,8 +2350,51 @@
       }
       function goToHeroFromContent() {
         animating = true; accum = 0;
+        var cue     = document.getElementById('heroScrollCue');
+        var eyebrow = panelContent.querySelector('.work-eyebrow');
+        if (cue && eyebrow) {
+          var er  = eyebrow.getBoundingClientRect();
+          var cr  = cue.getBoundingClientRect();   // panel-hero is always rendered behind
+          var eyFS  = window.getComputedStyle(eyebrow).fontSize;
+          var cueFS = window.getComputedStyle(cue).fontSize;
+          // Flying text clone: eyebrow → cue pill
+          var startCX = er.left + er.width  / 2;
+          var startCY = er.top  + er.height / 2;
+          var endCX   = cr.left + cr.width  / 2;
+          var endCY   = cr.top  + cr.height / 2;
+          var clone = document.createElement('span');
+          clone.setAttribute('data-cue-clone', '');
+          clone.textContent = 'Selected Work';
+          clone.style.cssText =
+            'position:fixed;z-index:10000;pointer-events:none;' +
+            'font-family:Montserrat,sans-serif;font-weight:600;text-transform:uppercase;white-space:nowrap;' +
+            'font-size:' + eyFS + ';letter-spacing:0.32em;color:rgb(31,87,255);' +
+            'top:' + startCY + 'px;left:' + startCX + 'px;transform:translate(-50%,-50%);';
+          document.body.appendChild(clone);
+          eyebrow.style.opacity = '0';
+          // Cue is hidden under panel-content — reveal its glass as clone arrives
+          cue.style.animation = 'none';
+          cue.style.opacity = '0';
+          cue.animate([
+            { opacity: 0, background: 'transparent', boxShadow: 'none' },
+            { opacity: 1, background: 'linear-gradient(145deg,rgba(255,255,255,0.55) 0%,rgba(255,255,255,0.18) 40%,rgba(255,255,255,0.28) 100%)', boxShadow: '0 1px 0 0 rgba(255,255,255,0.85) inset,0 4px 16px rgba(18,18,18,0.10),0 1px 3px rgba(18,18,18,0.08)' }
+          ], { duration: 500, delay: 400, easing: 'ease-in', fill: 'forwards' });
+          clone.animate([
+            { top: startCY + 'px', left: startCX + 'px', fontSize: eyFS,  letterSpacing: '0.32em', color: 'rgb(31,87,255)' },
+            { top: endCY   + 'px', left: endCX   + 'px', fontSize: cueFS, letterSpacing: '0.22em', color: 'rgba(18,18,18,0.75)' }
+          ], { duration: 900, easing: 'cubic-bezier(0.76,0,0.24,1)', fill: 'forwards' });
+        }
         resetWork();
-        slidePanel(panelContent, '100%', function() { state = 'hero'; animating = false; });
+        slidePanel(panelContent, '100%', function() {
+          state = 'hero'; animating = false;
+          var cl = document.querySelector('[data-cue-clone]');
+          if (cl && cl.parentNode) cl.parentNode.removeChild(cl);
+          if (eyebrow) eyebrow.style.opacity = '';
+          if (cue) {
+            cue.getAnimations().forEach(function(a) { a.cancel(); });
+            cue.style.cssText = '';   // restore CSS animations (revealCue fill + driftCue loop)
+          }
+        });
       }
       function handleDelta(dy) {
         if (animating) return;
