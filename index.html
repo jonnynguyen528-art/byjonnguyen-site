@@ -788,7 +788,9 @@
         </div>
         <div class="work-card-wrap">
           <div class="work-card wx-card wx-2">
-            <div class="work-card-bg"></div>
+            <div class="work-card-bg" style="background:rgb(12,10,8);">
+              <video autoplay muted loop playsinline preload="none" data-src="assets/mrc_maggie.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"></video>
+            </div>
             <div class="work-card-overlay"></div>
             <div class="work-card-body">
               <div class="work-card-num">02</div>
@@ -814,7 +816,9 @@
         </div>
         <div class="work-card-wrap">
           <div class="work-card wx-card wx-4">
-            <div class="work-card-bg"></div>
+            <div class="work-card-bg" style="background:rgb(12,10,8);">
+              <video autoplay muted loop playsinline preload="none" data-src="assets/47G_Broll.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"></video>
+            </div>
             <div class="work-card-overlay"></div>
             <div class="work-card-body">
               <div class="work-card-num">04</div>
@@ -2230,9 +2234,13 @@
         heroStmt.classList.remove('revealed');
         scrollHint.classList.remove('revealed');
         csClose.classList.remove('revealed');
-        // Lock scroll instantly
+        // Lock scroll but don't reset position — collapse from wherever the user is
         csInner.classList.remove('cs-scrollable');
-        csInner.scrollTop = 0;
+        // Hide card titles instantly so they can fade in cleanly after collapse
+        wxWraps.forEach(function(w) {
+          var titleEl = w.querySelector('.work-card-title');
+          if (titleEl) { titleEl.style.transition = 'none'; titleEl.style.opacity = '0'; }
+        });
         // Restore hero bg parallax and clean up video if present
         var heroBg = document.getElementById('cs-hero-bg');
         heroBg.style.transform = '';
@@ -2257,10 +2265,16 @@
           csOverlay.getAnimations().forEach(function(a) { a.cancel(); });
           csOverlay.style.clipPath = '';
           csOverlay.classList.remove('cs-open');
+          csInner.scrollTop = 0;
           if (slideScrollCleanup) { slideScrollCleanup(); slideScrollCleanup = null; }
-        if (heroScrollCleanup) { heroScrollCleanup(); heroScrollCleanup = null; }
+          if (heroScrollCleanup) { heroScrollCleanup(); heroScrollCleanup = null; }
           csActiveIdx = -1;
           accum = 0;
+          // Fade card titles back in now that overlay is gone
+          wxWraps.forEach(function(w) {
+            var titleEl = w.querySelector('.work-card-title');
+            if (titleEl) { titleEl.style.transition = 'opacity 0.45s ease'; titleEl.style.opacity = '1'; }
+          });
         }, 750);
       }
       document.getElementById('cs-close').addEventListener('click', closeCaseStudy);
