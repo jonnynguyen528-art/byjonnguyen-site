@@ -1633,6 +1633,7 @@
         wxWraps.forEach(function(w, j) {
           if (j !== idx) {
             var c = w.querySelector('.wx-card');
+            c.style.transition = ''; // clear any close-path transition so Web Animations drives it cleanly
             c.animate([{ opacity: '1' }, { opacity: '0' }],
               { duration: 400, easing: 'ease', fill: 'forwards' });
           }
@@ -2259,12 +2260,17 @@
           csActiveIdx = -1;
           accum = 0;
           wxWraps.forEach(function(w) {
-            w.style.opacity = '1';
             var c = w.querySelector('.wx-card');
+            // Cancel any fill-forwards dim animation and hard-restore all visual state.
+            // Setting opacity to '1' directly (not '') is intentional — some browsers
+            // drop finished fill:forwards animations from getAnimations() early, so
+            // cancel() may be a no-op and '' would leave the card invisible.
             c.getAnimations().forEach(function(a) { a.cancel(); });
-            c.style.opacity = '';
+            c.style.transition = 'opacity 0.35s ease';
+            c.style.opacity = '1';
             c.style.filter = '';
             c.style.transform = '';
+            c.style.boxShadow = '';
           });
         }, 750);
       }
