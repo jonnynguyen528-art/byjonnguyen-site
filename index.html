@@ -27,18 +27,11 @@
     #panel-content { z-index: 3; transform: translateY(100%); background: rgb(244,241,234); overflow-y: hidden; }
     .panel-moving { transition: transform 0.88s cubic-bezier(0.16, 1, 0.3, 1); }
     body { font-family: 'Montserrat', sans-serif; }
-    /* ─── NAV / HEADER ──────────────────────────────────────────── */
-    .site-header { top: 0; left: 0; right: 0; width: 100%; }
-    .nav-wrap { display: flex; align-items: center; justify-content: space-between; padding: clamp(20px,2.5vw,34px) clamp(24px,3vw,52px); }
-    .brand { font-family: 'Cinema Sunday', serif; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 2.2rem; line-height: 1; color: rgba(18,18,18,0.88); text-decoration: none; }
-    .nav { display: flex; gap: clamp(24px,2.8vw,48px); }
-    .nav a { font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.75rem; color: rgba(18,18,18,0.65); text-decoration: none; transition: color 0.25s ease; }
-    .nav a:hover { color: rgba(18,18,18,0.95); }
-    /* ─── HERO ───────────────────────────────────────────────────── */
+    .brand { font-family: 'Cinema Sunday', serif; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 2.2rem; line-height: 1; }
+    .nav a { font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.75rem; }
     .hero-center { height: 100%; overflow: hidden; position: relative; align-items: flex-start; }
     .hero-composition { display: flex; align-items: flex-start; justify-content: center; width: 100%; overflow: visible; }
-    .hero-bust { width: clamp(300px, 46vw, 620px); flex-shrink: 0; position: relative; z-index: 0; }
-    .hero-word-col { flex: 1; display: flex; align-items: flex-end; padding-top: calc(clamp(300px, 46vw, 620px) * 0.25); position: relative; z-index: 1; }
+    .hero-word-col { flex: 1; display: flex; align-items: flex-end; padding-top: calc(clamp(320px, 58vw, 680px) * 0.27); position: relative; z-index: 1; }
     .word-mask { overflow: hidden; display: inline-block; }
     .hero-word-col.left { justify-content: flex-end; margin-right: clamp(-150px, -21vw, -260px); }
     .hero-word-col.right { justify-content: flex-start; margin-left: clamp(-150px, -21vw, -260px); }
