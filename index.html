@@ -1069,6 +1069,10 @@
           if (node.nodeType === 3) {
             var text = node.textContent;
             for (var i = 0; i < text.length; i++) {
+              if (text[i] === ' ') {
+                el.appendChild(document.createTextNode(' '));
+                continue;
+              }
               var outer = document.createElement('span');
               outer.style.cssText = 'overflow:hidden;display:inline-block;vertical-align:top;';
               var inner = document.createElement('span');
