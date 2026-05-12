@@ -622,7 +622,7 @@
       background: var(--bg);
     }
     .about-photo-col {
-      width: 42%;
+      width: 32%;
       flex-shrink: 0;
       position: relative;
       overflow: hidden;
@@ -923,17 +923,20 @@
         </div>
       </div>
     </section>
-    <section id="about" class="content-section about-section">
-      <div class="about-photo-col">
+    <section id="contact" class="content-section"></section>
+  </div>
+  <!-- ─── PANEL 4: ABOUT ───────────────────────────────────────── -->
+  <div id="panel-about" class="panel" style="z-index:4; transform:translateY(100%); background:var(--bg);">
+    <section id="about" class="about-section">
+      <div class="about-photo-col" style="width:32%;">
         <img src="assets/jn_headshot.jpg" alt="Jon Nguyen" />
       </div>
       <div class="about-text-col">
         <span class="about-eyebrow">About</span>
-        <h2 class="about-headline">Brand is the<br>product people<br>feel first.</h2>
+        <h2 class="about-headline">Building brands<br>that mean something.</h2>
         <div class="about-bio">
-          <p>I'm Jon — a Creative Director who builds brand worlds. Not just logos and color palettes, but the full sensory language of a company: how it sounds, moves, and makes people feel the moment they encounter it.</p>
-          <p>Over the past decade I've led brand, digital, and experiential work for companies at their most pivotal moments — the rebrand that repositioned a category, the launch campaign that made something new feel inevitable, the identity system that had to scale from a pitch deck to a stadium. My work sits at the edge of strategy and obsession: I care deeply about the <em>why</em> before I touch the <em>what</em>.</p>
-          <p>I'm drawn to companies doing genuinely interesting things — ones where brand isn't an afterthought but an actual competitive edge. If you're building something that matters and need the creative to match, let's talk.</p>
+          <p>I'm Jon Nguyen — a Creative Director based in Salt Lake City. I build brand worlds: identities, digital experiences, and physical environments that hold together at every scale.</p>
+          <p>My work spans brand strategy and identity, digital design, motion, 3D, photography, and experiential production. I'm most useful when a brand needs everything built at once — and built to last.</p>
         </div>
         <div class="about-stats">
           <div>
@@ -941,17 +944,16 @@
             <div class="about-stat-label">Years</div>
           </div>
           <div>
-            <div class="about-stat-num">3</div>
-            <div class="about-stat-label">Disciplines</div>
+            <div class="about-stat-num">537</div>
+            <div class="about-stat-label">Events</div>
           </div>
           <div>
-            <div class="about-stat-num">Brand</div>
-            <div class="about-stat-label">Digital · Experiential</div>
+            <div class="about-stat-num">∞</div>
+            <div class="about-stat-label">Curiosity</div>
           </div>
         </div>
       </div>
     </section>
-    <section id="contact" class="content-section"></section>
   </div>
   <!-- ─── CASE STUDY OVERLAY ──────────────────────────────────── -->
   <div id="cs-overlay" class="cs-overlay">
@@ -1043,6 +1045,7 @@
     (function () {
       var panelBW = document.getElementById('panel-bw');
       var panelContent = document.getElementById('panel-content');
+      var panelAbout = document.getElementById('panel-about');
       var DURATION = 880;
       var THRESHOLD = 220;
       var COOLDOWN = DURATION + 200;
@@ -2431,16 +2434,28 @@
         resetWork();
         slidePanel(panelContent, '100%', function() { state = 'hero'; animating = false; });
       }
+      function goToAbout() {
+        animating = true; accum = 0;
+        slidePanel(panelAbout, '0%', function() { state = 'about'; animating = false; });
+      }
+      function goToContentFromAbout() {
+        animating = true; accum = 0;
+        slidePanel(panelAbout, '100%', function() { state = 'content'; animating = false; });
+      }
       function handleDelta(dy) {
         if (animating) return;
         var now = Date.now();
         if (now - lastWheel > 500) accum = 0;
         lastWheel = now;
         if (state === 'content') {
-          if (dy > 0) { panelContent.scrollTop += dy; accum = 0; return; }
-          if (panelContent.scrollTop > 0) { panelContent.scrollTop += dy; accum = 0; return; }
           accum += dy;
+          if (accum > THRESHOLD) goToAbout();
           if (accum < -THRESHOLD) goToHeroFromContent();
+          return;
+        }
+        if (state === 'about') {
+          accum += dy;
+          if (accum < -THRESHOLD) goToContentFromAbout();
           return;
         }
         accum += dy;
