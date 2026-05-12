@@ -28,7 +28,7 @@
     .panel-moving { transition: transform 0.88s cubic-bezier(0.16, 1, 0.3, 1); }
     :root { --bg:#f4f1ea; --ink:#121212; --blue:#1f57ff; --max:1200px; --lx:50%; --ly:35%; --rx:0deg; --ry:0deg; }
     a { color: inherit; text-decoration: none; }
-    body { font-family: 'Montserrat', sans-serif; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--ink); }
     /* ── NAV (from original style.css) ─────────────────────────── */
     .site-header { top: 0; left: 0; right: 0; padding: 22px 32px; }
     .nav-wrap { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
@@ -37,9 +37,9 @@
     .nav a { font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.75rem; color: var(--blue); }
     /* ── HERO ───────────────────────────────────────────────────── */
     .hero-center { height: 100%; overflow: hidden; position: relative; }
-    .hero-bust { width: clamp(320px, 58vw, 680px); flex-shrink: 0; position: relative; z-index: 0; }
+    .hero-bust { width: clamp(240px, 38vw, 480px); flex-shrink: 0; position: relative; z-index: 0; }
     .hero-composition { display: flex; align-items: flex-start; justify-content: center; width: 100%; overflow: visible; }
-    .hero-word-col { flex: 1; display: flex; align-items: flex-end; padding-top: calc(clamp(320px, 58vw, 680px) * 0.27); position: relative; z-index: 1; }
+    .hero-word-col { flex: 1; display: flex; align-items: flex-end; padding-top: calc(clamp(240px, 38vw, 480px) * 0.27); position: relative; z-index: 1; }
     .word-mask { overflow: hidden; display: inline-block; }
     .hero-word-col.left { justify-content: flex-end; margin-right: clamp(-150px, -21vw, -260px); }
     .hero-word-col.right { justify-content: flex-start; margin-left: clamp(-150px, -21vw, -260px); }
@@ -48,7 +48,7 @@
     .hero-director-discipline { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: clamp(8px, 0.78vw, 12px); letter-spacing: 0.28em; text-transform: uppercase; color: rgba(18,18,18,0.5); margin-top: 12px; white-space: nowrap; }
     .rx-discipline { opacity: 0; animation: revealWord 1.2s cubic-bezier(0.4,0,0.2,1) 1.4s forwards; }
     @media (max-width: 900px) {
-      .hero-word-col { padding-top: calc(clamp(240px, 48vw, 480px) * 0.22); }
+      .hero-word-col { padding-top: calc(clamp(200px, 38vw, 380px) * 0.27); }
       .hero-word-col.left { margin-right: clamp(-60px, -12vw, -140px); }
       .hero-word-col.right { margin-left: clamp(-60px, -12vw, -140px); }
       .hero-word { font-size: clamp(22px, 4.2vw, 52px); }
