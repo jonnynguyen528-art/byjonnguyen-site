@@ -26,10 +26,18 @@
     #panel-bw { z-index: 2; transform: translateY(100%); background: rgb(244,241,234); }
     #panel-content { z-index: 3; transform: translateY(100%); background: rgb(244,241,234); overflow-y: hidden; }
     .panel-moving { transition: transform 0.88s cubic-bezier(0.16, 1, 0.3, 1); }
+    :root { --bg:#f4f1ea; --ink:#121212; --blue:#1f57ff; --max:1200px; --lx:50%; --ly:35%; --rx:0deg; --ry:0deg; }
+    a { color: inherit; text-decoration: none; }
     body { font-family: 'Montserrat', sans-serif; }
-    .brand { font-family: 'Cinema Sunday', serif; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 2.2rem; line-height: 1; }
-    .nav a { font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.75rem; }
+    /* ── NAV (from original style.css) ─────────────────────────── */
+    .site-header { top: 0; left: 0; right: 0; padding: 22px 32px; }
+    .nav-wrap { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .brand { font-family: 'Cinema Sunday', serif; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 2.2rem; line-height: 1; color: var(--ink); }
+    .nav { display: flex; gap: 28px; }
+    .nav a { font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.75rem; color: var(--ink); }
+    /* ── HERO ───────────────────────────────────────────────────── */
     .hero-center { height: 100%; overflow: hidden; position: relative; align-items: flex-start; }
+    .hero-bust { width: clamp(320px, 58vw, 680px); flex-shrink: 0; position: relative; z-index: 0; }
     .hero-composition { display: flex; align-items: flex-start; justify-content: center; width: 100%; overflow: visible; }
     .hero-word-col { flex: 1; display: flex; align-items: flex-end; padding-top: calc(clamp(320px, 58vw, 680px) * 0.27); position: relative; z-index: 1; }
     .word-mask { overflow: hidden; display: inline-block; }
