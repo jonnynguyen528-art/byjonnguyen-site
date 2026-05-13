@@ -32,7 +32,8 @@
     /* ── NAV (from original style.css) ─────────────────────────── */
     .site-header { top: 0; left: 0; right: 0; padding: 22px 32px; }
     .nav-wrap { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
-    .brand { font-family: 'Cinema Sunday', serif; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 2.2rem; line-height: 1; color: var(--blue); }
+    .brand { font-family: 'Cinema Sunday', serif; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 2.2rem; line-height: 1; color: var(--blue); transition: opacity 0.4s ease, visibility 0.4s ease; }
+    .brand.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
     .nav { display: flex; gap: 28px; }
     .nav a { font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.75rem; color: var(--blue); }
     /* ── HERO ───────────────────────────────────────────────────── */
@@ -2440,10 +2441,12 @@
       }
       function goToAbout() {
         animating = true; accum = 0;
+        document.querySelector('.brand').classList.add('hidden');
         slidePanel(panelAbout, '0%', function() { state = 'about'; animating = false; });
       }
       function goToContentFromAbout() {
         animating = true; accum = 0;
+        document.querySelector('.brand').classList.remove('hidden');
         slidePanel(panelAbout, '100%', function() { state = 'content'; animating = false; });
       }
       function handleDelta(dy) {
