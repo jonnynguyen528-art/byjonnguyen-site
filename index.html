@@ -67,6 +67,14 @@
     .hero-bust-img { display: block; width: 100%; height: auto; user-select: none; pointer-events: none; }
     @keyframes floaty { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-14px); } }
     .hero-sculpture { animation: floaty 6s ease-in-out infinite; }
+    #sculpture-video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      user-select: none;
+    }
     #cursorSpotlight { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0; transition: opacity 0.8s ease; }
     #groundShadow { position: absolute; bottom: 3%; left: 50%; width: 52%; height: 28px; background: radial-gradient(ellipse at center, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.12) 45%, transparent 70%); transform: translateX(-50%); opacity: 0; pointer-events: none; will-change: transform, opacity, filter; }
     .rx { opacity: 0; }
@@ -919,6 +927,7 @@
           <div class="hero-bust rx rx-bust">
             <div class="hero-sculpture" id="heroStage" style="position:relative;">
               <img class="hero-bust-img" src="frames/hero-bust-b2.png" alt="Porcelain bust sculpture" fetchpriority="high" draggable="false" />
+              <video id="sculpture-video" src="assets/pg_left_right_black.mp4" muted preload="auto" playsinline disablePictureInPicture></video>
               <div id="groundShadow"></div>
             </div>
           </div>
@@ -1107,6 +1116,24 @@
       } else {
         setTimeout(initSpotlight, 200);
       }
+    })();
+    // ── Sculpture video cursor scrub ─────────────────────────────────
+    (function () {
+      var vid = document.getElementById('sculpture-video');
+      var ready = false;
+      vid.addEventListener('loadedmetadata', function () { ready = true; });
+      // If already loaded (cached)
+      if (vid.readyState >= 1) ready = true;
+      var raf = null;
+      var targetPct = 0;
+      document.addEventListener('mousemove', function (e) {
+        if (!ready) return;
+        targetPct = Math.max(0, Math.min(1, e.clientX / window.innerWidth));
+        if (!raf) raf = requestAnimationFrame(function () {
+          raf = null;
+          vid.currentTime = targetPct * vid.duration;
+        });
+      });
     })();
     // ── Bust reveal ───────────────────────────────────────────────────
     (function () {
