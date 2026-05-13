@@ -110,10 +110,10 @@
     .wx-3 .work-card-bg { background: linear-gradient(150deg,#e2dcd1 0%,#c4b49a 45%,#786050 100%); }
     .work-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,10,8,0.72) 0%, rgba(12,10,8,0.0) 55%); transition: opacity 0.6s ease; }
     .work-card-body { position: relative; z-index: 2; padding: 0 clamp(20px,2.5vw,36px) clamp(20px,2.5vw,36px); }
-    .work-card-num { font-family: 'Montserrat', sans-serif; font-size: clamp(9px,0.7vw,11px); letter-spacing: 0.32em; color: rgba(244,241,234,0.45); position: absolute; top: clamp(20px,2.5vw,36px); left: clamp(20px,2.5vw,36px); z-index: 3; }
-    .work-card-cat { font-family: 'Montserrat', sans-serif; font-size: clamp(8px,0.65vw,10px); letter-spacing: 0.28em; text-transform: uppercase; color: rgba(244,241,234,0.55); position: absolute; top: calc(clamp(20px,2.5vw,36px) + clamp(9px,0.7vw,11px) + 8px); left: clamp(20px,2.5vw,36px); z-index: 3; }
-    .work-card-title { font-family: 'Cinema Sunday', serif; font-weight: normal; font-size: clamp(20px,2.2vw,38px); line-height: 1.05; color: rgba(244,241,234,0.95); letter-spacing: 0.02em; white-space: nowrap; margin-bottom: clamp(20px,2.5vw,36px); }
-    .work-card-arrow { font-family: 'Montserrat', sans-serif; font-size: clamp(16px,1.4vw,22px); color: rgba(244,241,234,0.0); margin-top: 0; transition: color 0.4s ease, transform 0.4s ease; display: inline-block; }
+    .work-card-num { font-family: 'Montserrat', sans-serif; font-size: clamp(9px,0.7vw,11px); letter-spacing: 0.32em; color: rgba(244,241,234,0.45); margin-bottom: 6px; }
+    .work-card-cat { font-family: 'Montserrat', sans-serif; font-size: clamp(8px,0.65vw,10px); letter-spacing: 0.28em; text-transform: uppercase; color: rgba(244,241,234,0.55); margin-bottom: 10px; }
+    .work-card-title { font-family: 'Cinema Sunday', serif; font-weight: normal; font-size: clamp(20px,2.2vw,38px); line-height: 1.05; color: rgba(244,241,234,0.95); letter-spacing: 0.02em; white-space: nowrap; }
+    .work-card-arrow { font-family: 'Montserrat', sans-serif; font-size: clamp(16px,1.4vw,22px); color: rgba(244,241,234,0.0); transition: color 0.4s ease, transform 0.4s ease; display: inline-block; position: absolute; bottom: clamp(20px,2.5vw,36px); left: clamp(20px,2.5vw,36px); z-index: 3; }
     .work-card:hover .work-card-bg { transform: scale(1.08); }
     .work-card:hover .work-card-arrow { color: rgba(244,241,234,0.8); transform: translateX(4px) translateY(-4px); }
     /* ─── CASE STUDY OVERLAY ──────────────────────────────────── */
@@ -885,12 +885,12 @@
               <video autoplay muted loop playsinline preload="none" data-src="assets/ITE_Logo.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"></video>
             </div>
             <div class="work-card-overlay"></div>
-            <div class="work-card-num">01</div>
-            <div class="work-card-cat">Brand</div>
             <div class="work-card-body">
+              <div class="work-card-num">01</div>
+              <div class="work-card-cat">Brand</div>
               <div class="work-card-title">In The Event</div>
-              <div class="work-card-arrow">&#8599;</div>
             </div>
+            <div class="work-card-arrow">&#8599;</div>
           </div>
         </div>
         <div class="work-card-wrap">
@@ -899,12 +899,12 @@
               <video autoplay muted loop playsinline preload="none" data-src="assets/mrc_maggie.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"></video>
             </div>
             <div class="work-card-overlay"></div>
-            <div class="work-card-num">02</div>
-            <div class="work-card-cat">Brand / Digital</div>
             <div class="work-card-body">
+              <div class="work-card-num">02</div>
+              <div class="work-card-cat">Brand / Digital</div>
               <div class="work-card-title">Mannequin Rent Co</div>
-              <div class="work-card-arrow">&#8599;</div>
             </div>
+            <div class="work-card-arrow">&#8599;</div>
           </div>
         </div>
         <div class="work-card-wrap">
@@ -913,12 +913,12 @@
               <video autoplay muted loop playsinline preload="none" data-src="assets/becx_logo.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"></video>
             </div>
             <div class="work-card-overlay"></div>
-            <div class="work-card-num">03</div>
-            <div class="work-card-cat">Brand / Experiential</div>
             <div class="work-card-body">
+              <div class="work-card-num">03</div>
+              <div class="work-card-cat">Brand / Experiential</div>
               <div class="work-card-title">Best Ever Conference</div>
-              <div class="work-card-arrow">&#8599;</div>
             </div>
+            <div class="work-card-arrow">&#8599;</div>
           </div>
         </div>
         <div class="work-card-wrap">
@@ -927,12 +927,12 @@
               <video autoplay muted loop playsinline preload="none" data-src="assets/47G_Broll.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.9;"></video>
             </div>
             <div class="work-card-overlay"></div>
-            <div class="work-card-num">04</div>
-            <div class="work-card-cat">Experiential</div>
             <div class="work-card-body">
+              <div class="work-card-num">04</div>
+              <div class="work-card-cat">Experiential</div>
               <div class="work-card-title">Zero Gravity Summit</div>
-              <div class="work-card-arrow">&#8599;</div>
             </div>
+            <div class="work-card-arrow">&#8599;</div>
           </div>
         </div>
       </div>
