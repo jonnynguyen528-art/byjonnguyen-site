@@ -62,7 +62,7 @@
       .hero-bust { order: 2; width: min(380px, 92vw); flex-shrink: 0; }
       .hero-director-wrap { align-items: center; }
       .hero-word { font-size: clamp(40px, 17vw, 64px); text-align: center; white-space: nowrap; }
-      .hero-director-discipline { font-size: clamp(6px, 2vw, 8px); text-align: center; margin-top: 8px; }
+      .hero-director-discipline { font-size: clamp(7px, 2.0vw, 10px); letter-spacing: 0.14em; text-align: center; margin-top: 8px; }
     }
     .hero-bust-img { display: block; width: 100%; height: auto; user-select: none; pointer-events: none; }
     @keyframes floaty { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-14px); } }
@@ -611,8 +611,11 @@
       .nav { gap: 16px; }
       .nav a { font-size: 0.62rem; letter-spacing: 0.10em; }
 
-      /* Hero discipline — readable size */
-      .hero-director-discipline { font-size: clamp(8px, 2.6vw, 11px) !important; }
+      /* Hero discipline — readable size, tight letter-spacing to fit viewport */
+      .hero-director-discipline {
+        font-size: clamp(7px, 2.0vw, 10px) !important;
+        letter-spacing: 0.14em !important;
+      }
 
       /* Work section header */
       .work-header { padding: 72px 20px 8px; }
