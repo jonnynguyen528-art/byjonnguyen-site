@@ -2518,70 +2518,68 @@
         animating = true; accum = 0;
         var fromHero = (state === 'hero');
         if (fromHero) {
-          var cue = document.getElementById('heroScrollCue');
+          var cue     = document.getElementById('heroScrollCue');
           var eyebrow = document.querySelector('.work-eyebrow');
-          var dur = 900;
+          var dur  = 900;
           var ease = 'cubic-bezier(0.76,0,0.24,1)';
+
           var cueRect = cue.getBoundingClientRect();
-          // eyebrow is in panel at translateY(100%) — subtract vh for its final screen position
           var eyeRect = eyebrow.getBoundingClientRect();
-          var targetTop  = eyeRect.top  - window.innerHeight;
-          var targetLeft = eyeRect.left;
-          var targetW    = eyeRect.width;
-          var targetH    = eyeRect.height;
-          // delta from cue center → eyebrow center
-          var dx = (targetLeft + targetW / 2) - (cueRect.left + cueRect.width / 2);
-          var dy = (targetTop  + targetH / 2) - (cueRect.top  + cueRect.height / 2);
-          // Glass pill — fades out in place
-          var glass = document.createElement('div');
-          Object.assign(glass.style, {
-            position: 'fixed', zIndex: '499', pointerEvents: 'none',
-            top: cueRect.top + 'px', left: cueRect.left + 'px',
-            width: cueRect.width + 'px', height: cueRect.height + 'px',
-            borderRadius: '999px',
-            background: 'linear-gradient(145deg,rgba(255,255,255,0.55) 0%,rgba(255,255,255,0.18) 40%,rgba(255,255,255,0.28) 100%)',
-            backdropFilter: 'blur(12px) saturate(1.4)',
-            WebkitBackdropFilter: 'blur(12px) saturate(1.4)',
-            boxShadow: '0 1px 0 0 rgba(255,255,255,0.85) inset,0 -1px 0 0 rgba(255,255,255,0.25) inset,1px 0 0 0 rgba(255,255,255,0.5) inset,-1px 0 0 0 rgba(255,255,255,0.5) inset,0 4px 16px rgba(18,18,18,0.10),0 1px 3px rgba(18,18,18,0.08)',
-          });
-          document.body.appendChild(glass);
-          glass.animate(
+          // eyebrow final Y = its current Y minus 100vh (panel is translateY(100%))
+          var dy = (eyeRect.top - window.innerHeight + eyeRect.height / 2)
+                 - (cueRect.top + cueRect.height / 2);
+
+          // 1. Fade the whole cue (glass + text) out — no new backdrop-filter element
+          cue.style.animation = 'none';
+          cue.animate(
             [{ opacity: 1 }, { opacity: 0 }],
-            { duration: dur * 0.4, easing: 'ease-out', fill: 'forwards' }
+            { duration: dur * 0.52, easing: 'ease-out', fill: 'forwards' }
           );
-          // Text clone — translates and recolors
+
+          // 2. Text-only clone flies from cue → eyebrow, no backdrop-filter
           var clone = document.createElement('span');
           clone.textContent = 'Selected Work';
           Object.assign(clone.style, {
-            position: 'fixed', zIndex: '500', pointerEvents: 'none',
-            fontFamily: "'Montserrat', sans-serif", fontWeight: '600',
-            fontSize: getComputedStyle(eyebrow).fontSize,
-            letterSpacing: '0.32em', textTransform: 'uppercase',
+            position:   'fixed',
+            zIndex:     '500',
+            pointerEvents: 'none',
+            willChange: 'transform',
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: '600',
+            fontSize:   getComputedStyle(eyebrow).fontSize,
+            letterSpacing: '0.32em',
+            textTransform: 'uppercase',
             whiteSpace: 'nowrap',
-            top: cueRect.top + 'px', left: cueRect.left + 'px',
-            width: cueRect.width + 'px', height: cueRect.height + 'px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color:      'rgba(18,18,18,0.75)',
+            // centred at the cue's horizontal midpoint
+            top:  (cueRect.top  + cueRect.height / 2) + 'px',
+            left: (cueRect.left + cueRect.width  / 2) + 'px',
+            transform: 'translate(-50%, -50%)',
           });
           document.body.appendChild(clone);
+
+          // hide real eyebrow during flight
+          eyebrow.style.opacity = '0';
+
           clone.animate(
             [
-              { transform: 'translate(0,0)',               color: 'rgba(18,18,18,0.75)' },
-              { transform: 'translate('+dx+'px,'+dy+'px)', color: 'rgb(31,87,255)' }
+              { transform: 'translate(-50%, -50%)',
+                color:     'rgba(18,18,18,0.75)' },
+              { transform: 'translate(-50%, calc(-50% + ' + dy + 'px))',
+                color:     'rgb(31,87,255)' }
             ],
             { duration: dur, easing: ease, fill: 'forwards' }
           );
-          // Hide originals during flight
-          cue.style.opacity = '0';
-          eyebrow.style.opacity = '0';
-          slidePanel(panelContent, '0%', function() {
+
+          slidePanel(panelContent, '0%', function () {
             state = 'content'; animating = false; fireWork();
             eyebrow.style.opacity = '';
-            cue.style.opacity = '';
+            cue.getAnimations().forEach(function (a) { a.cancel(); });
+            cue.style.animation = '';
             clone.remove();
-            glass.remove();
           });
         } else {
-          slidePanel(panelContent, '0%', function() { state = 'content'; animating = false; fireWork(); });
+          slidePanel(panelContent, '0%', function () { state = 'content'; animating = false; fireWork(); });
         }
       }
       function goToHero() {
