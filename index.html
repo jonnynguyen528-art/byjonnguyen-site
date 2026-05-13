@@ -715,6 +715,77 @@
       .about-photo-col img { position: absolute; }
       .about-stats { flex-wrap: wrap; gap: 24px; }
     }
+    /* ─── CONTACT SECTION ───────────────────────────────────────────── */
+    .contact-section {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(80px,10vh,120px) clamp(32px,6vw,96px) clamp(32px,4vh,56px);
+    }
+    .contact-inner { display: flex; flex-direction: column; }
+    .contact-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: clamp(9px,0.75vw,11px);
+      letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,0.4);
+      margin: 0 0 clamp(20px,3vh,36px);
+    }
+    .contact-headline {
+      font-family: 'Cinema Sunday', serif;
+      font-weight: normal;
+      font-size: clamp(52px,8.5vw,148px);
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      color: rgba(244,241,234,0.95);
+      margin: 0 0 clamp(36px,5vh,64px);
+    }
+    .contact-email {
+      font-family: 'Cinema Sunday', serif;
+      font-weight: normal;
+      font-size: clamp(18px,2.4vw,42px);
+      letter-spacing: 0.01em;
+      color: rgba(244,241,234,0.6);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      display: inline-block;
+      margin-bottom: clamp(24px,3.5vh,48px);
+    }
+    .contact-email:hover { color: rgba(244,241,234,0.95); }
+    .contact-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .contact-link {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: clamp(9px,0.75vw,11px);
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,0.4);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .contact-link:hover { color: rgba(244,241,234,0.85); }
+    .contact-link-divider {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      color: rgba(244,241,234,0.2);
+    }
+    .contact-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: clamp(9px,0.7vw,11px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,0.25);
+    }
     /* ─── LOGO EVOLUTION ─────────────────────────────────────────────── */
     .logo-evolution {
       display: grid;
@@ -938,7 +1009,6 @@
         </div>
       </div>
     </section>
-    <section id="contact" class="content-section"></section>
   </div>
   <!-- ─── PANEL 4: ABOUT ───────────────────────────────────────── -->
   <div id="panel-about" class="panel" style="z-index:4; transform:translateY(100%); background:var(--bg);">
@@ -954,6 +1024,23 @@
           <p>My work spans brand strategy, identity, web design, motion, 3D, videography, photography, and experiential production. I'm most useful when a brand needs everything built at once and built to last.</p>
         </div>
       </div>
+    </section>
+  </div>
+  <!-- ─── PANEL 5: CONTACT ───────────────────────────────────── -->
+  <div id="panel-contact" class="panel" style="z-index:5; transform:translateY(100%); background:rgb(12,10,8);">
+    <section class="contact-section">
+      <div class="contact-inner">
+        <p class="contact-eyebrow">Get in touch</p>
+        <h2 class="contact-headline">Let's build<br>something.</h2>
+        <a class="contact-email" href="mailto:jonnynguyen528@gmail.com">jonnynguyen528@gmail.com</a>
+        <div class="contact-links">
+          <a href="https://www.linkedin.com/in/jonathan-nguyen-7a0252179" target="_blank" rel="noopener" class="contact-link">LinkedIn</a>
+        </div>
+      </div>
+      <footer class="contact-footer">
+        <span>Salt Lake City, UT</span>
+        <span>&copy; <span id="contact-year"></span> Jon Nguyen</span>
+      </footer>
     </section>
   </div>
   <!-- ─── CASE STUDY OVERLAY ──────────────────────────────────── -->
@@ -1047,6 +1134,8 @@
       var panelBW = document.getElementById('panel-bw');
       var panelContent = document.getElementById('panel-content');
       var panelAbout = document.getElementById('panel-about');
+      var panelContact = document.getElementById('panel-contact');
+      document.getElementById('contact-year').textContent = new Date().getFullYear();
       var DURATION = 880;
       var THRESHOLD = 220;
       var COOLDOWN = DURATION + 200;
@@ -2449,6 +2538,14 @@
         document.querySelector('.brand').classList.remove('hidden');
         slidePanel(panelAbout, '100%', function() { state = 'content'; animating = false; });
       }
+      function goToContact() {
+        animating = true; accum = 0;
+        slidePanel(panelContact, '0%', function() { state = 'contact'; animating = false; });
+      }
+      function goToAboutFromContact() {
+        animating = true; accum = 0;
+        slidePanel(panelContact, '100%', function() { state = 'about'; animating = false; });
+      }
       function handleDelta(dy) {
         if (animating) return;
         var now = Date.now();
@@ -2462,7 +2559,13 @@
         }
         if (state === 'about') {
           accum += dy;
+          if (accum > THRESHOLD) goToContact();
           if (accum < -THRESHOLD) goToContentFromAbout();
+          return;
+        }
+        if (state === 'contact') {
+          accum += dy;
+          if (accum < -THRESHOLD) goToAboutFromContact();
           return;
         }
         accum += dy;
