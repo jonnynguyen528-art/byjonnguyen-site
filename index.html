@@ -37,7 +37,7 @@
     .nav { display: flex; gap: 28px; }
     .nav a { font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.75rem; color: var(--blue); }
     /* ── HAMBURGER ─────────────────────────────────────────────── */
-    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; position: relative; z-index: 201; }
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; position: relative; z-index: 9999; }
     .hamburger span { display: block; width: 22px; height: 2px; background: var(--blue); border-radius: 1px; transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.25s ease; transform-origin: center; }
     .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
@@ -620,23 +620,24 @@
 
       /* ── Mobile: disable snap-scroll, stack panels naturally ── */
       html, body { height: auto !important; overflow-y: auto !important; overflow-x: hidden !important; }
-      .panel { position: relative !important; transform: none !important; height: auto !important; min-height: 100svh; }
+      .panel { position: relative !important; transform: none !important; height: auto !important; min-height: 100svh; will-change: auto !important; }
       .panel-moving { transition: none !important; }
       #panel-bw { display: none !important; }
       #panel-content { overflow: visible !important; }
       .site-header { background: rgba(244,241,234,0.95) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
       .hamburger { display: flex; }
+      /* Lightbox nav overlay */
       .nav {
         display: flex !important;
-        position: fixed; inset: 0; z-index: 199;
+        position: fixed; inset: 0; z-index: 9998;
         flex-direction: column; align-items: center; justify-content: center;
-        gap: 40px;
+        gap: 44px;
         background: var(--bg);
-        opacity: 0; pointer-events: none;
-        transition: opacity 0.35s ease;
+        opacity: 0; pointer-events: none; visibility: hidden;
+        transition: opacity 0.38s ease, visibility 0.38s ease;
       }
-      .nav.open { opacity: 1; pointer-events: auto; }
-      .nav a { font-family: 'Cinema Sunday', serif; font-size: clamp(36px, 9vw, 52px); letter-spacing: 0.04em; color: var(--ink); font-weight: normal; }
+      .nav.open { opacity: 1; pointer-events: auto; visibility: visible; }
+      .nav a { font-family: 'Cinema Sunday', serif; font-size: clamp(40px, 10vw, 56px); letter-spacing: 0.04em; color: var(--ink); font-weight: normal; text-transform: none; }
 
       /* Hide scroll cue on mobile — redundant and overlaps text */
       .hero-scroll-cue { display: none !important; }
