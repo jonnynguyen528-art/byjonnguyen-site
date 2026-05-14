@@ -666,12 +666,7 @@
       .cs-statement-large { font-size: clamp(28px, 7vw, 52px); }
     }
 
-    /* About — reduce vertical padding on small screens */
-    @media (max-width: 768px) {
-      .about-text-col {
-        padding: clamp(36px,5vh,64px) clamp(24px,5vw,48px);
-      }
-    }
+    /* About — handled in the main 768px block below */
 
     /* Contact — prevent headline overflow on narrow screens */
     @media (max-width: 600px) {
@@ -760,11 +755,17 @@
       color: rgba(18,18,18,0.4);
     }
     @media (max-width: 768px) {
-      .about-section { flex-direction: column; }
-      .about-photo-col { width: 100%; height: 55vw; position: relative; }
+      #panel-about { overflow-y: auto; }
+      .about-section { flex-direction: column; min-height: unset; }
+      .about-photo-col { width: 100% !important; height: 68vw; position: relative; }
       .about-photo-col img { position: absolute; }
-      .about-stats { flex-wrap: wrap; gap: 24px; }
-      .about-headline { font-size: clamp(28px, 6vw, 48px); }
+      .about-text-col { padding: 36px 28px 48px; justify-content: flex-start; }
+      .about-eyebrow { font-size: 10px; margin-bottom: 18px; }
+      .about-headline { font-size: clamp(28px, 7vw, 44px); margin-bottom: 20px; }
+      .about-bio { font-size: 14px; line-height: 1.75; margin-bottom: 28px; }
+      .about-stats { flex-wrap: wrap; gap: 24px; padding-top: 24px; }
+      .about-stat-num { font-size: clamp(26px, 6.5vw, 40px); }
+      .about-stat-label { font-size: 9px; }
     }
     /* ─── CONTACT SECTION ───────────────────────────────────────────── */
     .contact-section {
