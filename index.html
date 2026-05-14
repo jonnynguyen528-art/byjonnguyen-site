@@ -2678,6 +2678,9 @@
           });
         });
 
+        // Enable card clicks — bypass the wxFired guard and init click handlers
+        wxFired = true;
+        initWxParallax();
       }
     })();
 
