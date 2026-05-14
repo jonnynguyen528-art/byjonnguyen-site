@@ -2686,22 +2686,25 @@
 
     // ── Lightbox ────────────────────────────────────────────────
     (function() {
-      var overlay = document.getElementById('lb-overlay');
-      var img     = document.getElementById('lb-img');
+      // Defer lookup until after DOM is fully parsed
+      function overlay() { return document.getElementById('lb-overlay'); }
+      function lbImg()   { return document.getElementById('lb-img'); }
 
       document.addEventListener('click', function(e) {
         if (e.target.matches('.cs-bento-cell img, .cs-tricol-cell img, .cs-img-stack-cell img, .cs-slide-cell img, .cs-tri-flush-cell img, .cs-slide-cell-lg img, .cs-two-col-cell img')) {
-          img.src = e.target.src;
-          overlay.classList.add('open');
+          lbImg().src = e.target.src;
+          overlay().classList.add('open');
           return;
         }
-        if (overlay.classList.contains('open')) {
-          overlay.classList.remove('open');
+        var ov = overlay();
+        if (ov && ov.classList.contains('open')) {
+          ov.classList.remove('open');
         }
       });
 
       document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') overlay.classList.remove('open');
+        var ov = overlay();
+        if (e.key === 'Escape' && ov) ov.classList.remove('open');
       });
     })();
   </script>
