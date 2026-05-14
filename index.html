@@ -36,6 +36,12 @@
     .brand.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
     .nav { display: flex; gap: 28px; }
     .nav a { font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.75rem; color: var(--blue); }
+    /* ── HAMBURGER ─────────────────────────────────────────────── */
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; position: relative; z-index: 201; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--blue); border-radius: 1px; transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.25s ease; transform-origin: center; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
     /* ── HERO ───────────────────────────────────────────────────── */
     .hero-center { height: 100%; overflow: hidden; position: relative; }
     .hero-bust { width: clamp(380px, 38vw, 480px); flex-shrink: 0; position: relative; z-index: 2; }
@@ -605,18 +611,12 @@
     .wx-4 .work-card-bg { background: linear-gradient(145deg,#d4d0c8 0%,#9890a0 45%,#2c2438 100%); }
     /* ─── MOBILE OVERRIDES ────────────────────────────────────── */
     @media (max-width: 600px) {
-      /* Nav — tighter padding, smaller gap so nothing overflows */
+      /* Nav — tighter padding */
       .site-header { padding: 14px 20px; }
       .brand { font-size: 1rem !important; letter-spacing: 0.04em; }
-      .nav { gap: 16px; }
-      .nav a { font-size: 0.62rem; letter-spacing: 0.10em; }
-
-      /* ── Hamburger (hidden on desktop) ── */
-      .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; position: relative; z-index: 201; }
-      .hamburger span { display: block; width: 22px; height: 2px; background: var(--blue); border-radius: 1px; transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.25s ease; transform-origin: center; }
-      .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-      .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-      .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+      /* Show hamburger, hide desktop nav links */
+      .hamburger { display: flex; }
+      .nav { display: none; }
 
       /* ── Mobile: disable snap-scroll, stack panels naturally ── */
       html, body { height: auto !important; overflow-y: auto !important; overflow-x: hidden !important; }
@@ -627,6 +627,7 @@
       .site-header { background: rgba(244,241,234,0.95) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
       .hamburger { display: flex; }
       .nav {
+        display: flex !important;
         position: fixed; inset: 0; z-index: 199;
         flex-direction: column; align-items: center; justify-content: center;
         gap: 40px;
@@ -2634,6 +2635,58 @@
         slidePanel(panelContact, '100%', function() { state = 'about'; animating = false; });
       }
       function isMobile() { return window.innerWidth <= 600; }
+
+      function navTo(target) {
+        if (isMobile()) {
+          var anchor = document.querySelector('[data-anchor="' + target + '"]');
+          if (anchor) anchor.scrollIntoView({ behavior: 'smooth' });
+          return;
+        }
+        if (animating) return;
+        var brandEl = document.querySelector('.brand');
+        if (target === 'work') {
+          if (state === 'content') return;
+          if (state === 'about') { goToContentFromAbout(); }
+          else if (state === 'contact') {
+            // slide contact out then about out
+            slidePanel(panelContact, '100%', function() {
+              state = 'about';
+              slidePanel(panelAbout, '100%', function() {
+                state = 'content'; animating = false; accum = 0;
+                if (brandEl) brandEl.classList.remove('hidden');
+              });
+            });
+            animating = true; accum = 0;
+          } else { goToContent(); }
+        } else if (target === 'about') {
+          if (state === 'about') return;
+          if (state === 'contact') { goToAboutFromContact(); return; }
+          if (brandEl) brandEl.classList.add('hidden');
+          if (state === 'content') { goToAbout(); return; }
+          // From hero/bw — snap content in place then slide about
+          panelContent.style.transform = 'translateY(0%)';
+          animating = true; accum = 0;
+          slidePanel(panelAbout, '0%', function() { state = 'about'; animating = false; accum = 0; });
+        } else if (target === 'contact') {
+          if (state === 'contact') return;
+          if (brandEl) brandEl.classList.add('hidden');
+          if (state === 'about') { goToContact(); return; }
+          // Snap all prerequisite panels in place then slide contact
+          panelContent.style.transform = 'translateY(0%)';
+          panelAbout.style.transform = 'translateY(0%)';
+          animating = true; accum = 0;
+          slidePanel(panelContact, '0%', function() { state = 'contact'; animating = false; accum = 0; });
+        }
+      }
+
+      // Wire nav links on all screen sizes
+      document.querySelectorAll('.nav a').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+          e.preventDefault();
+          navTo(a.getAttribute('href').replace('#', ''));
+        });
+      });
+
       function handleDelta(dy) {
         if (isMobile()) return;
         if (animating) return;
@@ -2689,15 +2742,7 @@
         if (Math.abs(dy) > 40) handleDelta(dy * 3.5);
       }, { passive: true });
 
-      // Mobile: wire nav links to scroll to the right panel
       if (isMobile()) {
-        document.querySelectorAll('.nav a').forEach(function(link) {
-          link.addEventListener('click', function(e) {
-            var hash = link.getAttribute('href').replace('#','');
-            var target = document.querySelector('[data-anchor="' + hash + '"]');
-            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
-          });
-        });
 
         // Enable card clicks — bypass the wxFired guard and init click handlers
         wxFired = true;
