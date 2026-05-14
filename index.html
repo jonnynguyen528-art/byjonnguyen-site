@@ -623,27 +623,35 @@
       /* Work section header */
       .work-header { padding: 72px 20px 8px; }
 
-      /* Work cards — stack vertically */
+      /* Work cards — 2×2 grid on mobile */
       .work-cards-grid {
-        flex-direction: column;
-        overflow-y: auto;
-        overflow-x: hidden;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 3px;
         padding: 0 3px 3px;
+        overflow: hidden;
       }
       .work-card-wrap {
         flex: none;
-        height: 38vh;
-        min-height: 160px;
+        height: auto;
+        min-height: 0;
       }
-      /* Card titles — allow wrapping on mobile, no overflow */
+      /* Card internals — tighter for smaller cells */
       .work-card-title {
-        font-size: clamp(20px, 5.5vw, 28px);
+        font-size: clamp(13px, 3.4vw, 18px);
         white-space: normal;
-        overflow: hidden;
+        line-height: 1.1;
       }
-      /* Card body bottom padding — tighter on short cards */
+      .work-card-num { font-size: 8px; margin-bottom: 3px; }
+      .work-card-cat { font-size: 7px; margin-bottom: 6px; }
       .work-card-body {
-        padding-bottom: calc(20px + 16px + 10px);
+        padding: 0 12px calc(12px + 14px + 8px);
+      }
+      .work-card-arrow {
+        font-size: 14px;
+        bottom: 12px;
+        left: 12px;
       }
 
       /* Case study — single column, tighter padding */
