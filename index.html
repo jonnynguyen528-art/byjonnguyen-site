@@ -611,6 +611,14 @@
       .nav { gap: 16px; }
       .nav a { font-size: 0.62rem; letter-spacing: 0.10em; }
 
+      /* ── Mobile: disable snap-scroll, stack panels naturally ── */
+      html, body { height: auto !important; overflow-y: auto !important; overflow-x: hidden !important; }
+      .panel { position: relative !important; transform: none !important; height: auto !important; min-height: 100svh; }
+      .panel-moving { transition: none !important; }
+      #panel-bw { display: none !important; }
+      #panel-content { overflow: visible !important; }
+      .site-header { background: rgba(244,241,234,0.95) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+
       /* Hide scroll cue on mobile — redundant and overlaps text */
       .hero-scroll-cue { display: none !important; }
 
@@ -996,7 +1004,7 @@
     </section>
   </div>
   <!-- ─── PANEL 3: CONTENT ─────────────────────────────────────── -->
-  <div id="panel-content" class="panel">
+  <div id="panel-content" class="panel" data-anchor="work">
     <img src="assets/jn_logo.svg" class="panel-logo" aria-hidden="true" draggable="false" />
     <section id="work" class="content-section work-section">
       <div class="work-header">
@@ -1063,7 +1071,7 @@
     </section>
   </div>
   <!-- ─── PANEL 4: ABOUT ───────────────────────────────────────── -->
-  <div id="panel-about" class="panel" style="z-index:4; transform:translateY(100%); background:var(--bg);">
+  <div id="panel-about" class="panel" data-anchor="about" style="z-index:4; transform:translateY(100%); background:var(--bg);">
     <section id="about" class="about-section">
       <div class="about-photo-col" style="width:32%;">
         <img src="assets/jn_headshot.jpg" alt="Jon Nguyen" />
@@ -1079,7 +1087,7 @@
     </section>
   </div>
   <!-- ─── PANEL 5: CONTACT ───────────────────────────────────── -->
-  <div id="panel-contact" class="panel" style="z-index:5; transform:translateY(100%); background:rgb(12,10,8);">
+  <div id="panel-contact" class="panel" data-anchor="contact" style="z-index:5; transform:translateY(100%); background:rgb(12,10,8);">
     <section class="contact-section">
       <div class="contact-inner">
         <p class="contact-eyebrow">Get in touch</p>
@@ -2598,7 +2606,9 @@
         animating = true; accum = 0;
         slidePanel(panelContact, '100%', function() { state = 'about'; animating = false; });
       }
+      function isMobile() { return window.innerWidth <= 600; }
       function handleDelta(dy) {
+        if (isMobile()) return;
         if (animating) return;
         var now = Date.now();
         if (now - lastWheel > 500) accum = 0;
@@ -2626,6 +2636,7 @@
         if (state === 'bw' && accum < -THRESHOLD) goToHero();
       }
       window.addEventListener('wheel', function(e) {
+        if (isMobile()) return;
         if (csActiveIdx !== -1) return; // overlay open — let native scroll handle cs-inner
         e.preventDefault();
         var dy = e.deltaMode === 1 ? e.deltaY * 20 : e.deltaY;
@@ -2645,10 +2656,22 @@
       var touchStartY = 0;
       window.addEventListener('touchstart', function(e) { touchStartY = e.touches[0].clientY; }, { passive: true });
       window.addEventListener('touchend', function(e) {
+        if (isMobile()) return;
         if (csActiveIdx !== -1) return; // overlay open — don't slide panels
         var dy = touchStartY - e.changedTouches[0].clientY;
         if (Math.abs(dy) > 40) handleDelta(dy * 3.5);
       }, { passive: true });
+
+      // Mobile: wire nav links to scroll to the right panel
+      if (isMobile()) {
+        document.querySelectorAll('.nav a').forEach(function(link) {
+          link.addEventListener('click', function(e) {
+            var hash = link.getAttribute('href').replace('#','');
+            var target = document.querySelector('[data-anchor="' + hash + '"]');
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+          });
+        });
+      }
     })();
 
     // ── Lightbox ────────────────────────────────────────────────
