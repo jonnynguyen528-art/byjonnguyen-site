@@ -631,6 +631,12 @@
       /* Work section header */
       .work-header { padding: 72px 20px 8px; }
 
+      /* Cards always visible on mobile — no JS reveal needed */
+      .work-card-wrap { opacity: 1 !important; }
+      .wx-card { clip-path: none !important; }
+      .work-card-title { opacity: 1 !important; }
+      .work-card-num, .work-card-cat, .work-card-arrow { opacity: 1 !important; transform: none !important; }
+
       /* Work cards — 2×2 grid on mobile */
       .work-cards-grid {
         display: grid !important;
@@ -2672,17 +2678,6 @@
           });
         });
 
-        // Reveal work cards when the work panel scrolls into view
-        var workPanel = document.getElementById('panel-content');
-        if (workPanel && 'IntersectionObserver' in window) {
-          var workObs = new IntersectionObserver(function(entries) {
-            if (entries[0].isIntersecting) {
-              fireWork();
-              workObs.disconnect();
-            }
-          }, { threshold: 0.15 });
-          workObs.observe(workPanel);
-        }
       }
     })();
 
