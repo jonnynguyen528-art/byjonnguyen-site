@@ -2681,6 +2681,15 @@
         // Enable card clicks — bypass the wxFired guard and init click handlers
         wxFired = true;
         initWxParallax();
+
+        // Load deferred card videos with stagger
+        document.querySelectorAll('.work-card-bg video[data-src]').forEach(function(v, i) {
+          setTimeout(function() {
+            v.src = v.dataset.src;
+            v.load();
+            v.play().catch(function(){});
+          }, i * 350);
+        });
       }
     })();
 
