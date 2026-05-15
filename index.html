@@ -632,6 +632,11 @@
       html, body { height: auto !important; overflow-y: auto !important; overflow-x: hidden !important; }
       /* Lock scroll when nav is open — must beat the !important above */
       body.nav-open { overflow: hidden !important; }
+      /* When nav open: pull site-header above all panels/composited layers */
+      body.nav-open .site-header { z-index: 100000 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+      /* Hide hero content so it can't bleed through the overlay */
+      body.nav-open .hero-composition,
+      body.nav-open .hero-scroll-cue { visibility: hidden; }
       .panel { position: relative !important; transform: none !important; height: auto !important; min-height: 100svh; will-change: auto !important; }
       .panel-moving { transition: none !important; }
       #panel-bw { display: none !important; }
