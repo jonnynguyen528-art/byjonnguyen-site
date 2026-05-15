@@ -767,6 +767,19 @@
       margin: 0 0 52px;
     }
     .about-bio p + p { margin-top: 1.4em; }
+    .about-resume-link {
+      display: inline-block;
+      margin-top: 32px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: clamp(9px,0.75vw,11px);
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--blue);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+    .about-resume-link:hover { opacity: 0.6; }
     .about-stats {
       display: flex;
       gap: clamp(28px,4vw,56px);
@@ -991,6 +1004,7 @@
         <a href="#work">WORK</a>
         <a href="#about">ABOUT</a>
         <a href="#contact">CONTACT</a>
+        <a href="assets/jonnguyen_resume.pdf" target="_blank" rel="noopener">RESUME</a>
       </nav>
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
@@ -1113,6 +1127,7 @@
           <p>I'm Jon Nguyen, a Creative Director based in Salt Lake City. I build brand worlds: identities, digital experiences, and physical environments that hold together at every scale.</p>
           <p>My work spans brand strategy, identity, web design, motion, 3D, videography, photography, and experiential production. I'm most useful when a brand needs everything built at once and built to last.</p>
         </div>
+        <a href="assets/jonnguyen_resume.pdf" target="_blank" rel="noopener" class="about-resume-link">Resume ↗</a>
       </div>
     </section>
   </div>
@@ -1125,6 +1140,8 @@
         <a class="contact-email" href="mailto:jonnynguyen528@gmail.com">jonnynguyen528@gmail.com</a>
         <div class="contact-links">
           <a href="https://www.linkedin.com/in/jonathan-nguyen-7a0252179" target="_blank" rel="noopener" class="contact-link">LinkedIn</a>
+          <span class="contact-link-divider">·</span>
+          <a href="assets/jonnguyen_resume.pdf" target="_blank" rel="noopener" class="contact-link">Resume</a>
         </div>
       </div>
       <footer class="contact-footer">
