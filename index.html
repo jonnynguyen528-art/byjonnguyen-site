@@ -1290,21 +1290,24 @@
         el.innerHTML = '';
         nodes.forEach(function(node) {
           if (node.nodeType === 3) {
-            var text = node.textContent;
-            for (var i = 0; i < text.length; i++) {
-              if (text[i] === ' ') {
-                el.appendChild(document.createTextNode(' '));
-                continue;
+            var words = node.textContent.split(' ');
+            words.forEach(function(word, wi) {
+              if (wi > 0) el.appendChild(document.createTextNode(' '));
+              if (!word) return;
+              var wordWrap = document.createElement('span');
+              wordWrap.style.cssText = 'white-space:nowrap;display:inline;';
+              for (var i = 0; i < word.length; i++) {
+                var outer = document.createElement('span');
+                outer.style.cssText = 'overflow:hidden;display:inline-block;vertical-align:top;';
+                var inner = document.createElement('span');
+                inner.style.cssText = 'display:inline-block;';
+                inner.textContent = word[i];
+                outer.appendChild(inner);
+                wordWrap.appendChild(outer);
+                innerSpans.push(inner);
               }
-              var outer = document.createElement('span');
-              outer.style.cssText = 'overflow:hidden;display:inline-block;vertical-align:top;';
-              var inner = document.createElement('span');
-              inner.style.cssText = 'display:inline-block;';
-              inner.textContent = text[i];
-              outer.appendChild(inner);
-              el.appendChild(outer);
-              innerSpans.push(inner);
-            }
+              el.appendChild(wordWrap);
+            });
           } else if (node.nodeType === 1) {
             el.appendChild(node.cloneNode(true));
           }
