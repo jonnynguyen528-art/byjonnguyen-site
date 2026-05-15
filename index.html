@@ -949,70 +949,9 @@
       color: rgba(18,18,18,0.2);
       padding-bottom: clamp(28px,3vw,44px);
     }
-  /* ─── PASSWORD GATE ─────────────────────────────────────── */
-  #pw-gate {
-    position: fixed; inset: 0; z-index: 99999;
-    background: rgb(18,18,18);
-    display: flex; align-items: center; justify-content: center;
-    transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1);
-  }
-  #pw-gate.fade-out { opacity: 0; pointer-events: none; }
-  #pw-box { display: flex; flex-direction: column; align-items: center; gap: 40px; }
-  #pw-logo { width: clamp(60px,8vw,100px); height: auto; opacity: 0.9; }
-  #pw-input {
-    background: none; border: none; border-bottom: 1px solid rgba(244,241,234,0.15);
-    color: rgb(244,241,234); font-family: 'Montserrat', sans-serif;
-    font-size: 1.6rem; letter-spacing: 0.6em; text-indent: 0.6em;
-    text-align: center; width: 120px; padding: 10px 0;
-    outline: none; caret-color: transparent;
-  }
-  #pw-input::placeholder { color: rgba(244,241,234,0.15); letter-spacing: 0.5em; text-indent: 0.5em; }
-  #pw-error {
-    font-family: 'Montserrat', sans-serif; font-size: 0.6rem;
-    letter-spacing: 0.28em; text-transform: uppercase;
-    color: rgba(244,241,234,0.35); height: 14px; margin-top: -20px;
-    transition: opacity 0.3s;
-  }
   </style>
 </head>
 <body>
-
-  <!-- Password Gate -->
-  <div id="pw-gate">
-    <div id="pw-box">
-      <img id="pw-logo" src="assets/jn_logo.svg" alt="JN" />
-      <input id="pw-input" type="password" inputmode="numeric" maxlength="4" placeholder="· · · ·" autocomplete="off" autofocus />
-      <div id="pw-error"></div>
-    </div>
-  </div>
-  <script>
-    (function() {
-      var gate  = document.getElementById('pw-gate');
-      var input = document.getElementById('pw-input');
-      var error = document.getElementById('pw-error');
-      if (sessionStorage.getItem('jn_auth') === '1') { gate.style.display = 'none'; return; }
-      function unlock() {
-        sessionStorage.setItem('jn_auth', '1');
-        gate.classList.add('fade-out');
-        setTimeout(function() { gate.style.display = 'none'; }, 720);
-      }
-      function reject() {
-        error.textContent = 'incorrect';
-        input.value = '';
-        setTimeout(function() { error.textContent = ''; }, 1400);
-      }
-      input.addEventListener('input', function() {
-        if (input.value.length === 4) {
-          if (input.value === '4664') { unlock(); } else { reject(); }
-        }
-      });
-      input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && input.value.length > 0) {
-          if (input.value === '4664') { unlock(); } else { reject(); }
-        }
-      });
-    })();
-  </script>
 
   <header class="site-header" style="position:fixed;z-index:200;">
     <div class="nav-wrap">
