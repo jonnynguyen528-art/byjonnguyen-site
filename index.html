@@ -2701,8 +2701,10 @@
       // Wire nav links on all screen sizes
       document.querySelectorAll('.nav a').forEach(function(a) {
         a.addEventListener('click', function(e) {
+          var href = a.getAttribute('href');
+          if (!href || href.charAt(0) !== '#') return; // external/file links — let browser handle normally
           e.preventDefault();
-          navTo(a.getAttribute('href').replace('#', ''));
+          navTo(href.replace('#', ''));
         });
       });
 
